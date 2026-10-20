@@ -8,6 +8,8 @@ import { PRESETS, type PresetId } from "@/weather/presets";
 import { RescueLabel } from "@/ui/RescueLabel";
 import { ShipLabels } from "@/ui/ShipLabels";
 import { StormLabels } from "@/ui/StormLabels";
+import { FindLabel } from "@/ui/FindLabel";
+import { lowTideFind } from "@/content/hidden";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
@@ -24,6 +26,7 @@ import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
 import { StormSwirls } from "./StormSwirls";
+import { LOW_TIDE_ID, TideRocks } from "./TideRocks";
 import { RescueBoat } from "./ships/RescueBoat";
 import { Ships } from "./ships/Ships";
 import { ShipTracker } from "./ships/ShipTracker";
@@ -56,6 +59,11 @@ function useDevHooks() {
   }, []);
 }
 
+function LowTideLabel() {
+  const low = useSceneStore((s) => !!s.tide?.low);
+  return <FindLabel id={LOW_TIDE_ID} title={lowTideFind.tag} tag={lowTideFind.title} active={low} />;
+}
+
 export default function Experience() {
   useDevHooks();
 
@@ -79,6 +87,7 @@ export default function Experience() {
         <StormSwirls />
         <Sea />
         <Island />
+        <TideRocks />
         <Ships />
         <RescueBoat />
         <Beam />
@@ -92,6 +101,7 @@ export default function Experience() {
       <ShipLabels />
       <RescueLabel />
       <StormLabels />
+      <LowTideLabel />
       <ConditionsLoader />
     </>
   );

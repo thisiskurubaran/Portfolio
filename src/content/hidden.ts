@@ -15,4 +15,15 @@ export const rescueReward: Entry = {
   media: [],
 };
 
-export const hiddenEntries: Entry[] = [rescueReward];
+/** F06: wedged on the rocks, only reachable when the tide is low. */
+export const lowTideFind: Entry = {
+  id: "low-tide",
+  kind: "fishing",
+  title: "Found at low water",
+  tag: "Something on the rocks",
+  summary: "A hidden project that only shows when the tide goes out. Replace this entry in src/content/hidden.ts.",
+  links: [],
+  media: [],
+};
+
+export const hiddenEntries: Entry[] = [rescueReward, lowTideFind];
