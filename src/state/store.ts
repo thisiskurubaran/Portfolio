@@ -53,6 +53,10 @@ type SceneState = {
   lastThunder: { at: number; strength: number } | null;
   thunder: (strength: number) => void;
 
+  /** F09: where the boat in distress is in its story. Progress lives in rescueRuntime. */
+  rescuePhase: "idle" | "distress" | "guiding" | "docked";
+  setRescuePhase: (p: "idle" | "distress" | "guiding" | "docked") => void;
+
   /** F11: from the date and hemisphere. */
   season: Season;
   setSeason: (s: Season) => void;
@@ -111,6 +115,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   lastThunder: null,
   thunder: (strength) => set({ lastThunder: { at: performance.now(), strength } }),
+
+  rescuePhase: "idle",
+  setRescuePhase: (rescuePhase) => set({ rescuePhase }),
 
   season: "autumn",
   setSeason: (season) => set({ season }),

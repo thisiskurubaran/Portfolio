@@ -2,12 +2,10 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { DoubleSide, Group, ShaderMaterial, Vector3 } from "three";
-import vertexShader from "@/shaders/ship.vert";
-import fragmentShader from "@/shaders/ship.frag";
+import { Group, Vector3 } from "three";
 import { entries } from "@/content";
 import type { Entry } from "@/content/types";
-import { BEAM, beamRuntime } from "../beamState";
+import { isInBeam } from "../beamState";
 import { envRuntime } from "../envRuntime";
 import { isHarborMode, useSceneStore } from "@/state/store";
 import { waveHeight } from "../seaRuntime";
@@ -15,21 +13,12 @@ import { driftFor, poseAt, type Pose } from "./drift";
 import { SHIP_HEIGHT, SHIP_LENGTH, shipGeometry } from "./models";
 import { shipState } from "./shipRuntime";
 
-// A ship counts as found a little outside the drawn cone, so the label does
-// not flicker when the beam only grazes it.
-const FOUND_COS = Math.cos(BEAM.halfAngle * 1.8);
+import { shipMaterial } from "./shipMaterial";
+
 const LINGER_SECONDS = 2.5;
 const toShip = new Vector3();
 
-function inBeam(p: Vector3): boolean {
-  toShip.subVectors(p, beamRuntime.origin);
-  const along = toShip.dot(beamRuntime.dir);
-  const hit = beamRuntime.hitAlong.value * BEAM.length;
-  if (along <= 0 || along > hit * 1.2) return false;
-  return along / toShip.length() > FOUND_COS && beamRuntime.intensity.value > 0.1;
-}
-
-function Ship({ entry, index, material }: { entry: Entry; index: number; material: ShaderMaterial }) {
+function Ship({ entry, index }: { entry: Entry; index: number }) {
   const group = useRef<Group>(null);
   const drift = useMemo(() => driftFor(entry, index, entries.length - 1), [entry, index]);
   const geometry = shipGeometry(entry.kind);
@@ -72,7 +61,7 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
     toShip.set(p.x, g.position.y + 1, p.z);
     const t = clock.elapsedTime;
     // In harbor mode every ship is readable in daylight, beam or not.
-    if (inBeam(toShip) || isHarborMode(useSceneStore.getState())) lastSeen.current = t;
+    if (isInBeam(toShip) || isHarborMode(useSceneStore.getState())) lastSeen.current = t;
     const target = t - lastSeen.current < LINGER_SECONDS ? 1 : 0;
     // Fade in quickly when found, out slowly once the beam moves on.
     const rate = target > state.reveal ? 4 : 0.8;
@@ -87,7 +76,7 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
     <group ref={group}>
       <mesh
         geometry={geometry}
-        material={material}
+        material={shipMaterial()}
         onClick={(e) => {
           e.stopPropagation();
           open();
@@ -104,36 +93,10 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
 }
 
 export function Ships() {
-  const material = useMemo(
-    () =>
-      new ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        vertexColors: true,
-        side: DoubleSide,
-        uniforms: {
-          uLightDir: envRuntime.lightDir,
-          uDaylight: envRuntime.daylight,
-          uFlash: envRuntime.flash,
-          uBeamOrigin: { value: beamRuntime.origin },
-          uBeamDir: { value: beamRuntime.dir },
-          // Wider than the drawn cone: a ship at the edge of the beam should still catch light.
-          uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.6) },
-          uBeamIntensity: beamRuntime.intensity,
-          uBeamHitAlong: beamRuntime.hitAlong,
-          uBeamLength: { value: BEAM.length },
-          uFogColor: envRuntime.horizon,
-          uFogNear: envRuntime.fogNear,
-          uFogFar: envRuntime.fogFar,
-        },
-      }),
-    [],
-  );
-
   return (
     <group>
       {entries.map((entry, i) => (
-        <Ship key={entry.id} entry={entry} index={i} material={material} />
+        <Ship key={entry.id} entry={entry} index={i} />
       ))}
     </group>
   );

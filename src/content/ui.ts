@@ -28,6 +28,7 @@ export const ui = {
       sailboat: "About",
       rowboat: "Contact",
     },
+    hidden: "Found at sea",
   },
   plainLink: {
     full: "Skip to plain site",
@@ -77,5 +78,11 @@ export const ui = {
     snow: "snow",
     showers: "showers",
     thunder: "thunderstorm",
+  },
+  rescue: {
+    distress: "Boat in distress",
+    hint: "Hold the beam on it",
+    guiding: "Guiding it home",
+    progress: "Rescue progress",
   },
 };

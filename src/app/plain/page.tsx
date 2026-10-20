@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { entries } from "@/content";
+import { entries, hiddenEntries } from "@/content";
 import { profile } from "@/content/profile";
 import type { Entry, ShipKind } from "@/content/types";
 import { ui } from "@/content/ui";
@@ -80,6 +80,13 @@ export default function PlainPage() {
           </section>
         );
       })}
+
+      <section aria-labelledby="section-hidden">
+        <h2 id="section-hidden">{ui.plain.hidden}</h2>
+        {hiddenEntries.map((e) => (
+          <EntryBlock key={e.id} entry={e} />
+        ))}
+      </section>
 
       <footer className={styles.footer}>
         <Link href="/privacy">{ui.plain.privacy}</Link>

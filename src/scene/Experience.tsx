@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import gsap from "gsap";
 import { useSceneStore } from "@/state/store";
 import { PRESETS, type PresetId } from "@/weather/presets";
+import { RescueLabel } from "@/ui/RescueLabel";
 import { ShipLabels } from "@/ui/ShipLabels";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
@@ -21,6 +22,7 @@ import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
+import { RescueBoat } from "./ships/RescueBoat";
 import { Ships } from "./ships/Ships";
 import { ShipTracker } from "./ships/ShipTracker";
 
@@ -70,6 +72,7 @@ export default function Experience() {
         <Sea />
         <Island />
         <Ships />
+        <RescueBoat />
         <Beam />
         <Precipitation />
         <Lightning />
@@ -79,6 +82,7 @@ export default function Experience() {
         <FpsProbe />
       </Canvas>
       <ShipLabels />
+      <RescueLabel />
       <ConditionsLoader />
     </>
   );

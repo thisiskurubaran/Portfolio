@@ -44,3 +44,18 @@ export function aimAt(x: number, z: number): { yaw: number; tilt: number } {
   const tilt = (pitch - BEAM.pitchNear) / (BEAM.pitchFar - BEAM.pitchNear);
   return { yaw, tilt };
 }
+
+const toPoint = new Vector3();
+// A ship counts as found a little outside the drawn cone, so its label does
+// not flicker when the beam only grazes it.
+const FOUND_COS = Math.cos(BEAM.halfAngle * 1.8);
+
+/** True if the lit beam is on this point and has not already hit the sea before it. */
+export function isInBeam(p: Vector3): boolean {
+  if (beamRuntime.intensity.value < 0.1) return false;
+  toPoint.subVectors(p, beamRuntime.origin);
+  const along = toPoint.dot(beamRuntime.dir);
+  const hit = beamRuntime.hitAlong.value * BEAM.length;
+  if (along <= 0 || along > hit * 1.2) return false;
+  return along / toPoint.length() > FOUND_COS;
+}
