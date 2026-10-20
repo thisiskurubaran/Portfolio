@@ -6,6 +6,7 @@ import { PlaneGeometry, ShaderMaterial, Vector2 } from "three";
 import vertexShader from "@/shaders/water.vert";
 import fragmentShader from "@/shaders/water.frag";
 import { useSceneStore } from "@/state/store";
+import { BEAM, beamRuntime } from "./beamState";
 import { MOON_DIR, NIGHT } from "./palette";
 
 const SIZE = 600;
@@ -32,6 +33,13 @@ export function Sea() {
       uFogColor: { value: NIGHT.horizon },
       uFogNear: { value: NIGHT.fogNear },
       uFogFar: { value: NIGHT.fogFar },
+      // Held by reference, so BeamController's per frame updates reach the shader.
+      uBeamOrigin: { value: beamRuntime.origin },
+      uBeamDir: { value: beamRuntime.dir },
+      uBeamColor: { value: BEAM.color },
+      // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
+      uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.15) },
+      uBeamIntensity: beamRuntime.intensity,
     }),
     [],
   );
