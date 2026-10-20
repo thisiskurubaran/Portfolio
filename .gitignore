@@ -1,0 +1,53 @@
+# local AI tooling, never committed
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+build/
+dist/
+
+# env files
+.env
+.env*.local
+.env.*
+!.env.example
+
+# deploy and realtime tooling
+.vercel/
+.partykit/
+.wrangler/
+
+# testing
+coverage/
+playwright-report/
+test-results/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editors and os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# blender autosaves and backups
+*.blend1
+*.blend2
