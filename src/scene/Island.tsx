@@ -13,7 +13,7 @@ const ROCK_SCALE = { x: 10, y: 4.2, z: 8.5 };
 const ROCK_FLAT_TOP = 0.72;
 
 function rock(): BufferGeometry {
-  const g = new IcosahedronGeometry(1, 1).toNonIndexed();
+  const g = new IcosahedronGeometry(1, 1);
   const pos = g.getAttribute("position");
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
