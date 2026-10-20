@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { Color, Fog, Vector3 } from "three";
 import { useSceneStore } from "@/state/store";
 import { CLEAR_NIGHT, weatherToScene, type SceneWeather } from "@/weather/mapping";
-import { distanceKm } from "@/weather/hazards";
+import { distanceKm, nearbyQuake } from "@/weather/hazards";
 import { isDangerous, PRESETS } from "@/weather/presets";
 import { moonPhase } from "@/weather/moon";
 import { SEASON_EFFECTS, seasonAt, type Season } from "@/weather/season";
@@ -178,7 +178,10 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
 
   let sea = seaOverride ?? Math.min(1, weather.seaState * effects.wind);
   // The sensitivity cap has the last word, after any seasonal boost.
-  if (useSceneStore.getState().calmForRealStorm) sea = Math.min(sea, REAL_STORM_SEA);
+  // F34 follows the same rule: no rough water while a strong quake is close by.
+  const quake = nearbyQuake(store.hazards, conditions?.location?.lat ?? null, conditions?.location?.lon ?? null);
+  const calm = useSceneStore.getState().calmForRealStorm || (!!quake && !store.weatherPreset);
+  if (calm) sea = Math.min(sea, REAL_STORM_SEA);
   if (Math.abs(sea - seaState) > 0.001) setSeaState(sea);
 
   envRuntime.glowColor.value.copy(GLOW_COLOR);

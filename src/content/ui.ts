@@ -91,4 +91,11 @@ export const ui = {
     advisory: "Official advisory",
     source: "Source",
   },
+  quake: {
+    title: "Strong earthquake recorded near you",
+    summary: (magnitude: number, place: string, km: number) => `Magnitude ${magnitude.toFixed(1)}, ${place}, about ${km} km away.`,
+    advice: "If you are near the coast, follow your local authorities for any tsunami warning.",
+    report: "Official report",
+    dismiss: "Dismiss",
+  },
 };

@@ -64,3 +64,27 @@ export function bearingDeg(aLat: number, aLon: number, bLat: number, bLon: numbe
   const x = Math.cos(rad(aLat)) * Math.sin(rad(bLat)) - Math.sin(rad(aLat)) * Math.cos(rad(bLat)) * Math.cos(rad(bLon - aLon));
   return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }
+
+const QUAKE_NEAR_KM = 1000;
+const QUAKE_MIN_MAGNITUDE = 6.5;
+const QUAKE_RECENT_MS = 24 * 3600 * 1000;
+
+/**
+ * F34: a strong, recent quake close enough that a coast near the visitor
+ * could be affected. GDACS does not flag tsunamis directly, so this is a
+ * prompt to check official advice, not a claim that a warning exists.
+ */
+export function nearbyQuake(hazards: Hazards | null, lat: number | null, lon: number | null, now = Date.now()) {
+  if (!hazards || lat === null || lon === null) return null;
+  const hits = hazards.quakes
+    .filter(
+      (q) =>
+        q.alert !== "Green" &&
+        q.magnitude >= QUAKE_MIN_MAGNITUDE &&
+        now - Date.parse(q.at) < QUAKE_RECENT_MS &&
+        distanceKm(lat, lon, q.lat, q.lon) < QUAKE_NEAR_KM,
+    )
+    .sort((a, b) => b.magnitude - a.magnitude);
+  const q = hits[0];
+  return q ? { ...q, km: Math.round(distanceKm(lat, lon, q.lat, q.lon)) } : null;
+}

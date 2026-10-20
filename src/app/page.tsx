@@ -5,6 +5,7 @@ import { NightToggle } from "@/ui/NightToggle";
 import { Panel } from "@/ui/Panel";
 import { PlainLink } from "@/ui/PlainLink";
 import { PlainOffer } from "@/ui/PlainOffer";
+import { QuakeBanner } from "@/ui/QuakeBanner";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Barometer />
       <Panel />
       <PlainOffer />
+      <QuakeBanner />
       <div className="corner">
         <NightToggle />
         <GyroToggle />
