@@ -1,7 +1,9 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { isHarborMode, useSceneStore } from "@/state/store";
+import { envRuntime } from "./envRuntime";
 import { aimAt, BEAM, beamRuntime, directionFrom, tiltToPitch } from "./beamState";
 import { shipRuntime } from "./ships/shipRuntime";
 import { useBeamInput } from "./useBeamInput";
@@ -16,8 +18,9 @@ const EASE = 7;
  */
 export function BeamController() {
   const keys = useBeamInput();
+  const reducedMotion = useReducedMotion();
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
     const k = keys.current;
     const dYaw = (Number(k.left) - Number(k.right)) * KEY_YAW_SPEED * delta;
     const dTilt = (Number(k.up) - Number(k.down)) * KEY_TILT_SPEED * delta;
@@ -34,8 +37,15 @@ export function BeamController() {
     }
 
     // Harbor mode: the lamp is off by day, so the beam fades out.
-    const lampOn = isHarborMode(useSceneStore.getState()) ? 0 : 1;
-    beamRuntime.intensity.value += (lampOn - beamRuntime.intensity.value) * Math.min(1, delta * 1.5);
+    let lampOn = isHarborMode(useSceneStore.getState()) ? 0 : 1;
+    // F03: the lamp flickers in a storm. Slow waves under 3 Hz and a small
+    // dip, so it wavers rather than strobes. None for reduced motion.
+    if (!reducedMotion && envRuntime.storm.value > 0) {
+      const t = clock.elapsedTime;
+      const wobble = 0.5 + 0.5 * Math.sin(t * 5.7) * Math.sin(t * 10.7 + 1.3) * Math.sin(t * 16.3 + 0.4);
+      lampOn *= 1 - envRuntime.storm.value * 0.18 * wobble;
+    }
+    beamRuntime.intensity.value += (lampOn - beamRuntime.intensity.value) * Math.min(1, delta * 6);
 
     const target = useSceneStore.getState().beamTarget;
     const t = 1 - Math.exp(-EASE * delta);

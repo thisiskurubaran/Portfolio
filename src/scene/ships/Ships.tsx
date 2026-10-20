@@ -52,8 +52,10 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
     const port = waveHeight(p.x - fz, p.z + fx);
     const starboard = waveHeight(p.x + fz, p.z - fx);
 
-    const pitch = Math.atan2(bow - stern, half * 2) * tossScale;
-    const roll = Math.atan2(port - starboard, 2) * tossScale * 0.6;
+    // Storms throw hulls about more than the wave slope alone would.
+    const storm = 1 + envRuntime.storm.value * 1.2;
+    const pitch = Math.atan2(bow - stern, half * 2) * tossScale * storm;
+    const roll = Math.atan2(port - starboard, 2) * tossScale * 0.6 * storm;
     const ease = 1 - Math.exp(-4 * delta);
 
     g.position.set(p.x, g.position.y + ((bow + stern) / 2 - g.position.y) * ease, p.z);

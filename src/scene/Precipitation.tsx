@@ -26,6 +26,7 @@ const wind = { value: new Vector2() };
 const rainAmount = { value: 0 };
 const snowAmount = { value: 0 };
 const pixelRatio = { value: 1 };
+const rainLength = { value: 1.1 };
 
 function dropGeometry(count: number, streaks: boolean): BufferGeometry {
   const per = streaks ? 2 : 1;
@@ -70,7 +71,7 @@ export function Precipitation() {
           uBox: { value: BOX },
           uWind: wind,
           uFall: { value: 24 },
-          uLength: { value: 1.1 },
+          uLength: rainLength,
           uAmount: rainAmount,
           uColor: { value: new Color("#b8c8dc") },
           uOpacity: { value: 0.35 },
@@ -107,7 +108,10 @@ export function Precipitation() {
     time.value += delta * (reducedMotion ? REDUCED_SPEED : 1);
     center.value.copy(camera.position);
     const w = seaRuntime.windDir.value;
-    wind.value.set(w.x * WIND_PUSH * (0.3 + seaRuntime.seaState.value), w.y * WIND_PUSH * (0.3 + seaRuntime.seaState.value));
+    // Storm rain comes in long slanted sheets.
+    const push = WIND_PUSH * (0.3 + seaRuntime.seaState.value) * (1 + envRuntime.storm.value * 1.5);
+    wind.value.set(w.x * push, w.y * push);
+    rainLength.value = 1.1 + envRuntime.storm.value * 1.8;
     rainAmount.value = envRuntime.rain.value;
     snowAmount.value = envRuntime.snow.value;
     pixelRatio.value = dpr;
