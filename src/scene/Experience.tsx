@@ -1,7 +1,8 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { useSceneStore } from "@/state/store";
 import { PRESETS, type PresetId } from "@/weather/presets";
@@ -63,6 +64,40 @@ function useDevHooks() {
   }, []);
 }
 
+// F12 creatures load only after this long on the page. Frames stop while the
+// tab is hidden, so hidden time does not count.
+const STAY_S = 90;
+const Creatures = lazy(() => import("./Creatures"));
+
+/** Development only: puts the three.js scene on window.__scene for inspection. */
+function DevSceneHandle() {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const w = window as unknown as { __scene?: Record<string, unknown> };
+    if (w.__scene) w.__scene.three = scene;
+  }, [scene]);
+  return null;
+}
+
+function CreatureGate() {
+  const [ready, setReady] = useState(false);
+  const [now] = useState(
+    () => process.env.NODE_ENV !== "production" && new URLSearchParams(window.location.search).get("creatures") === "now",
+  );
+  const stayed = useRef(0);
+  useFrame((_, delta) => {
+    if (ready) return;
+    stayed.current += Math.min(delta, 0.25);
+    if (now || stayed.current > STAY_S) setReady(true);
+  });
+  return ready ? (
+    <Suspense fallback={null}>
+      <Creatures immediate={now} />
+    </Suspense>
+  ) : null;
+}
+
 function GhostLabel() {
   const active = useSceneStore((s) => s.ghostHour);
   return <FindLabel id={ghostShip.id} title={ghostShip.title} tag={ghostShip.tag} active={active} />;
@@ -101,6 +136,8 @@ export default function Experience() {
         <Ships />
         <RescueBoat />
         <GhostShip />
+        <CreatureGate />
+        <DevSceneHandle />
         <Beam />
         <Precipitation />
         <Lightning />
