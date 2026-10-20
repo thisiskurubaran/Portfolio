@@ -230,3 +230,33 @@ body {
   outline: 2px solid #ffe2a8;
   outline-offset: 2px;
 }
+
+.plain-link {
+  position: fixed;
+  z-index: 20;
+  top: max(16px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  font-size: 15px;
+  color: #05080f;
+  background: #ffe2a8;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.plain-link-compact {
+  left: max(16px, env(safe-area-inset-left));
+  transform: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  background: rgba(5, 8, 15, 0.72);
+  border: 1px solid rgba(232, 237, 245, 0.28);
+}
+
+.plain-link:focus-visible {
+  outline: 2px solid #ffe2a8;
+  outline-offset: 3px;
+}

@@ -29,4 +29,8 @@ export const ui = {
       rowboat: "Contact",
     },
   },
+  plainLink: {
+    full: "Skip to plain site",
+    short: "Plain site",
+  },
 };
