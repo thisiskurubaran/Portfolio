@@ -3,7 +3,8 @@ import { LANTERN_Y } from "./layout";
 
 export const BEAM = {
   /** Pitch in radians at tilt 0 and tilt 1. Negative points down at the water. */
-  pitchNear: -0.42,
+  // Steep enough to reach the rowboat at the jetty.
+  pitchNear: -0.75,
   pitchFar: -0.05,
   halfAngle: 0.075,
   length: 140,
@@ -17,7 +18,7 @@ export const BEAM = {
  */
 export const beamRuntime = {
   yaw: 0,
-  tilt: 0.45,
+  tilt: 0.65,
   origin: new Vector3(0, LANTERN_Y, 0),
   dir: new Vector3(0, 0, -1),
   intensity: { value: 1 },

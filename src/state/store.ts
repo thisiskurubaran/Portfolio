@@ -30,7 +30,7 @@ export const useSceneStore = create<SceneState>()((set) => ({
   seaState: 0.25,
   setSeaState: (value) => set({ seaState: clamp01(value) }),
 
-  beamTarget: { yaw: 0, tilt: 0.45 },
+  beamTarget: { yaw: 0, tilt: 0.65 },
   setBeamTarget: (yaw, tilt) => set({ beamTarget: { yaw: clampYaw(yaw), tilt: clamp01(tilt) } }),
   nudgeBeam: (dYaw, dTilt) =>
     set((s) => ({
