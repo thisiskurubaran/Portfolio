@@ -8,7 +8,7 @@ import fragmentShader from "@/shaders/ship.frag";
 import { entries } from "@/content";
 import type { Entry } from "@/content/types";
 import { BEAM, beamRuntime } from "../beamState";
-import { MOON_DIR, NIGHT } from "../palette";
+import { envRuntime } from "../envRuntime";
 import { useSceneStore } from "@/state/store";
 import { waveHeight } from "../seaRuntime";
 import { driftFor, poseAt, type Pose } from "./drift";
@@ -109,7 +109,8 @@ export function Ships() {
         vertexColors: true,
         side: DoubleSide,
         uniforms: {
-          uMoonDir: { value: MOON_DIR },
+          uLightDir: envRuntime.lightDir,
+          uDaylight: envRuntime.daylight,
           uBeamOrigin: { value: beamRuntime.origin },
           uBeamDir: { value: beamRuntime.dir },
           // Wider than the drawn cone: a ship at the edge of the beam should still catch light.
@@ -117,9 +118,9 @@ export function Ships() {
           uBeamIntensity: beamRuntime.intensity,
           uBeamHitAlong: beamRuntime.hitAlong,
           uBeamLength: { value: BEAM.length },
-          uFogColor: { value: NIGHT.horizon },
-          uFogNear: { value: NIGHT.fogNear },
-          uFogFar: { value: NIGHT.fogFar },
+          uFogColor: envRuntime.horizon,
+          uFogNear: envRuntime.fogNear,
+          uFogFar: envRuntime.fogFar,
         },
       }),
     [],

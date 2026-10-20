@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { Conditions } from "@/weather/schema";
 
 type SceneState = {
   /** 0 is flat calm, 1 is hurricane. Every sea and weather effect reads from this. */
@@ -27,6 +28,17 @@ type SceneState = {
   /** Ship whose label has keyboard focus. The beam swings to it. */
   focusedId: string | null;
   focusShip: (id: string | null) => void;
+
+  /** Location and weather from /api/conditions. Null until it answers, or if it fails. */
+  conditions: Conditions | null;
+  setConditions: (c: Conditions | null) => void;
+
+  /** True while the sun is up and the visitor has not asked for night. */
+  isDay: boolean;
+  setIsDay: (v: boolean) => void;
+  /** Visitor chose night during the day (F04 switch). */
+  forceNight: boolean;
+  setForceNight: (v: boolean) => void;
 
   /** Why the plain site is being suggested, if it is. */
   plainOffer: "no-webgl" | "slow" | null;
@@ -58,6 +70,14 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   focusedId: null,
   focusShip: (id) => set({ focusedId: id }),
+
+  conditions: null,
+  setConditions: (conditions) => set({ conditions }),
+
+  isDay: false,
+  setIsDay: (isDay) => set({ isDay }),
+  forceNight: false,
+  setForceNight: (forceNight) => set({ forceNight }),
 
   plainOffer: null,
   // A missing WebGL context outranks a slow device, so it is never replaced.

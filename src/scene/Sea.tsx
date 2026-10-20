@@ -8,7 +8,7 @@ import fragmentShader from "@/shaders/water.frag";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useSceneStore } from "@/state/store";
 import { BEAM, beamRuntime } from "./beamState";
-import { MOON_DIR, NIGHT } from "./palette";
+import { envRuntime } from "./envRuntime";
 import { seaRuntime } from "./seaRuntime";
 
 const SIZE = 600;
@@ -31,13 +31,14 @@ export function Sea() {
       uTime: seaRuntime.time,
       uSeaState: seaRuntime.seaState,
       uWindDir: seaRuntime.windDir,
-      uDeep: { value: NIGHT.seaDeep },
-      uCrest: { value: NIGHT.seaCrest },
-      uMoonDir: { value: MOON_DIR },
-      uMoonLight: { value: NIGHT.moonLight },
-      uFogColor: { value: NIGHT.horizon },
-      uFogNear: { value: NIGHT.fogNear },
-      uFogFar: { value: NIGHT.fogFar },
+      // Sky and light follow the time of day through the shared env values.
+      uDeep: envRuntime.seaDeep,
+      uCrest: envRuntime.seaCrest,
+      uLightDir: envRuntime.lightDir,
+      uLightColor: envRuntime.lightColor,
+      uFogColor: envRuntime.horizon,
+      uFogNear: envRuntime.fogNear,
+      uFogFar: envRuntime.fogFar,
       // Held by reference, so BeamController's per frame updates reach the shader.
       uBeamOrigin: { value: beamRuntime.origin },
       uBeamDir: { value: beamRuntime.dir },

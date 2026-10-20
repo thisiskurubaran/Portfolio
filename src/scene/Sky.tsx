@@ -2,14 +2,17 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { AdditiveBlending, BackSide, BufferAttribute, BufferGeometry, ShaderMaterial } from "three";
+import { AdditiveBlending, BackSide, BufferAttribute, BufferGeometry, Color, ShaderMaterial } from "three";
 import skyVert from "@/shaders/sky.vert";
 import skyFrag from "@/shaders/sky.frag";
 import starsVert from "@/shaders/stars.vert";
 import starsFrag from "@/shaders/stars.frag";
+import moonVert from "@/shaders/moon.vert";
+import moonFrag from "@/shaders/moon.frag";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { hash3 } from "./bake";
-import { MOON_DIR, NIGHT } from "./palette";
+import { envRuntime } from "./envRuntime";
+import { MOON_DIR, PALETTES } from "./palette";
 
 const DOME_RADIUS = 500;
 const STAR_RADIUS = 450;
@@ -50,10 +53,14 @@ export function Sky() {
   const stars = useMemo(() => starGeometry(), []);
   const skyUniforms = useMemo(
     () => ({
-      uHorizon: { value: NIGHT.horizon },
-      uZenith: { value: NIGHT.zenith },
+      uHorizon: envRuntime.horizon,
+      uZenith: envRuntime.zenith,
       uMoonDir: { value: MOON_DIR },
-      uMoonLight: { value: NIGHT.moonLight },
+      uMoonLight: { value: PALETTES.night.light },
+      uMoonVisibility: envRuntime.moonVisibility,
+      uSunDir: envRuntime.sunDir,
+      uGlowColor: envRuntime.glowColor,
+      uGlow: envRuntime.glow,
     }),
     [],
   );
@@ -62,8 +69,16 @@ export function Sky() {
       uTime: { value: 0 },
       uPixelRatio: { value: 1 },
       uTwinkle: { value: 1 },
-      // Cloud cover from the weather feed will lower this.
-      uVisibility: { value: 1 },
+      // Fades with daylight and cloud cover.
+      uVisibility: envRuntime.starVisibility,
+    }),
+    [],
+  );
+  const moonUniforms = useMemo(
+    () => ({
+      uPhase: envRuntime.moonPhase,
+      uVisibility: envRuntime.moonVisibility,
+      uColor: { value: new Color("#e6ecf5") },
     }),
     [],
   );
@@ -102,8 +117,14 @@ export function Sky() {
         />
       </points>
       <mesh position={moonPosition} onUpdate={(m) => m.lookAt(0, 0, 0)}>
-        <circleGeometry args={[7, 24]} />
-        <meshBasicMaterial color="#e6ecf5" fog={false} />
+        <circleGeometry args={[7, 32]} />
+        <shaderMaterial
+          vertexShader={moonVert}
+          fragmentShader={moonFrag}
+          uniforms={moonUniforms}
+          transparent
+          depthWrite={false}
+        />
       </mesh>
     </group>
   );

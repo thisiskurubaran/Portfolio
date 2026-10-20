@@ -10,6 +10,8 @@ import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
 import { shipRuntime } from "./ships/shipRuntime";
 import { CameraRig } from "./CameraRig";
+import { ConditionsLoader } from "./ConditionsLoader";
+import { EnvController } from "./EnvController";
 import { FpsProbe } from "./FpsProbe";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
@@ -49,6 +51,7 @@ export default function Experience() {
       >
         <color attach="background" args={[NIGHT.horizon]} />
         <fog attach="fog" args={[NIGHT.horizon, NIGHT.fogNear, NIGHT.fogFar]} />
+        <EnvController />
         <BeamController />
         <Sky />
         <Sea />
@@ -61,6 +64,7 @@ export default function Experience() {
         <FpsProbe />
       </Canvas>
       <ShipLabels />
+      <ConditionsLoader />
     </>
   );
 }

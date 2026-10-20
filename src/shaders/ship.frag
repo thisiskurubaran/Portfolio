@@ -1,4 +1,5 @@
-uniform vec3 uMoonDir;
+uniform vec3 uLightDir;
+uniform float uDaylight;
 uniform vec3 uBeamOrigin;
 uniform vec3 uBeamDir;
 uniform float uBeamCos;
@@ -17,9 +18,12 @@ varying vec3 vColor;
 void main() {
   vec3 n = normalize(vNormal);
 
-  // Moonlight alone leaves ships as dim shapes. The beam is what reveals them.
-  // Linear values: sRGB output lifts these a lot, so they stay tiny.
-  float moon = 0.01 + 0.025 * abs(dot(n, uMoonDir));
+  // Moonlight alone leaves ships as dim shapes; the beam is what reveals
+  // them at night. By day the sun lights them like everything else.
+  // Linear values: sRGB output lifts the night term a lot, so it stays tiny.
+  float night = 0.01 + 0.025 * abs(dot(n, uLightDir));
+  float day = 0.35 + 0.65 * max(dot(n, uLightDir), 0.0);
+  float ambient = mix(night, day, uDaylight);
 
   vec3 toFrag = vWorldPos - uBeamOrigin;
   float d = length(toFrag);
@@ -33,7 +37,7 @@ void main() {
   float lambert = 0.35 + 0.65 * abs(dot(n, -L));
   float beam = cone * atten * lambert * 1.5 * uBeamIntensity;
 
-  vec3 color = vColor * (moon + beam);
+  vec3 color = vColor * (ambient + beam);
   float fog = smoothstep(uFogNear, uFogFar, length(cameraPosition - vWorldPos));
   gl_FragColor = vec4(mix(color, uFogColor, fog), 1.0);
   #include <colorspace_fragment>

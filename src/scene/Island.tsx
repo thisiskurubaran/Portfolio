@@ -1,10 +1,25 @@
 "use client";
 
-import { useMemo } from "react";
-import { BoxGeometry, BufferGeometry, ConeGeometry, CylinderGeometry, IcosahedronGeometry } from "three";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import {
+  BoxGeometry,
+  BufferGeometry,
+  Color,
+  ConeGeometry,
+  CylinderGeometry,
+  IcosahedronGeometry,
+  MeshBasicMaterial,
+} from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { bakeFlat, hash3 } from "./bake";
+import { envRuntime } from "./envRuntime";
 import { LANTERN_Y, ROCK_TOP, TOWER_HEIGHT } from "./layout";
+
+const LAMP_ON = new Color("#ffd98a");
+const LAMP_OFF = new Color("#8d969c");
+// Baked colours are tuned for moonlight; daylight brightens them by this much.
+const DAY_BOOST = 1.8;
 
 // Placeholders until the Blender models land. Everything static merges into
 // one geometry so the island costs a single draw call.
@@ -82,16 +97,25 @@ function jetty(): BufferGeometry[] {
 
 export function Island() {
   const geometry = useMemo(() => mergeGeometries([rock(), ...tower(), ...hut(), ...jetty()]), []);
+  const bodyRef = useRef<MeshBasicMaterial>(null);
+  const lampRef = useRef<MeshBasicMaterial>(null);
+
+  useFrame(() => {
+    const d = envRuntime.daylight.value;
+    bodyRef.current?.color.setScalar(1 + d * DAY_BOOST);
+    // The lamp is off by day; the beam goes with it.
+    lampRef.current?.color.lerpColors(LAMP_ON, LAMP_OFF, d);
+  });
 
   return (
     <group>
       <mesh geometry={geometry}>
-        <meshBasicMaterial vertexColors />
+        <meshBasicMaterial ref={bodyRef} vertexColors />
       </mesh>
       {/* Lantern glass stays unlit so it reads as the light source. */}
       <mesh position={[0, LANTERN_Y, 0]}>
         <cylinderGeometry args={[0.7, 0.7, 1.5, 10]} />
-        <meshBasicMaterial color="#ffd98a" />
+        <meshBasicMaterial ref={lampRef} color="#ffd98a" />
       </mesh>
     </group>
   );
