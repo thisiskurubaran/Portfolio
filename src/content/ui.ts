@@ -39,4 +39,7 @@ export const ui = {
     open: "Open plain site",
     keep: "Keep the scene",
   },
+  ships: {
+    nav: "Ships on the water",
+  },
 };

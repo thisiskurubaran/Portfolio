@@ -24,6 +24,10 @@ type SceneState = {
   select: (id: string) => void;
   closePanel: () => void;
 
+  /** Ship whose label has keyboard focus. The beam swings to it. */
+  focusedId: string | null;
+  focusShip: (id: string | null) => void;
+
   /** Why the plain site is being suggested, if it is. */
   plainOffer: "no-webgl" | "slow" | null;
   offerPlain: (reason: "no-webgl" | "slow") => void;
@@ -51,6 +55,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
   panelOpen: false,
   select: (id) => set({ selectedId: id, panelOpen: true }),
   closePanel: () => set({ panelOpen: false }),
+
+  focusedId: null,
+  focusShip: (id) => set({ focusedId: id }),
 
   plainOffer: null,
   // A missing WebGL context outranks a slow device, so it is never replaced.

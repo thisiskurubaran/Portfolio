@@ -24,11 +24,12 @@ export function BeamController() {
     if (dYaw || dTilt) useSceneStore.getState().nudgeBeam(dYaw, dTilt);
 
     // Hold the open ship in the light while it drifts, so it stays readable
-    // behind the panel.
-    const { panelOpen, selectedId } = useSceneStore.getState();
-    const open = panelOpen && selectedId ? shipRuntime.get(selectedId) : undefined;
-    if (open) {
-      const aim = aimAt(open.anchor.x, open.anchor.z);
+    // behind the panel. Otherwise follow the ship focused from the keyboard.
+    const { panelOpen, selectedId, focusedId } = useSceneStore.getState();
+    const heldId = panelOpen ? selectedId : focusedId;
+    const held = heldId ? shipRuntime.get(heldId) : undefined;
+    if (held) {
+      const aim = aimAt(held.anchor.x, held.anchor.z);
       useSceneStore.getState().setBeamTarget(aim.yaw, aim.tilt);
     }
 

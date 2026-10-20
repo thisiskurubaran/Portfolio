@@ -48,6 +48,12 @@ export function Panel() {
         // Move focus to the title so screen readers start reading the ship.
         headingRef.current?.focus({ preventScroll: true });
       } else {
+        // Hand focus back to the ship it came from, unless the visitor has
+        // already moved it somewhere else.
+        const active = document.activeElement;
+        if (entry && (!active || active === document.body || el.contains(active))) {
+          document.querySelector<HTMLElement>(`[data-ship="${entry.id}"]`)?.focus({ preventScroll: true });
+        }
         gsap.to(el, {
           ...offscreen,
           opacity: 0,
@@ -61,7 +67,7 @@ export function Panel() {
     return () => {
       cancelled = true;
     };
-  }, [open, entry?.id, reducedMotion]);
+  }, [open, entry, reducedMotion]);
 
   useEffect(() => {
     if (!open) return;
