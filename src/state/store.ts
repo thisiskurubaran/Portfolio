@@ -33,9 +33,9 @@ type SceneState = {
   conditions: Conditions | null;
   setConditions: (c: Conditions | null) => void;
 
-  /** True while the sun is up and the visitor has not asked for night. */
-  isDay: boolean;
-  setIsDay: (v: boolean) => void;
+  /** True while the sun is up at the visitor's location, whatever they chose. */
+  sunUp: boolean;
+  setSunUp: (v: boolean) => void;
   /** Visitor chose night during the day (F04 switch). */
   forceNight: boolean;
   setForceNight: (v: boolean) => void;
@@ -74,8 +74,8 @@ export const useSceneStore = create<SceneState>()((set) => ({
   conditions: null,
   setConditions: (conditions) => set({ conditions }),
 
-  isDay: false,
-  setIsDay: (isDay) => set({ isDay }),
+  sunUp: false,
+  setSunUp: (sunUp) => set({ sunUp }),
   forceNight: false,
   setForceNight: (forceNight) => set({ forceNight }),
 
@@ -84,3 +84,6 @@ export const useSceneStore = create<SceneState>()((set) => ({
   offerPlain: (reason) => set((s) => (s.plainOffer === "no-webgl" ? s : { plainOffer: reason })),
   dismissPlainOffer: () => set({ plainOffer: null }),
 }));
+
+/** Harbor mode (F04): daytime, unless the visitor switched to night. */
+export const isHarborMode = (s: Pick<SceneState, "sunUp" | "forceNight">) => s.sunUp && !s.forceNight;

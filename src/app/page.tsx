@@ -1,5 +1,6 @@
 import { SceneLoader } from "@/scene/SceneLoader";
 import { GyroToggle } from "@/ui/GyroToggle";
+import { NightToggle } from "@/ui/NightToggle";
 import { Panel } from "@/ui/Panel";
 import { PlainLink } from "@/ui/PlainLink";
 import { PlainOffer } from "@/ui/PlainOffer";
@@ -14,6 +15,7 @@ export default function Home() {
       <Panel />
       <PlainOffer />
       <div className="corner">
+        <NightToggle />
         <GyroToggle />
       </div>
     </main>

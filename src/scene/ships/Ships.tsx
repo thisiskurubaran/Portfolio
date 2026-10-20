@@ -9,7 +9,7 @@ import { entries } from "@/content";
 import type { Entry } from "@/content/types";
 import { BEAM, beamRuntime } from "../beamState";
 import { envRuntime } from "../envRuntime";
-import { useSceneStore } from "@/state/store";
+import { isHarborMode, useSceneStore } from "@/state/store";
 import { waveHeight } from "../seaRuntime";
 import { driftFor, poseAt, type Pose } from "./drift";
 import { SHIP_HEIGHT, SHIP_LENGTH, shipGeometry } from "./models";
@@ -69,7 +69,8 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
     state.anchor.set(p.x, g.position.y + SHIP_HEIGHT[entry.kind] + 1, p.z);
     toShip.set(p.x, g.position.y + 1, p.z);
     const t = clock.elapsedTime;
-    if (inBeam(toShip)) lastSeen.current = t;
+    // In harbor mode every ship is readable in daylight, beam or not.
+    if (inBeam(toShip) || isHarborMode(useSceneStore.getState())) lastSeen.current = t;
     const target = t - lastSeen.current < LINGER_SECONDS ? 1 : 0;
     // Fade in quickly when found, out slowly once the beam moves on.
     const rate = target > state.reveal ? 4 : 0.8;

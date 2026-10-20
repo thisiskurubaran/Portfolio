@@ -1,7 +1,7 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useSceneStore } from "@/state/store";
+import { isHarborMode, useSceneStore } from "@/state/store";
 import { aimAt, BEAM, beamRuntime, directionFrom, tiltToPitch } from "./beamState";
 import { shipRuntime } from "./ships/shipRuntime";
 import { useBeamInput } from "./useBeamInput";
@@ -32,6 +32,10 @@ export function BeamController() {
       const aim = aimAt(held.anchor.x, held.anchor.z);
       useSceneStore.getState().setBeamTarget(aim.yaw, aim.tilt);
     }
+
+    // Harbor mode: the lamp is off by day, so the beam fades out.
+    const lampOn = isHarborMode(useSceneStore.getState()) ? 0 : 1;
+    beamRuntime.intensity.value += (lampOn - beamRuntime.intensity.value) * Math.min(1, delta * 1.5);
 
     const target = useSceneStore.getState().beamTarget;
     const t = 1 - Math.exp(-EASE * delta);

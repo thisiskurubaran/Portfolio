@@ -42,4 +42,8 @@ export const ui = {
   ships: {
     nav: "Ships on the water",
   },
+  harbor: {
+    night: "Night mode",
+    hint: "Jump to night and use the lighthouse beam",
+  },
 };

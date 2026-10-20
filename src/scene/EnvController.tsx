@@ -105,7 +105,7 @@ function computeTarget(devHour: number | null) {
   const now = new Date();
   if (devHour !== null) now.setHours(Math.floor(devHour), Math.round((devHour % 1) * 60), 0, 0);
 
-  const { conditions, forceNight, isDay, setIsDay } = useSceneStore.getState();
+  const { conditions, forceNight, sunUp, setSunUp } = useSceneStore.getState();
   const loc = conditions?.location;
   const sun = loc ? sunPosition(now, loc.lat, loc.lon) : sunFromClock(now);
   const elevation = forceNight ? -30 : sun.elevation;
@@ -132,6 +132,6 @@ function computeTarget(devHour: number | null) {
   envRuntime.fogNear.value = FOG.near;
   envRuntime.fogFar.value = FOG.far;
 
-  const day = daylight > 0.5 && !forceNight;
-  if (day !== isDay) setIsDay(day);
+  const up = smoothstep(-4, 8, sun.elevation) > 0.5;
+  if (up !== sunUp) setSunUp(up);
 }
