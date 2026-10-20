@@ -29,7 +29,7 @@ function useDevHooks() {
     // ?sea=0.8 to check wave presets while the barometer UI does not exist yet.
     const raw = new URLSearchParams(window.location.search).get("sea");
     if (raw !== null && !Number.isNaN(Number(raw))) {
-      useSceneStore.getState().setSeaState(Number(raw));
+      useSceneStore.getState().setSeaOverride(Number(raw));
     }
   }, []);
 }

@@ -25,4 +25,7 @@ export const envRuntime = {
   moonPhase: { value: 0.5 },
   fogNear: { value: FOG.near },
   fogFar: { value: FOG.far },
+  /** Precipitation, 0 to 1, read by the rain and snow layer. */
+  rain: { value: 0 },
+  snow: { value: 0 },
 };

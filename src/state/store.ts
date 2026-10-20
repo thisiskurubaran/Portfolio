@@ -5,6 +5,9 @@ type SceneState = {
   /** 0 is flat calm, 1 is hurricane. Every sea and weather effect reads from this. */
   seaState: number;
   setSeaState: (value: number) => void;
+  /** Visitor or developer choice that wins over the real weather. */
+  seaOverride: number | null;
+  setSeaOverride: (value: number | null) => void;
 
   /** Where input wants the beam. The scene eases toward it each frame. */
   beamTarget: {
@@ -55,6 +58,8 @@ const clampYaw = (v: number) => Math.min(BEAM_YAW_LIMIT, Math.max(-BEAM_YAW_LIMI
 export const useSceneStore = create<SceneState>()((set) => ({
   seaState: 0.25,
   setSeaState: (value) => set({ seaState: clamp01(value) }),
+  seaOverride: null,
+  setSeaOverride: (value) => set({ seaOverride: value === null ? null : clamp01(value) }),
 
   beamTarget: { yaw: 0, tilt: 0.65 },
   setBeamTarget: (yaw, tilt) => set({ beamTarget: { yaw: clampYaw(yaw), tilt: clamp01(tilt) } }),
