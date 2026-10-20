@@ -5,15 +5,19 @@ import { useEffect } from "react";
 import { useSceneStore } from "@/state/store";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
+import { beamRuntime } from "./beamState";
 import { CameraRig } from "./CameraRig";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
 
-function useDevSeaParam() {
+function useDevHooks() {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
+    // Handle for poking at the scene from the console while developing.
+    Object.assign(window, { __scene: { store: useSceneStore, beam: beamRuntime } });
+
     // ?sea=0.8 to check wave presets while the barometer UI does not exist yet.
     const raw = new URLSearchParams(window.location.search).get("sea");
     if (raw !== null && !Number.isNaN(Number(raw))) {
@@ -23,7 +27,7 @@ function useDevSeaParam() {
 }
 
 export default function Experience() {
-  useDevSeaParam();
+  useDevHooks();
 
   return (
     <Canvas
