@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { useEffect } from "react";
 import { useSceneStore } from "@/state/store";
 import { CameraRig } from "./CameraRig";
+import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 
@@ -32,6 +33,7 @@ export default function Experience() {
       <fog attach="fog" args={[NIGHT.horizon, NIGHT.fogNear, NIGHT.fogFar]} />
       <CameraRig />
       <Sea />
+      <Island />
     </Canvas>
   );
 }

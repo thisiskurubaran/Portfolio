@@ -7,8 +7,8 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { LANTERN_Y } from "./layout";
 
 // Just behind and above the lantern room, looking out over the water.
-const HOME = new Vector3(0, LANTERN_Y + 3.2, 7.5);
-const TARGET = new Vector3(0, 4, -40);
+const HOME = new Vector3(3, LANTERN_Y + 6, 14);
+const TARGET = new Vector3(-2, 0, -45);
 
 export function CameraRig() {
   const camera = useThree((s) => s.camera);
