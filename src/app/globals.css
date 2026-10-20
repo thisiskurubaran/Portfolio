@@ -90,7 +90,8 @@ body {
   padding: 6px 10px;
   font: inherit;
   color: #fff4dc;
-  background: rgba(5, 8, 15, 0.55);
+  /* Solid enough to keep AA contrast when the label sits over the lit pool. */
+  background: rgba(5, 8, 15, 0.84);
   border: 1px solid rgba(255, 226, 168, 0.35);
   border-radius: 8px;
   cursor: pointer;
