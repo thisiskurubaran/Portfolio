@@ -8,7 +8,7 @@ import { LANTERN_Y } from "./layout";
 
 // Just behind and above the lantern room, looking out over the water.
 const HOME = new Vector3(3, LANTERN_Y + 6, 14);
-const TARGET = new Vector3(-2, 0, -45);
+const TARGET = new Vector3(-2, 7, -45);
 
 export function CameraRig() {
   const camera = useThree((s) => s.camera);

@@ -7,6 +7,7 @@ import { CameraRig } from "./CameraRig";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
+import { Sky } from "./Sky";
 
 function useDevSeaParam() {
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function Experience() {
       <color attach="background" args={[NIGHT.horizon]} />
       <fog attach="fog" args={[NIGHT.horizon, NIGHT.fogNear, NIGHT.fogFar]} />
       <CameraRig />
+      <Sky />
       <Sea />
       <Island />
     </Canvas>

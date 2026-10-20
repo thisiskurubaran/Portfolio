@@ -12,4 +12,4 @@ export const NIGHT = {
   fogFar: 260,
 };
 
-export const MOON_DIR = new Vector3(-0.45, 0.35, -0.82).normalize();
+export const MOON_DIR = new Vector3(-0.22, 0.26, -0.94).normalize();
