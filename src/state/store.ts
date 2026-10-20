@@ -69,6 +69,10 @@ type SceneState = {
   rescuePhase: "idle" | "distress" | "guiding" | "docked";
   setRescuePhase: (p: "idle" | "distress" | "guiding" | "docked") => void;
 
+  /** F26: past midnight for the visitor, when the ghost ship sails. */
+  ghostHour: boolean;
+  setGhostHour: (v: boolean) => void;
+
   /** F11: from the date and hemisphere. */
   season: Season;
   setSeason: (s: Season) => void;
@@ -143,6 +147,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   rescuePhase: "idle",
   setRescuePhase: (rescuePhase) => set({ rescuePhase }),
+
+  ghostHour: false,
+  setGhostHour: (ghostHour) => set({ ghostHour }),
 
   season: "autumn",
   setSeason: (season) => set({ season }),

@@ -20,6 +20,7 @@ const UPDATE_EVERY_S = 1;
 // Sea state used while a dangerous real storm is near: lively, not dramatic.
 const REAL_STORM_SEA = 0.3;
 const NEAR_STORM_KM = 600;
+const GHOST_UNTIL_HOUR = 4;
 // Below this level the rocks around the island show (F06).
 export const LOW_TIDE = -0.45;
 // Seconds for colours to settle after a change, like the night switch.
@@ -134,6 +135,9 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
   if (devHour !== null) now.setHours(Math.floor(devHour), Math.round((devHour % 1) * 60), 0, 0);
 
   const store = useSceneStore.getState();
+  // F26: the small hours of the visitor's own night.
+  const ghost = now.getHours() < GHOST_UNTIL_HOUR;
+  if (ghost !== store.ghostHour) store.setGhostHour(ghost);
   const { conditions, forceNight, sunUp, setSunUp, seaOverride, seaState, setSeaState, precipOverride } = store;
   const season = devSeason ?? seasonAt(now, conditions?.location?.lat ?? null);
   if (season !== store.season) store.setSeason(season);

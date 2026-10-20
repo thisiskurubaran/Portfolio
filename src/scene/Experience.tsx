@@ -11,6 +11,7 @@ import { StormLabels } from "@/ui/StormLabels";
 import { FindLabel } from "@/ui/FindLabel";
 import { lowTideFind } from "@/content/hidden";
 import { wrecks } from "@/content/wrecks";
+import { ghostShip } from "@/content/ghost";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
@@ -20,6 +21,7 @@ import { CameraRig } from "./CameraRig";
 import { ConditionsLoader } from "./ConditionsLoader";
 import { EnvController } from "./EnvController";
 import { FpsProbe } from "./FpsProbe";
+import { GhostShip } from "./GhostShip";
 import { Lightning } from "./Lightning";
 import { Precipitation } from "./Precipitation";
 import { Island } from "./Island";
@@ -61,6 +63,11 @@ function useDevHooks() {
   }, []);
 }
 
+function GhostLabel() {
+  const active = useSceneStore((s) => s.ghostHour);
+  return <FindLabel id={ghostShip.id} title={ghostShip.title} tag={ghostShip.tag} active={active} />;
+}
+
 function LowTideLabel() {
   const low = useSceneStore((s) => !!s.tide?.low);
   return <FindLabel id={LOW_TIDE_ID} title={lowTideFind.tag} tag={lowTideFind.title} active={low} />;
@@ -93,6 +100,7 @@ export default function Experience() {
         <Wrecks />
         <Ships />
         <RescueBoat />
+        <GhostShip />
         <Beam />
         <Precipitation />
         <Lightning />
@@ -105,6 +113,7 @@ export default function Experience() {
       <RescueLabel />
       <StormLabels />
       <LowTideLabel />
+      <GhostLabel />
       {/* Always tab stops: focusing one tilts the beam down onto it and clears the water. */}
       {wrecks.map((w) => (
         <FindLabel key={w.id} id={w.id} title={w.title} tag={w.tag} active />

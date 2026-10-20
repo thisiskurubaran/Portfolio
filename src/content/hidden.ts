@@ -1,3 +1,4 @@
+import { ghostShip } from "./ghost";
 import type { VesselEntry } from "./types";
 
 // Entries that are not on the water from the start. They are found by playing,
@@ -26,4 +27,4 @@ export const lowTideFind: VesselEntry = {
   media: [],
 };
 
-export const hiddenEntries: VesselEntry[] = [rescueReward, lowTideFind];
+export const hiddenEntries: VesselEntry[] = [rescueReward, lowTideFind, ghostShip];
