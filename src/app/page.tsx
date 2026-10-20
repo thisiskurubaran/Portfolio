@@ -2,6 +2,7 @@ import { SceneLoader } from "@/scene/SceneLoader";
 import { GyroToggle } from "@/ui/GyroToggle";
 import { Panel } from "@/ui/Panel";
 import { PlainLink } from "@/ui/PlainLink";
+import { PlainOffer } from "@/ui/PlainOffer";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <h1 className="sr-only">Lighthouse portfolio</h1>
       <SceneLoader />
       <Panel />
+      <PlainOffer />
       <div className="corner">
         <GyroToggle />
       </div>

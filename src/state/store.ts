@@ -23,6 +23,11 @@ type SceneState = {
   panelOpen: boolean;
   select: (id: string) => void;
   closePanel: () => void;
+
+  /** Why the plain site is being suggested, if it is. */
+  plainOffer: "no-webgl" | "slow" | null;
+  offerPlain: (reason: "no-webgl" | "slow") => void;
+  dismissPlainOffer: () => void;
 };
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -46,4 +51,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
   panelOpen: false,
   select: (id) => set({ selectedId: id, panelOpen: true }),
   closePanel: () => set({ panelOpen: false }),
+
+  plainOffer: null,
+  // A missing WebGL context outranks a slow device, so it is never replaced.
+  offerPlain: (reason) => set((s) => (s.plainOffer === "no-webgl" ? s : { plainOffer: reason })),
+  dismissPlainOffer: () => set({ plainOffer: null }),
 }));

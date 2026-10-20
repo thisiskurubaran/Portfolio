@@ -33,4 +33,10 @@ export const ui = {
     full: "Skip to plain site",
     short: "Plain site",
   },
+  plainOffer: {
+    noWebgl: "This browser cannot draw the 3D scene. The plain site has everything that is on the water.",
+    slow: "This device seems to be working hard to draw the scene. The plain site has everything and loads fast.",
+    open: "Open plain site",
+    keep: "Keep the scene",
+  },
 };

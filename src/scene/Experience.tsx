@@ -10,6 +10,7 @@ import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
 import { shipRuntime } from "./ships/shipRuntime";
 import { CameraRig } from "./CameraRig";
+import { FpsProbe } from "./FpsProbe";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
@@ -57,6 +58,7 @@ export default function Experience() {
         {/* Last, so it follows anything that moved this frame. */}
         <CameraRig />
         <ShipTracker />
+        <FpsProbe />
       </Canvas>
       <ShipLabels />
     </>
