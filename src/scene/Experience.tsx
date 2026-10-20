@@ -11,6 +11,7 @@ import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
+import { Ships } from "./ships/Ships";
 
 function useDevHooks() {
   useEffect(() => {
@@ -39,11 +40,13 @@ export default function Experience() {
       <color attach="background" args={[NIGHT.horizon]} />
       <fog attach="fog" args={[NIGHT.horizon, NIGHT.fogNear, NIGHT.fogFar]} />
       <BeamController />
-      <CameraRig />
       <Sky />
       <Sea />
       <Island />
+      <Ships />
       <Beam />
+      {/* Last, so it follows anything that moved this frame. */}
+      <CameraRig />
     </Canvas>
   );
 }

@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { PlaneGeometry, ShaderMaterial, Vector2 } from "three";
+import { PlaneGeometry } from "three";
 import vertexShader from "@/shaders/water.vert";
 import fragmentShader from "@/shaders/water.frag";
 import { useSceneStore } from "@/state/store";
 import { BEAM, beamRuntime } from "./beamState";
 import { MOON_DIR, NIGHT } from "./palette";
+import { seaRuntime } from "./seaRuntime";
 
 const SIZE = 600;
 // Large quads keep the faceted look and the vertex count low.
@@ -20,12 +21,11 @@ export function Sea() {
     return g;
   }, []);
 
-  const materialRef = useRef<ShaderMaterial>(null);
   const uniforms = useMemo(
     () => ({
-      uTime: { value: 0 },
-      uSeaState: { value: useSceneStore.getState().seaState },
-      uWindDir: { value: new Vector2(0.3, -1) },
+      uTime: seaRuntime.time,
+      uSeaState: seaRuntime.seaState,
+      uWindDir: seaRuntime.windDir,
       uDeep: { value: NIGHT.seaDeep },
       uCrest: { value: NIGHT.seaCrest },
       uMoonDir: { value: MOON_DIR },
@@ -45,19 +45,15 @@ export function Sea() {
   );
 
   useFrame((_, delta) => {
-    const material = materialRef.current;
-    if (!material) return;
-    const u = material.uniforms;
-    u.uTime!.value += delta;
+    seaRuntime.time.value += delta;
     // Ease toward the target so weather changes roll in instead of snapping.
     const target = useSceneStore.getState().seaState;
-    u.uSeaState!.value += (target - u.uSeaState!.value) * Math.min(1, delta * 0.8);
+    seaRuntime.seaState.value += (target - seaRuntime.seaState.value) * Math.min(1, delta * 0.8);
   });
 
   return (
     <mesh geometry={geometry} frustumCulled={false}>
       <shaderMaterial
-        ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}
