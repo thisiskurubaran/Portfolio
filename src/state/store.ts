@@ -43,6 +43,13 @@ type SceneState = {
   conditions: Conditions | null;
   setConditions: (c: Conditions | null) => void;
 
+  /** F06: which way the tide is going and whether it is an estimate. Level lives in seaRuntime. */
+  tide: { rising: boolean; estimated: boolean; low: boolean } | null;
+  setTide: (t: { rising: boolean; estimated: boolean; low: boolean }) => void;
+  /** Developer override for the tide level, -1 to 1. */
+  tideOverride: number | null;
+  setTideOverride: (v: number | null) => void;
+
   /** F05 and F34: live cyclones and recent quakes worldwide. */
   hazards: Hazards | null;
   setHazards: (h: Hazards | null) => void;
@@ -112,6 +119,16 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   conditions: null,
   setConditions: (conditions) => set({ conditions }),
+
+  tide: null,
+  setTide: (tide) =>
+    set((s) =>
+      s.tide && s.tide.rising === tide.rising && s.tide.estimated === tide.estimated && s.tide.low === tide.low
+        ? s
+        : { tide },
+    ),
+  tideOverride: null,
+  setTideOverride: (tideOverride) => set({ tideOverride }),
 
   hazards: null,
   setHazards: (hazards) => set({ hazards }),

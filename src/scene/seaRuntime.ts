@@ -9,7 +9,12 @@ export const seaRuntime = {
   /** Eased toward the store's seaState so weather changes roll in. */
   seaState: { value: 0.25 },
   windDir: { value: new Vector2(0.3, -1).normalize() },
+  /** F06: -1 low water to 1 high water, eased. */
+  tide: { value: 0 },
 };
+
+/** Metres the sea rises or falls at the extremes of the tide. */
+export const TIDE_RANGE = 0.9;
 
 // Keep in sync with the gerstner() calls in shaders/water.vert.
 // [rotation from wind, wavelength, amplitude share]
@@ -31,7 +36,7 @@ export function waveHeight(x: number, z: number): number {
   const t = seaRuntime.time.value;
   const w = seaRuntime.windDir.value;
 
-  let y = 0;
+  let y = seaRuntime.tide.value * TIDE_RANGE;
   for (const [rot, wavelength, share] of WAVES) {
     const c = Math.cos(rot);
     const sn = Math.sin(rot);

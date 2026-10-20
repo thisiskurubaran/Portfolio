@@ -98,4 +98,10 @@ export const ui = {
     report: "Official report",
     dismiss: "Dismiss",
   },
+  tide: {
+    rising: "Tide rising",
+    falling: "Tide falling",
+    estimated: "estimated",
+    estimatedHint: "No tide data covers this coast, so the tide is estimated from the moon.",
+  },
 };

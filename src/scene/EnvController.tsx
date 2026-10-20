@@ -8,6 +8,7 @@ import { CLEAR_NIGHT, weatherToScene, type SceneWeather } from "@/weather/mappin
 import { distanceKm, nearbyQuake } from "@/weather/hazards";
 import { isDangerous, PRESETS } from "@/weather/presets";
 import { moonPhase } from "@/weather/moon";
+import { estimateTide, tideFromData } from "@/weather/tide";
 import { SEASON_EFFECTS, seasonAt, type Season } from "@/weather/season";
 import { sunFromClock, sunPosition } from "@/weather/sun";
 import { compassDirection as directionFor } from "./compass";
@@ -19,6 +20,8 @@ const UPDATE_EVERY_S = 1;
 // Sea state used while a dangerous real storm is near: lively, not dramatic.
 const REAL_STORM_SEA = 0.3;
 const NEAR_STORM_KM = 600;
+// Below this level the rocks around the island show (F06).
+export const LOW_TIDE = -0.45;
 // Seconds for colours to settle after a change, like the night switch.
 const EASE = 1.5;
 
@@ -51,6 +54,7 @@ const target = {
   rain: 0,
   snow: 0,
   storm: 0,
+  tide: 0,
   lightDir: new Vector3(),
   sunDir: new Vector3(),
   glow: 0,
@@ -108,6 +112,8 @@ export function EnvController() {
     envRuntime.rain.value += (target.rain - envRuntime.rain.value) * k;
     envRuntime.snow.value += (target.snow - envRuntime.snow.value) * k;
     envRuntime.storm.value += (target.storm - envRuntime.storm.value) * k;
+    // Tides move slowly in life; ease gently so a page load does not show a jump.
+    seaRuntime.tide.value += (target.tide - seaRuntime.tide.value) * k * 0.5;
     // Wind swings slowly so waves turn rather than snap.
     const w = seaRuntime.windDir.value;
     w.set(w.x + (target.windDir.x - w.x) * k * 0.3, w.y + (target.windDir.z - w.y) * k * 0.3).normalize();
@@ -186,6 +192,14 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
 
   envRuntime.glowColor.value.copy(GLOW_COLOR);
   envRuntime.moonPhase.value = moonPhase(now);
+
+  // F06: real sea level when the marine model covers this coast, else the moon estimate.
+  const phase = envRuntime.moonPhase.value;
+  const tide =
+    (conditions?.tide ? tideFromData(conditions.tide, now.getTime()) : null) ??
+    estimateTide(now.getTime(), phase, conditions?.location?.lon ?? null);
+  target.tide = store.tideOverride ?? tide.level;
+  store.setTide({ rising: tide.rising, estimated: tide.estimated, low: target.tide < LOW_TIDE });
 
   const up = smoothstep(-4, 8, sun.elevation) > 0.5;
   if (up !== sunUp) setSunUp(up);

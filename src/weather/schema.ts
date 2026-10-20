@@ -37,6 +37,23 @@ export const weatherSchema = z.object({
   code: z.number().int().min(0).max(99),
 });
 
+/** Hourly sea level for the visitor's spot, if the marine model covers it. */
+export const tideSchema = z.object({
+  source: z.literal("open-meteo"),
+  points: z
+    .array(z.object({ t: z.number(), h: z.number().min(-20).max(20) }))
+    .min(6)
+    .max(96),
+});
+
+export const openMeteoMarine = z.object({
+  utc_offset_seconds: z.number(),
+  hourly: z.object({
+    time: z.array(z.string()),
+    sea_level_height_msl: z.array(z.number().nullable()),
+  }),
+});
+
 export const conditionsSchema = z.object({
   /** City level only: coordinates are rounded before they leave the server. */
   location: z
@@ -47,8 +64,10 @@ export const conditionsSchema = z.object({
     })
     .nullable(),
   weather: weatherSchema.nullable(),
+  tide: tideSchema.nullable(),
   source: z.enum(["open-meteo", "fallback"]),
 });
 
 export type Weather = z.infer<typeof weatherSchema>;
 export type Conditions = z.infer<typeof conditionsSchema>;
+export type TideData = z.infer<typeof tideSchema>;

@@ -1,5 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { conditionsSchema, openMeteoResponse, type Conditions, type Weather } from "@/weather/schema";
+import {
+  conditionsSchema,
+  openMeteoMarine,
+  openMeteoResponse,
+  tideSchema,
+  type Conditions,
+  type TideData,
+  type Weather,
+} from "@/weather/schema";
 
 export const runtime = "edge";
 
@@ -82,10 +90,37 @@ async function fetchWeather(lat: number, lon: number): Promise<Weather | null> {
   }
 }
 
+/**
+ * F06: sea level for the next day or so. Inland spots and coasts the marine
+ * model does not cover come back as nulls, and the client estimates instead.
+ */
+async function fetchTide(lat: number, lon: number): Promise<TideData | null> {
+  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=sea_level_height_msl&past_days=1&forecast_days=2&timezone=auto`;
+  try {
+    const res = await fetch(url, { next: { revalidate: CACHE_SECONDS }, signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return null;
+    const parsed = openMeteoMarine.safeParse(await res.json());
+    if (!parsed.success) return null;
+    const { time, sea_level_height_msl: heights } = parsed.data.hourly;
+    const offsetMs = parsed.data.utc_offset_seconds * 1000;
+    const points = time.flatMap((t, i) => {
+      const h = heights[i];
+      // Times are local to the spot; turn them into UTC instants.
+      return h === null || h === undefined ? [] : [{ t: Date.parse(`${t}Z`) - offsetMs, h }];
+    });
+    const ok = tideSchema.safeParse({ source: "open-meteo", points: points.slice(0, 96) });
+    return ok.success ? ok.data : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const location = readLocation(request);
-  const weather = location ? await fetchWeather(location.lat, location.lon) : null;
-  const body: Conditions = { location, weather, source: weather ? "open-meteo" : "fallback" };
+  const [weather, tide] = location
+    ? await Promise.all([fetchWeather(location.lat, location.lon), fetchTide(location.lat, location.lon)])
+    : [null, null];
+  const body: Conditions = { location, weather, tide, source: weather ? "open-meteo" : "fallback" };
 
   return NextResponse.json(body, {
     // The answer depends on the visitor's location, so shared caches must not keep it.

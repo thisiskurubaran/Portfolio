@@ -42,6 +42,11 @@ function useDevHooks() {
     // ?preset=major to try a storm before the barometer exists.
     const presetParam = new URLSearchParams(window.location.search).get("preset");
     if (presetParam && presetParam in PRESETS) useSceneStore.getState().setWeatherPreset(presetParam as PresetId);
+    // ?tide=-1 for low water, 1 for high.
+    const tideParam = Number(new URLSearchParams(window.location.search).get("tide"));
+    if (new URLSearchParams(window.location.search).has("tide") && Number.isFinite(tideParam)) {
+      useSceneStore.getState().setTideOverride(Math.max(-1, Math.min(1, tideParam)));
+    }
     // ?rain=0.8 or ?snow=0.8 to check precipitation without waiting for weather.
     const q = new URLSearchParams(window.location.search);
     for (const key of ["rain", "snow"] as const) {

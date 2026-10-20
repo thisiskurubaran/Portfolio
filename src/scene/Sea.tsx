@@ -1,15 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { PlaneGeometry, ShaderMaterial } from "three";
+import { Mesh, PlaneGeometry, ShaderMaterial } from "three";
 import vertexShader from "@/shaders/water.vert";
 import fragmentShader from "@/shaders/water.frag";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { isHarborMode, useSceneStore } from "@/state/store";
 import { BEAM, beamRuntime } from "./beamState";
 import { envRuntime } from "./envRuntime";
-import { seaRuntime } from "./seaRuntime";
+import { seaRuntime, TIDE_RANGE } from "./seaRuntime";
 
 const SIZE = 600;
 // Large quads keep the faceted look and the vertex count low.
@@ -21,6 +21,7 @@ const HARBOR_SEA = 0.25;
 
 export function Sea() {
   const reducedMotion = useReducedMotion();
+  const mesh = useRef<Mesh>(null);
   const geometry = useMemo(() => {
     const g = new PlaneGeometry(SIZE, SIZE, SEGMENTS, SEGMENTS);
     g.rotateX(-Math.PI / 2);
@@ -69,9 +70,11 @@ export function Sea() {
     const calm = isHarborMode(state) && !state.weatherPreset;
     const target = calm ? Math.min(state.seaState, HARBOR_SEA) : state.seaState;
     seaRuntime.seaState.value += (target - seaRuntime.seaState.value) * Math.min(1, delta * 0.8);
+    // F06: the whole sea rises and falls with the tide.
+    if (mesh.current) mesh.current.position.y = seaRuntime.tide.value * TIDE_RANGE;
   });
 
   return (
-    <mesh geometry={geometry} material={material} frustumCulled={false} />
+    <mesh ref={mesh} geometry={geometry} material={material} frustumCulled={false} />
   );
 }

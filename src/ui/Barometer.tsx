@@ -31,6 +31,7 @@ export function Barometer() {
   const preset = useSceneStore((s) => s.weatherPreset);
   const conditions = useSceneStore((s) => s.conditions);
   const calm = useSceneStore((s) => s.calmForRealStorm);
+  const tide = useSceneStore((s) => s.tide);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -97,6 +98,12 @@ export function Barometer() {
             </label>
           ))}
         </fieldset>
+        {tide && (
+          <p className="barometer-tide" title={tide.estimated ? ui.tide.estimatedHint : undefined}>
+            {tide.rising ? ui.tide.rising : ui.tide.falling}
+            {tide.estimated && ` (${ui.tide.estimated})`}
+          </p>
+        )}
         <p className="barometer-resets">{ui.barometer.resets}</p>
       </div>
     </div>

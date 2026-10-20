@@ -520,3 +520,8 @@ body {
   outline: 2px solid #ffe2a8;
   outline-offset: 2px;
 }
+
+.barometer-tide {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
