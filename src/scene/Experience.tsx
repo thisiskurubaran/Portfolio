@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect } from "react";
 import { useSceneStore } from "@/state/store";
+import { BeamController } from "./BeamController";
 import { CameraRig } from "./CameraRig";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
@@ -32,6 +33,7 @@ export default function Experience() {
     >
       <color attach="background" args={[NIGHT.horizon]} />
       <fog attach="fog" args={[NIGHT.horizon, NIGHT.fogNear, NIGHT.fogFar]} />
+      <BeamController />
       <CameraRig />
       <Sky />
       <Sea />
