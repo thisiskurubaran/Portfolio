@@ -126,7 +126,8 @@ function computeTarget(devHour: number | null) {
   const now = new Date();
   if (devHour !== null) now.setHours(Math.floor(devHour), Math.round((devHour % 1) * 60), 0, 0);
 
-  const { conditions, forceNight, sunUp, setSunUp, seaOverride, seaState, setSeaState } = useSceneStore.getState();
+  const { conditions, forceNight, sunUp, setSunUp, seaOverride, seaState, setSeaState, precipOverride } =
+    useSceneStore.getState();
   const weather = conditions?.weather ? weatherToScene(conditions.weather) : CLEAR_NIGHT;
   const loc = conditions?.location;
   const sun = loc ? sunPosition(now, loc.lat, loc.lon) : sunFromClock(now);
@@ -156,8 +157,8 @@ function computeTarget(devHour: number | null) {
 
   target.fogNear = FOG.near + (2 - FOG.near) * weather.fog;
   target.fogFar = FOG.far + (55 - FOG.far) * weather.fog;
-  target.rain = weather.rain;
-  target.snow = weather.snow;
+  target.rain = precipOverride.rain ?? weather.rain;
+  target.snow = precipOverride.snow ?? weather.snow;
   directionFor(weather.waveBearing, 0, target.windDir);
 
   const sea = seaOverride ?? weather.seaState;

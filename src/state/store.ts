@@ -32,6 +32,10 @@ type SceneState = {
   focusedId: string | null;
   focusShip: (id: string | null) => void;
 
+  /** Developer override for rain and snow intensity, 0 to 1. */
+  precipOverride: { rain: number | null; snow: number | null };
+  setPrecipOverride: (kind: "rain" | "snow", value: number | null) => void;
+
   /** Location and weather from /api/conditions. Null until it answers, or if it fails. */
   conditions: Conditions | null;
   setConditions: (c: Conditions | null) => void;
@@ -75,6 +79,10 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   focusedId: null,
   focusShip: (id) => set({ focusedId: id }),
+
+  precipOverride: { rain: null, snow: null },
+  setPrecipOverride: (kind, value) =>
+    set((s) => ({ precipOverride: { ...s.precipOverride, [kind]: value === null ? null : clamp01(value) } })),
 
   conditions: null,
   setConditions: (conditions) => set({ conditions }),

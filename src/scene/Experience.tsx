@@ -13,6 +13,7 @@ import { CameraRig } from "./CameraRig";
 import { ConditionsLoader } from "./ConditionsLoader";
 import { EnvController } from "./EnvController";
 import { FpsProbe } from "./FpsProbe";
+import { Precipitation } from "./Precipitation";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
@@ -30,6 +31,12 @@ function useDevHooks() {
     const raw = new URLSearchParams(window.location.search).get("sea");
     if (raw !== null && !Number.isNaN(Number(raw))) {
       useSceneStore.getState().setSeaOverride(Number(raw));
+    }
+    // ?rain=0.8 or ?snow=0.8 to check precipitation without waiting for weather.
+    const q = new URLSearchParams(window.location.search);
+    for (const key of ["rain", "snow"] as const) {
+      const v = Number(q.get(key));
+      if (q.has(key) && Number.isFinite(v)) useSceneStore.getState().setPrecipOverride(key, v);
     }
   }, []);
 }
@@ -58,6 +65,7 @@ export default function Experience() {
         <Island />
         <Ships />
         <Beam />
+        <Precipitation />
         {/* Last, so it follows anything that moved this frame. */}
         <CameraRig />
         <ShipTracker />
