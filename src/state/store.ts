@@ -15,9 +15,14 @@ type SceneState = {
   setBeamTarget: (yaw: number, tilt: number) => void;
   nudgeBeam: (dYaw: number, dTilt: number) => void;
 
-  /** Entry id of the open ship, or null when no panel is open. */
+  /**
+   * Last ship opened. Kept after the panel closes so the panel can animate
+   * out with its content still in place.
+   */
   selectedId: string | null;
-  select: (id: string | null) => void;
+  panelOpen: boolean;
+  select: (id: string) => void;
+  closePanel: () => void;
 };
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -38,5 +43,7 @@ export const useSceneStore = create<SceneState>()((set) => ({
     })),
 
   selectedId: null,
-  select: (id) => set({ selectedId: id }),
+  panelOpen: false,
+  select: (id) => set({ selectedId: id, panelOpen: true }),
+  closePanel: () => set({ panelOpen: false }),
 }));

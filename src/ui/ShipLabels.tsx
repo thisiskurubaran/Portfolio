@@ -17,9 +17,11 @@ export function ShipLabels() {
   useEffect(() => {
     let frame = 0;
     const tick = () => {
+      // Labels step aside while a panel is open; the panel has the same text.
+      const panelOpen = useSceneStore.getState().panelOpen;
       for (const [id, el] of refs.current) {
         const s = shipRuntime.get(id);
-        const reveal = s && s.onScreen ? s.reveal : 0;
+        const reveal = s && s.onScreen && !panelOpen ? s.reveal : 0;
         const shown = reveal > 0.4;
         el.style.opacity = reveal.toFixed(3);
         el.style.transform = `translate(${s?.sx ?? 0}px, ${s?.sy ?? 0}px) translate(-50%, -100%)`;

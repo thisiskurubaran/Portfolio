@@ -5,4 +5,16 @@ export const ui = {
     hint: "Steer the beam by tilting your phone",
     denied: "Motion access was not allowed",
   },
+  panel: {
+    close: "Close",
+    role: "Role",
+    stack: "Built with",
+    links: "Links",
+    kinds: {
+      fishing: "Experiment",
+      cargo: "Product",
+      sailboat: "About",
+      rowboat: "Contact",
+    },
+  },
 };

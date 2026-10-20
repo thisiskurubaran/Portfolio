@@ -65,6 +65,7 @@ function Ship({ entry, index, material }: { entry: Entry; index: number; materia
     );
 
     const state = shipState(entry.id);
+    state.length = SHIP_LENGTH[entry.kind];
     state.anchor.set(p.x, g.position.y + SHIP_HEIGHT[entry.kind] + 1, p.z);
     toShip.set(p.x, g.position.y + 1, p.z);
     const t = clock.elapsedTime;

@@ -107,3 +107,126 @@ body {
   font-size: 12px;
   opacity: 0.8;
 }
+
+/* Text panel for an open ship. Side panel on wide screens, bottom sheet on phones.
+   Starts hidden; GSAP slides it in and out. */
+.panel {
+  position: fixed;
+  z-index: 10;
+  visibility: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  background: rgba(8, 12, 22, 0.94);
+  padding: 20px 20px 28px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 55vh;
+  border-top: 1px solid rgba(255, 226, 168, 0.25);
+  border-radius: 16px 16px 0 0;
+}
+
+@media (min-width: 768px) {
+  .panel {
+    left: auto;
+    top: 0;
+    width: 420px;
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid rgba(255, 226, 168, 0.25);
+    border-radius: 0;
+    padding: 28px;
+  }
+}
+
+.panel h2 {
+  margin: 4px 0 12px;
+  font-size: 24px;
+  line-height: 1.2;
+  outline: none;
+}
+
+.panel-kind {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffe2a8;
+}
+
+.panel-summary {
+  margin: 0 0 16px;
+  line-height: 1.55;
+}
+
+.panel-meta {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.panel-meta > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #b9c2d0;
+}
+
+.panel-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-stack li {
+  padding: 3px 8px;
+  border: 1px solid rgba(232, 237, 245, 0.25);
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.panel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-links a {
+  color: #ffe2a8;
+}
+
+.panel-media {
+  display: grid;
+  gap: 10px;
+}
+
+.panel-media img,
+.panel-media video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.panel-close {
+  float: right;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid rgba(232, 237, 245, 0.3);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.panel-close:focus-visible,
+.panel-links a:focus-visible {
+  outline: 2px solid #ffe2a8;
+  outline-offset: 2px;
+}

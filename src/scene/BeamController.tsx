@@ -2,7 +2,8 @@
 
 import { useFrame } from "@react-three/fiber";
 import { useSceneStore } from "@/state/store";
-import { BEAM, beamRuntime, directionFrom, tiltToPitch } from "./beamState";
+import { aimAt, BEAM, beamRuntime, directionFrom, tiltToPitch } from "./beamState";
+import { shipRuntime } from "./ships/shipRuntime";
 import { useBeamInput } from "./useBeamInput";
 
 const KEY_YAW_SPEED = 1.1;
@@ -21,6 +22,15 @@ export function BeamController() {
     const dYaw = (Number(k.left) - Number(k.right)) * KEY_YAW_SPEED * delta;
     const dTilt = (Number(k.up) - Number(k.down)) * KEY_TILT_SPEED * delta;
     if (dYaw || dTilt) useSceneStore.getState().nudgeBeam(dYaw, dTilt);
+
+    // Hold the open ship in the light while it drifts, so it stays readable
+    // behind the panel.
+    const { panelOpen, selectedId } = useSceneStore.getState();
+    const open = panelOpen && selectedId ? shipRuntime.get(selectedId) : undefined;
+    if (open) {
+      const aim = aimAt(open.anchor.x, open.anchor.z);
+      useSceneStore.getState().setBeamTarget(aim.yaw, aim.tilt);
+    }
 
     const target = useSceneStore.getState().beamTarget;
     const t = 1 - Math.exp(-EASE * delta);
