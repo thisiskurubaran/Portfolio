@@ -1,6 +1,6 @@
 {
   "name": "lighthouse-portfolio",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "A developer portfolio you play: keep a lighthouse, sweep the beam, find projects on ships.",
   "scripts": {
@@ -20,6 +20,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "three": "0.186.1",
+    "zod": "4.6.7",
     "zustand": "5.0.15"
   },
   "devDependencies": {
