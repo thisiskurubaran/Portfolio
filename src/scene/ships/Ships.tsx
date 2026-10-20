@@ -112,6 +112,7 @@ export function Ships() {
         uniforms: {
           uLightDir: envRuntime.lightDir,
           uDaylight: envRuntime.daylight,
+          uFlash: envRuntime.flash,
           uBeamOrigin: { value: beamRuntime.origin },
           uBeamDir: { value: beamRuntime.dir },
           // Wider than the drawn cone: a ship at the edge of the beam should still catch light.

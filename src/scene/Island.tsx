@@ -109,7 +109,7 @@ export function Island() {
 
   useFrame(() => {
     const d = envRuntime.daylight.value;
-    bodyRef.current?.color.setScalar(1 + d * DAY_BOOST);
+    bodyRef.current?.color.setScalar(1 + d * DAY_BOOST + envRuntime.flash.value * 1.5);
     // The lamp is off by day; the beam goes with it.
     lampRef.current?.color.lerpColors(LAMP_ON, LAMP_OFF, d);
   });

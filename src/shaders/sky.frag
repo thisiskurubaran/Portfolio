@@ -6,6 +6,7 @@ uniform float uMoonVisibility;
 uniform vec3 uSunDir;
 uniform vec3 uGlowColor;
 uniform float uGlow;
+uniform float uFlash;
 
 varying vec3 vDir;
 
@@ -30,6 +31,9 @@ void main() {
   float up = smoothstep(-0.03, 0.02, uSunDir.y);
   color += vec3(1.0, 0.95, 0.85) * smoothstep(0.9993, 0.9996, sd) * up * 2.5;
   color += vec3(1.0, 0.85, 0.6) * pow(max(sd, 0.0), 180.0) * up * 0.35;
+
+  // Lightning lights the cloud base, strongest overhead.
+  color += vec3(0.5, 0.55, 0.7) * uFlash * (0.35 + 0.65 * h);
 
   gl_FragColor = vec4(color, 1.0);
   #include <colorspace_fragment>

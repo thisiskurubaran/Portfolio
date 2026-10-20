@@ -1,5 +1,6 @@
 uniform vec3 uLightDir;
 uniform float uDaylight;
+uniform float uFlash;
 uniform vec3 uBeamOrigin;
 uniform vec3 uBeamDir;
 uniform float uBeamCos;
@@ -23,7 +24,7 @@ void main() {
   // Linear values: sRGB output lifts the night term a lot, so it stays tiny.
   float night = 0.01 + 0.025 * abs(dot(n, uLightDir));
   float day = 0.35 + 0.65 * max(dot(n, uLightDir), 0.0);
-  float ambient = mix(night, day, uDaylight);
+  float ambient = mix(night, day, uDaylight) + uFlash * 0.35;
 
   vec3 toFrag = vWorldPos - uBeamOrigin;
   float d = length(toFrag);

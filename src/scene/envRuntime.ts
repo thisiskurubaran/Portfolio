@@ -32,4 +32,6 @@ export const envRuntime = {
   storm: { value: 0 },
   /** Lightning strikes per minute right now. */
   lightningRate: { value: 0 },
+  /** Brightness of the current lightning flash, 0 to 1. */
+  flash: { value: 0 },
 };

@@ -9,11 +9,13 @@ import { ShipLabels } from "@/ui/ShipLabels";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
+import { envRuntime } from "./envRuntime";
 import { shipRuntime } from "./ships/shipRuntime";
 import { CameraRig } from "./CameraRig";
 import { ConditionsLoader } from "./ConditionsLoader";
 import { EnvController } from "./EnvController";
 import { FpsProbe } from "./FpsProbe";
+import { Lightning } from "./Lightning";
 import { Precipitation } from "./Precipitation";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
@@ -26,7 +28,7 @@ function useDevHooks() {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
     // Handle for poking at the scene from the console while developing.
-    Object.assign(window, { __scene: { store: useSceneStore, beam: beamRuntime, ships: shipRuntime, aimAt, gsap } });
+    Object.assign(window, { __scene: { store: useSceneStore, beam: beamRuntime, ships: shipRuntime, aimAt, gsap, env: envRuntime } });
 
     // ?sea=0.8 to check wave presets while the barometer UI does not exist yet.
     const raw = new URLSearchParams(window.location.search).get("sea");
@@ -70,6 +72,7 @@ export default function Experience() {
         <Ships />
         <Beam />
         <Precipitation />
+        <Lightning />
         {/* Last, so it follows anything that moved this frame. */}
         <CameraRig />
         <ShipTracker />

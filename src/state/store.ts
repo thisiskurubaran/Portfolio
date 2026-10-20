@@ -49,6 +49,10 @@ type SceneState = {
   calmForRealStorm: boolean;
   setCalmForRealStorm: (v: boolean) => void;
 
+  /** F03: most recent thunderclap, for the sound layer. Strength 0 to 1. */
+  lastThunder: { at: number; strength: number } | null;
+  thunder: (strength: number) => void;
+
   /** F11: from the date and hemisphere. */
   season: Season;
   setSeason: (s: Season) => void;
@@ -104,6 +108,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
   setWeatherPreset: (weatherPreset) => set({ weatherPreset }),
   calmForRealStorm: false,
   setCalmForRealStorm: (calmForRealStorm) => set({ calmForRealStorm }),
+
+  lastThunder: null,
+  thunder: (strength) => set({ lastThunder: { at: performance.now(), strength } }),
 
   season: "autumn",
   setSeason: (season) => set({ season }),

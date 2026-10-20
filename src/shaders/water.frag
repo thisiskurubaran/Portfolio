@@ -10,6 +10,7 @@ uniform vec3 uBeamDir;
 uniform vec3 uBeamColor;
 uniform float uBeamCos;
 uniform float uBeamIntensity;
+uniform float uFlash;
 
 varying vec3 vWorldPos;
 varying float vCrest;
@@ -41,6 +42,8 @@ void main() {
   float beamSpec = pow(max(dot(n, normalize(viewDir - L)), 0.0), 40.0);
   float beam = cone * atten * uBeamIntensity;
   color += uBeamColor * beam * (facingBeam * 0.55 + beamSpec * 0.9);
+
+  color += vec3(0.22, 0.25, 0.32) * uFlash * (0.3 + 0.7 * n.y);
 
   float dist = length(cameraPosition - vWorldPos);
   float fog = smoothstep(uFogNear, uFogFar, dist);

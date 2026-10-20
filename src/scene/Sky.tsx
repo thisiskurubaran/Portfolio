@@ -68,6 +68,7 @@ function makeMaterials() {
         uSunDir: envRuntime.sunDir,
         uGlowColor: envRuntime.glowColor,
         uGlow: envRuntime.glow,
+        uFlash: envRuntime.flash,
       },
     }),
     stars: new ShaderMaterial({

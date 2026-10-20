@@ -54,6 +54,7 @@ export function Sea() {
           // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
           uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.3) },
           uBeamIntensity: beamRuntime.intensity,
+          uFlash: envRuntime.flash,
         },
       }),
     [],
