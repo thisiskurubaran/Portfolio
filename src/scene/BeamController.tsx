@@ -2,7 +2,7 @@
 
 import { useFrame } from "@react-three/fiber";
 import { useSceneStore } from "@/state/store";
-import { beamRuntime, directionFrom, tiltToPitch } from "./beam";
+import { BEAM, beamRuntime, directionFrom, tiltToPitch } from "./beamState";
 import { useBeamInput } from "./useBeamInput";
 
 const KEY_YAW_SPEED = 1.1;
@@ -27,6 +27,9 @@ export function BeamController() {
     beamRuntime.yaw += (target.yaw - beamRuntime.yaw) * t;
     beamRuntime.tilt += (target.tilt - beamRuntime.tilt) * t;
     directionFrom(beamRuntime.yaw, tiltToPitch(beamRuntime.tilt), beamRuntime.dir);
+
+    const down = Math.max(-beamRuntime.dir.y, 0.001);
+    beamRuntime.hitAlong.value = Math.min(1, beamRuntime.origin.y / down / BEAM.length);
   });
 
   return null;

@@ -21,6 +21,8 @@ export const beamRuntime = {
   origin: new Vector3(0, LANTERN_Y, 0),
   dir: new Vector3(0, 0, -1),
   intensity: { value: 1 },
+  /** Fraction of the cone length where the axis meets the sea, 1 if it never does. */
+  hitAlong: { value: 1 },
 };
 
 export function tiltToPitch(tilt: number): number {

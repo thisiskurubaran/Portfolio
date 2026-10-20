@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect } from "react";
 import { useSceneStore } from "@/state/store";
+import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { CameraRig } from "./CameraRig";
 import { Island } from "./Island";
@@ -38,6 +39,7 @@ export default function Experience() {
       <Sky />
       <Sea />
       <Island />
+      <Beam />
     </Canvas>
   );
 }

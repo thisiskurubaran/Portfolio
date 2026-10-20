@@ -4,12 +4,12 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { Vector3 } from "three";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { beamRuntime } from "./beam";
+import { beamRuntime } from "./beamState";
 import { LANTERN_Y } from "./layout";
 
 // Just behind and above the lantern room, looking out over the water.
-const HOME = new Vector3(3, LANTERN_Y + 6, 14);
-const TARGET = new Vector3(-2, 7, -45);
+const HOME = new Vector3(4, LANTERN_Y + 9, 11);
+const TARGET = new Vector3(-1, 2, -45);
 // The camera turns part of the way with the beam, so the beam can reach the
 // edge of the view without the camera swinging the full arc.
 const FOLLOW = 0.6;
