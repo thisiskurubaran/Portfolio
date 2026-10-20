@@ -23,7 +23,7 @@ void main() {
   float nearFade = smoothstep(0.0, 0.025, vAlong);
   // Fade out before the water so the sea does not slice the cone into a disc.
   // The lit pool on the water carries the light from there.
-  float endFade = 1.0 - smoothstep(uHitAlong * 0.25, uHitAlong * 0.9, vAlong);
+  float endFade = 1.0 - smoothstep(uHitAlong * 0.15, uHitAlong * 0.75, vAlong);
   float waterFade = smoothstep(-0.5, 2.5, vWorldY) * endFade;
 
   float a = body * falloff * nearFade * waterFade * uIntensity * 0.35;

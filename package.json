@@ -1,6 +1,6 @@
 {
   "name": "lighthouse-portfolio",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "description": "A developer portfolio you play: keep a lighthouse, sweep the beam, find projects on ships.",
   "scripts": {

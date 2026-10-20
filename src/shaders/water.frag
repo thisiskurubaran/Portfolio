@@ -35,7 +35,7 @@ void main() {
   vec3 toFrag = vWorldPos - uBeamOrigin;
   float beamDist = length(toFrag);
   vec3 L = toFrag / beamDist;
-  float cone = smoothstep(uBeamCos, mix(uBeamCos, 1.0, 0.45), dot(L, uBeamDir));
+  float cone = smoothstep(uBeamCos, mix(uBeamCos, 1.0, 0.75), dot(L, uBeamDir));
   float atten = 1.0 / (1.0 + beamDist * beamDist * 0.0004);
   float facingBeam = 0.35 + 0.65 * max(dot(n, -L), 0.0);
   float beamSpec = pow(max(dot(n, normalize(viewDir - L)), 0.0), 40.0);

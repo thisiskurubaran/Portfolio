@@ -38,7 +38,7 @@ export function Sea() {
       uBeamDir: { value: beamRuntime.dir },
       uBeamColor: { value: BEAM.color },
       // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
-      uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.15) },
+      uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.3) },
       uBeamIntensity: beamRuntime.intensity,
     }),
     [],
