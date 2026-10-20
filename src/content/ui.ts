@@ -85,4 +85,10 @@ export const ui = {
     guiding: "Guiding it home",
     progress: "Rescue progress",
   },
+  liveStorms: {
+    nav: "Storms active around the world",
+    away: "km away",
+    advisory: "Official advisory",
+    source: "Source",
+  },
 };

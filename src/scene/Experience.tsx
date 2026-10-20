@@ -7,6 +7,7 @@ import { useSceneStore } from "@/state/store";
 import { PRESETS, type PresetId } from "@/weather/presets";
 import { RescueLabel } from "@/ui/RescueLabel";
 import { ShipLabels } from "@/ui/ShipLabels";
+import { StormLabels } from "@/ui/StormLabels";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
@@ -22,6 +23,7 @@ import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
+import { StormSwirls } from "./StormSwirls";
 import { RescueBoat } from "./ships/RescueBoat";
 import { Ships } from "./ships/Ships";
 import { ShipTracker } from "./ships/ShipTracker";
@@ -69,6 +71,7 @@ export default function Experience() {
         <EnvController />
         <BeamController />
         <Sky />
+        <StormSwirls />
         <Sea />
         <Island />
         <Ships />
@@ -83,6 +86,7 @@ export default function Experience() {
       </Canvas>
       <ShipLabels />
       <RescueLabel />
+      <StormLabels />
       <ConditionsLoader />
     </>
   );

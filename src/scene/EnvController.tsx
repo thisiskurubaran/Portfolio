@@ -5,18 +5,20 @@ import { useFrame } from "@react-three/fiber";
 import { Color, Fog, Vector3 } from "three";
 import { useSceneStore } from "@/state/store";
 import { CLEAR_NIGHT, weatherToScene, type SceneWeather } from "@/weather/mapping";
+import { distanceKm } from "@/weather/hazards";
 import { isDangerous, PRESETS } from "@/weather/presets";
 import { moonPhase } from "@/weather/moon";
 import { SEASON_EFFECTS, seasonAt, type Season } from "@/weather/season";
 import { sunFromClock, sunPosition } from "@/weather/sun";
+import { compassDirection as directionFor } from "./compass";
 import { envRuntime } from "./envRuntime";
 import { seaRuntime } from "./seaRuntime";
 import { FOG, GLOW_COLOR, MOON_DIR, PALETTES, SEASON_TINT, type SkyPalette } from "./palette";
 
-const RAD = Math.PI / 180;
 const UPDATE_EVERY_S = 1;
 // Sea state used while a dangerous real storm is near: lively, not dramatic.
 const REAL_STORM_SEA = 0.3;
+const NEAR_STORM_KM = 600;
 // Seconds for colours to settle after a change, like the night switch.
 const EASE = 1.5;
 
@@ -24,17 +26,6 @@ const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
-
-/**
- * World direction for a compass bearing. The camera looks along -Z, which is
- * treated as south, so a northern hemisphere sun crosses the view and sets to
- * the right.
- */
-function directionFor(azimuth: number, elevation: number, out: Vector3): Vector3 {
-  const a = azimuth * RAD;
-  const e = elevation * RAD;
-  return out.set(-Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e));
-}
 
 function mixPalette(a: SkyPalette, b: SkyPalette, t: number, out: SkyPalette) {
   out.horizon.lerpColors(a.horizon, b.horizon, t);
@@ -209,13 +200,15 @@ function pickWeather(store: ReturnType<typeof useSceneStore.getState>): {
 } {
   const chosen = store.weatherPreset ? PRESETS[store.weatherPreset] : null;
   const real = store.conditions?.weather ?? null;
-  const dangerous = !chosen && real !== null && isDangerous(real);
+  const loc = store.conditions?.location;
+  // F05 feeds the same rule: a live cyclone close by counts as dangerous weather.
+  const stormNear =
+    !!loc && !!store.hazards?.storms.some((s) => distanceKm(loc.lat, loc.lon, s.lat, s.lon) < NEAR_STORM_KM);
+  const dangerous = !chosen && ((real !== null && isDangerous(real)) || stormNear);
   if (dangerous !== store.calmForRealStorm) store.setCalmForRealStorm(dangerous);
 
   if (chosen) return { weather: chosen, storm: chosen.storm, lightning: chosen.lightning };
-  if (!real) return { weather: CLEAR_NIGHT, storm: 0, lightning: 0 };
-
-  const w = weatherToScene(real);
+  const w = real ? weatherToScene(real) : CLEAR_NIGHT;
   if (dangerous) {
     return { weather: { ...w, seaState: Math.min(w.seaState, REAL_STORM_SEA), rain: w.rain * 0.4, fog: w.fog * 0.5 }, storm: 0, lightning: 0 };
   }
