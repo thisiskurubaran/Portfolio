@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { PlaneGeometry } from "three";
+import { PlaneGeometry, ShaderMaterial } from "three";
 import vertexShader from "@/shaders/water.vert";
 import fragmentShader from "@/shaders/water.frag";
 import { useReducedMotion } from "@/lib/useReducedMotion";
@@ -27,27 +27,35 @@ export function Sea() {
     return g;
   }, []);
 
-  const uniforms = useMemo(
-    () => ({
-      uTime: seaRuntime.time,
-      uSeaState: seaRuntime.seaState,
-      uWindDir: seaRuntime.windDir,
-      // Sky and light follow the time of day through the shared env values.
-      uDeep: envRuntime.seaDeep,
-      uCrest: envRuntime.seaCrest,
-      uLightDir: envRuntime.lightDir,
-      uLightColor: envRuntime.lightColor,
-      uFogColor: envRuntime.horizon,
-      uFogNear: envRuntime.fogNear,
-      uFogFar: envRuntime.fogFar,
-      // Held by reference, so BeamController's per frame updates reach the shader.
-      uBeamOrigin: { value: beamRuntime.origin },
-      uBeamDir: { value: beamRuntime.dir },
-      uBeamColor: { value: BEAM.color },
-      // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
-      uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.3) },
-      uBeamIntensity: beamRuntime.intensity,
-    }),
+  // Built directly rather than through <shaderMaterial uniforms>: R3F copies
+  // each uniform it is handed, which would cut these shared values loose and
+  // freeze every number in them.
+  const material = useMemo(
+    () =>
+      new ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          uTime: seaRuntime.time,
+          uSeaState: seaRuntime.seaState,
+          uWindDir: seaRuntime.windDir,
+          // Sky and light follow the time of day through the shared env values.
+          uDeep: envRuntime.seaDeep,
+          uCrest: envRuntime.seaCrest,
+          uLightDir: envRuntime.lightDir,
+          uLightColor: envRuntime.lightColor,
+          uFogColor: envRuntime.horizon,
+          uFogNear: envRuntime.fogNear,
+          uFogFar: envRuntime.fogFar,
+          // Held by reference, so BeamController's per frame updates reach the shader.
+          uBeamOrigin: { value: beamRuntime.origin },
+          uBeamDir: { value: beamRuntime.dir },
+          uBeamColor: { value: BEAM.color },
+          // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
+          uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.3) },
+          uBeamIntensity: beamRuntime.intensity,
+        },
+      }),
     [],
   );
 
@@ -61,12 +69,6 @@ export function Sea() {
   });
 
   return (
-    <mesh geometry={geometry} frustumCulled={false}>
-      <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-      />
-    </mesh>
+    <mesh geometry={geometry} material={material} frustumCulled={false} />
   );
 }

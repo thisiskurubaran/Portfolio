@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { AdditiveBlending, BackSide, BufferAttribute, BufferGeometry, Color, ShaderMaterial } from "three";
 import skyVert from "@/shaders/sky.vert";
@@ -18,6 +18,11 @@ const DOME_RADIUS = 500;
 const STAR_RADIUS = 450;
 const STAR_COUNT = 1800;
 const MOON_DISTANCE = 420;
+
+// Star uniforms that change every frame. There is one sky, so module scope is fine.
+const starTime = { value: 0 };
+const starPixelRatio = { value: 1 };
+const starTwinkle = { value: 1 };
 
 function starGeometry(): BufferGeometry {
   const positions = new Float32Array(STAR_COUNT * 3);
@@ -45,86 +50,76 @@ function starGeometry(): BufferGeometry {
   return g;
 }
 
+// Materials are built directly, not through <shaderMaterial uniforms>, because
+// R3F copies each uniform it is given and the shared env values would freeze.
+function makeMaterials() {
+  return {
+    dome: new ShaderMaterial({
+      vertexShader: skyVert,
+      fragmentShader: skyFrag,
+      side: BackSide,
+      depthWrite: false,
+      uniforms: {
+        uHorizon: envRuntime.horizon,
+        uZenith: envRuntime.zenith,
+        uMoonDir: { value: MOON_DIR },
+        uMoonLight: { value: PALETTES.night.light },
+        uMoonVisibility: envRuntime.moonVisibility,
+        uSunDir: envRuntime.sunDir,
+        uGlowColor: envRuntime.glowColor,
+        uGlow: envRuntime.glow,
+      },
+    }),
+    stars: new ShaderMaterial({
+      vertexShader: starsVert,
+      fragmentShader: starsFrag,
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      uniforms: {
+        uTime: starTime,
+        uPixelRatio: starPixelRatio,
+        uTwinkle: starTwinkle,
+        // Fades with daylight and cloud cover.
+        uVisibility: envRuntime.starVisibility,
+      },
+    }),
+    moon: new ShaderMaterial({
+      vertexShader: moonVert,
+      fragmentShader: moonFrag,
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uPhase: envRuntime.moonPhase,
+        uVisibility: envRuntime.moonVisibility,
+        uColor: { value: new Color("#e6ecf5") },
+      },
+    }),
+  };
+}
+
 export function Sky() {
   const dpr = useThree((s) => s.viewport.dpr);
   const reducedMotion = useReducedMotion();
-  const starsRef = useRef<ShaderMaterial>(null);
-
   const stars = useMemo(() => starGeometry(), []);
-  const skyUniforms = useMemo(
-    () => ({
-      uHorizon: envRuntime.horizon,
-      uZenith: envRuntime.zenith,
-      uMoonDir: { value: MOON_DIR },
-      uMoonLight: { value: PALETTES.night.light },
-      uMoonVisibility: envRuntime.moonVisibility,
-      uSunDir: envRuntime.sunDir,
-      uGlowColor: envRuntime.glowColor,
-      uGlow: envRuntime.glow,
-    }),
-    [],
-  );
-  const starUniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uPixelRatio: { value: 1 },
-      uTwinkle: { value: 1 },
-      // Fades with daylight and cloud cover.
-      uVisibility: envRuntime.starVisibility,
-    }),
-    [],
-  );
-  const moonUniforms = useMemo(
-    () => ({
-      uPhase: envRuntime.moonPhase,
-      uVisibility: envRuntime.moonVisibility,
-      uColor: { value: new Color("#e6ecf5") },
-    }),
-    [],
-  );
+  const materials = useMemo(() => makeMaterials(), []);
 
   useFrame((_, delta) => {
-    const m = starsRef.current;
-    if (!m) return;
-    m.uniforms.uTime!.value += delta;
-    m.uniforms.uPixelRatio!.value = dpr;
-    m.uniforms.uTwinkle!.value = reducedMotion ? 0 : 1;
+    starTime.value += delta;
+    starPixelRatio.value = dpr;
+    starTwinkle.value = reducedMotion ? 0 : 1;
   });
 
   const moonPosition = MOON_DIR.clone().multiplyScalar(MOON_DISTANCE);
 
   return (
     <group renderOrder={-1}>
-      <mesh frustumCulled={false}>
+      <mesh material={materials.dome} frustumCulled={false}>
         <sphereGeometry args={[DOME_RADIUS, 32, 16]} />
-        <shaderMaterial
-          vertexShader={skyVert}
-          fragmentShader={skyFrag}
-          uniforms={skyUniforms}
-          side={BackSide}
-          depthWrite={false}
-        />
       </mesh>
-      <points geometry={stars} frustumCulled={false}>
-        <shaderMaterial
-          ref={starsRef}
-          vertexShader={starsVert}
-          fragmentShader={starsFrag}
-          uniforms={starUniforms}
-          transparent
-          depthWrite={false}
-          blending={AdditiveBlending}
-        />
-      </points>
-      <mesh position={moonPosition} onUpdate={(m) => m.lookAt(0, 0, 0)}>
+      <points geometry={stars} material={materials.stars} frustumCulled={false} />
+      <mesh position={moonPosition} material={materials.moon} onUpdate={(m) => m.lookAt(0, 0, 0)}>
         <circleGeometry args={[7, 32]} />
-        <shaderMaterial
-          vertexShader={moonVert}
-          fragmentShader={moonFrag}
-          uniforms={moonUniforms}
-          transparent
-          depthWrite={false}
-        />
       </mesh>
     </group>
   );

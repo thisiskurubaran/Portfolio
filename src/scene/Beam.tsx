@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { AdditiveBlending, ConeGeometry, DoubleSide, Group } from "three";
+import { AdditiveBlending, ConeGeometry, DoubleSide, Group, ShaderMaterial } from "three";
 import vertexShader from "@/shaders/beam.vert";
 import fragmentShader from "@/shaders/beam.frag";
 import { BEAM, beamRuntime, tiltToPitch } from "./beamState";
@@ -19,12 +19,23 @@ export function Beam() {
     return g;
   }, []);
 
-  const uniforms = useMemo(
-    () => ({
-      uColor: { value: BEAM.color },
-      uIntensity: beamRuntime.intensity,
-      uHitAlong: beamRuntime.hitAlong,
-    }),
+  // Constructed directly so the shared intensity and hit values stay linked;
+  // R3F's uniforms prop would copy them.
+  const material = useMemo(
+    () =>
+      new ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          uColor: { value: BEAM.color },
+          uIntensity: beamRuntime.intensity,
+          uHitAlong: beamRuntime.hitAlong,
+        },
+        transparent: true,
+        depthWrite: false,
+        side: DoubleSide,
+        blending: AdditiveBlending,
+      }),
     [],
   );
 
@@ -37,17 +48,7 @@ export function Beam() {
 
   return (
     <group ref={group}>
-      <mesh geometry={geometry} frustumCulled={false} renderOrder={10}>
-        <shaderMaterial
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          uniforms={uniforms}
-          transparent
-          depthWrite={false}
-          side={DoubleSide}
-          blending={AdditiveBlending}
-        />
-      </mesh>
+      <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={10} />
     </group>
   );
 }
