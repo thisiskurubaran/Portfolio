@@ -11,8 +11,10 @@ import { LANTERN_Y } from "./layout";
 const HOME = new Vector3(4, LANTERN_Y + 9, 11);
 const TARGET = new Vector3(-1, 2, -45);
 // The camera turns part of the way with the beam, so the beam can reach the
-// edge of the view without the camera swinging the full arc.
-const FOLLOW = 0.6;
+// edge of the view without the camera swinging the full arc. Portrait
+// screens see a narrow slice of sea, so they follow more closely.
+const FOLLOW_WIDE = 0.6;
+const FOLLOW_TALL = 0.88;
 const EASE = 2.5;
 
 const pos = new Vector3();
@@ -21,6 +23,8 @@ const up = new Vector3(0, 1, 0);
 
 export function CameraRig() {
   const camera = useThree((s) => s.camera);
+  const aspect = useThree((s) => s.size.width / s.size.height);
+  const follow = aspect < 1 ? FOLLOW_TALL : FOLLOW_WIDE;
   const reducedMotion = useReducedMotion();
   const yaw = useRef(0);
 
@@ -30,7 +34,7 @@ export function CameraRig() {
   }, [camera]);
 
   useFrame(({ clock }, delta) => {
-    yaw.current += (beamRuntime.yaw * FOLLOW - yaw.current) * (1 - Math.exp(-EASE * delta));
+    yaw.current += (beamRuntime.yaw * follow - yaw.current) * (1 - Math.exp(-EASE * delta));
 
     pos.copy(HOME).applyAxisAngle(up, yaw.current);
     look.copy(TARGET).applyAxisAngle(up, yaw.current);

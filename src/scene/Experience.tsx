@@ -5,19 +5,21 @@ import { useEffect } from "react";
 import { useSceneStore } from "@/state/store";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
-import { beamRuntime } from "./beamState";
+import { aimAt, beamRuntime } from "./beamState";
+import { shipRuntime } from "./ships/shipRuntime";
 import { CameraRig } from "./CameraRig";
 import { Island } from "./Island";
 import { NIGHT } from "./palette";
 import { Sea } from "./Sea";
 import { Sky } from "./Sky";
 import { Ships } from "./ships/Ships";
+import { ShipTracker } from "./ships/ShipTracker";
 
 function useDevHooks() {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
     // Handle for poking at the scene from the console while developing.
-    Object.assign(window, { __scene: { store: useSceneStore, beam: beamRuntime } });
+    Object.assign(window, { __scene: { store: useSceneStore, beam: beamRuntime, ships: shipRuntime, aimAt } });
 
     // ?sea=0.8 to check wave presets while the barometer UI does not exist yet.
     const raw = new URLSearchParams(window.location.search).get("sea");
@@ -47,6 +49,7 @@ export default function Experience() {
       <Beam />
       {/* Last, so it follows anything that moved this frame. */}
       <CameraRig />
+      <ShipTracker />
     </Canvas>
   );
 }

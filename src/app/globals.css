@@ -70,3 +70,40 @@ body {
   color: var(--ink);
   opacity: 0.8;
 }
+
+.ship-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ship-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  font: inherit;
+  color: #fff4dc;
+  background: rgba(5, 8, 15, 0.55);
+  border: 1px solid rgba(255, 226, 168, 0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.ship-label-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ship-label-tag {
+  font-size: 12px;
+  opacity: 0.8;
+}

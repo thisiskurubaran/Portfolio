@@ -14,6 +14,10 @@ type SceneState = {
   };
   setBeamTarget: (yaw: number, tilt: number) => void;
   nudgeBeam: (dYaw: number, dTilt: number) => void;
+
+  /** Entry id of the open ship, or null when no panel is open. */
+  selectedId: string | null;
+  select: (id: string | null) => void;
 };
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -32,4 +36,7 @@ export const useSceneStore = create<SceneState>()((set) => ({
     set((s) => ({
       beamTarget: { yaw: clampYaw(s.beamTarget.yaw + dYaw), tilt: clamp01(s.beamTarget.tilt + dTilt) },
     })),
+
+  selectedId: null,
+  select: (id) => set({ selectedId: id }),
 }));
