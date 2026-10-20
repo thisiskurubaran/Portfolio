@@ -1,8 +1,8 @@
-import type { Entry } from "./types";
+import type { VesselEntry } from "./types";
 
 // Fishing boats are small experiments, cargo ships are bigger products.
 // Placeholder entries: replace with real projects. Media files go in public/media/.
-export const projects: Entry[] = [
+export const projects: VesselEntry[] = [
   {
     id: "project-one",
     kind: "cargo",

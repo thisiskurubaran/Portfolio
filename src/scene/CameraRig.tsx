@@ -22,6 +22,7 @@ const EASE = 2.5;
 // Matches the panel width in globals.css, so the open ship sits beside it.
 const PANEL_WIDTH = 420;
 const PANEL_SHEET_SHARE = 0.55;
+const MIN_CAMERA_Y = 4;
 
 const up = new Vector3(0, 1, 0);
 const homePos = new Vector3();
@@ -88,6 +89,8 @@ export function CameraRig() {
         .addScaledVector(away, -dist * 0.75)
         .addScaledVector(side, dist * 0.7)
         .addScaledVector(up, dist * 0.35);
+      // Wrecks sit on the seabed; stay above the surface and look down through the clear water.
+      shipPos.y = Math.max(shipPos.y, MIN_CAMERA_Y);
       camera.position.lerpVectors(homePos, shipPos, f);
       camera.lookAt(homeLook.lerp(shipLook, f));
     } else {

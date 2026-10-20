@@ -525,3 +525,9 @@ body {
   margin: 8px 0 0;
   font-size: 13px;
 }
+
+.panel-subhead {
+  margin: 12px 0 4px;
+  font-size: 14px;
+  color: #ffe2a8;
+}

@@ -10,6 +10,7 @@ import { ShipLabels } from "@/ui/ShipLabels";
 import { StormLabels } from "@/ui/StormLabels";
 import { FindLabel } from "@/ui/FindLabel";
 import { lowTideFind } from "@/content/hidden";
+import { wrecks } from "@/content/wrecks";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
 import { aimAt, beamRuntime } from "./beamState";
@@ -27,6 +28,7 @@ import { Sea } from "./Sea";
 import { Sky } from "./Sky";
 import { StormSwirls } from "./StormSwirls";
 import { LOW_TIDE_ID, TideRocks } from "./TideRocks";
+import { Wrecks } from "./Wrecks";
 import { RescueBoat } from "./ships/RescueBoat";
 import { Ships } from "./ships/Ships";
 import { ShipTracker } from "./ships/ShipTracker";
@@ -88,6 +90,7 @@ export default function Experience() {
         <Sea />
         <Island />
         <TideRocks />
+        <Wrecks />
         <Ships />
         <RescueBoat />
         <Beam />
@@ -102,6 +105,10 @@ export default function Experience() {
       <RescueLabel />
       <StormLabels />
       <LowTideLabel />
+      {/* Always tab stops: focusing one tilts the beam down onto it and clears the water. */}
+      {wrecks.map((w) => (
+        <FindLabel key={w.id} id={w.id} title={w.title} tag={w.tag} active />
+      ))}
       <ConditionsLoader />
     </>
   );

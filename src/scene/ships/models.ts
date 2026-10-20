@@ -6,7 +6,7 @@ import type { ShipKind } from "@/content/types";
 // the waterline sits at y = 0. Colors are albedo only: ships are lit by the
 // beam in the ship shader, so nothing is baked here.
 
-function painted(source: BufferGeometry, hex: string): BufferGeometry {
+export function painted(source: BufferGeometry, hex: string): BufferGeometry {
   const g = source.index ? source.toNonIndexed() : source.clone();
   g.deleteAttribute("uv");
   g.computeVertexNormals();

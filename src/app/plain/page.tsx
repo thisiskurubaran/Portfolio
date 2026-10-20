@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { entries, hiddenEntries } from "@/content";
+import { entries, hiddenEntries, wrecks } from "@/content";
 import { profile } from "@/content/profile";
 import type { Entry, ShipKind } from "@/content/types";
 import { ui } from "@/content/ui";
@@ -20,6 +20,16 @@ function EntryBlock({ entry }: { entry: Entry }) {
       <h3>{entry.title}</h3>
       <p className={styles.tag}>{entry.tag}</p>
       <p>{entry.summary}</p>
+      {entry.lessons && (
+        <>
+          <p>
+            <strong>{ui.panel.wentWrong}:</strong> {entry.lessons.wentWrong}
+          </p>
+          <p>
+            <strong>{ui.panel.learned}:</strong> {entry.lessons.learned}
+          </p>
+        </>
+      )}
       {entry.role && (
         <p className={styles.meta}>
           {ui.panel.role}: {entry.role}
@@ -80,6 +90,13 @@ export default function PlainPage() {
           </section>
         );
       })}
+
+      <section aria-labelledby="section-wrecks">
+        <h2 id="section-wrecks">{ui.plain.wrecks}</h2>
+        {wrecks.map((e) => (
+          <EntryBlock key={e.id} entry={e} />
+        ))}
+      </section>
 
       <section aria-labelledby="section-hidden">
         <h2 id="section-hidden">{ui.plain.hidden}</h2>

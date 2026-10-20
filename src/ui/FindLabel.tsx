@@ -28,7 +28,9 @@ export function FindLabel({ id, title, tag, active }: Props) {
       const s = shipRuntime.get(id);
       if (el && s) {
         const focused = el === document.activeElement;
-        const reveal = focused ? 1 : s.onScreen ? s.reveal : 0;
+        // Steps aside while a panel is open, like the ship labels.
+        const open = useSceneStore.getState().panelOpen;
+        const reveal = open ? 0 : focused ? 1 : s.onScreen ? s.reveal : 0;
         const x = focused ? Math.min(window.innerWidth - 90, Math.max(90, s.sx)) : s.sx;
         const y = focused ? Math.min(window.innerHeight - 40, Math.max(90, s.sy)) : s.sy;
         el.style.opacity = reveal.toFixed(3);

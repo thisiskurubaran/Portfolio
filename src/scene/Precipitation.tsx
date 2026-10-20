@@ -119,8 +119,8 @@ export function Precipitation() {
 
   return (
     <group>
-      <lineSegments geometry={rain.geometry} material={rain.material} frustumCulled={false} />
-      <points geometry={snow.geometry} material={snow.material} frustumCulled={false} />
+      <lineSegments geometry={rain.geometry} material={rain.material} frustumCulled={false} renderOrder={5} />
+      <points geometry={snow.geometry} material={snow.material} frustumCulled={false} renderOrder={5} />
     </group>
   );
 }

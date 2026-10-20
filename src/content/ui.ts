@@ -15,7 +15,10 @@ export const ui = {
       cargo: "Product",
       sailboat: "About",
       rowboat: "Contact",
+      wreck: "Shipwreck",
     },
+    wentWrong: "What went wrong",
+    learned: "What I learned",
   },
   plain: {
     title: "Plain version",
@@ -29,6 +32,7 @@ export const ui = {
       rowboat: "Contact",
     },
     hidden: "Found at sea",
+    wrecks: "Shipwrecks",
   },
   plainLink: {
     full: "Skip to plain site",

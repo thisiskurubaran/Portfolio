@@ -1,4 +1,4 @@
-import type { Entry } from "./types";
+import type { VesselEntry } from "./types";
 
 export const profile = {
   name: "Kurubaran Anandhan",
@@ -7,7 +7,7 @@ export const profile = {
 };
 
 // The sailboat carries the about section.
-export const about: Entry = {
+export const about: VesselEntry = {
   id: "about",
   kind: "sailboat",
   title: `About ${profile.name}`,
@@ -19,7 +19,7 @@ export const about: Entry = {
 };
 
 // The rowboat tied to the jetty is the way to get in touch.
-export const contact: Entry = {
+export const contact: VesselEntry = {
   id: "contact",
   kind: "rowboat",
   title: "Get in touch",

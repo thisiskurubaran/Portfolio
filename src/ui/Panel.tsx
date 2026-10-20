@@ -91,6 +91,15 @@ export function Panel() {
           </h2>
           <p className="panel-summary">{entry.summary}</p>
 
+          {entry.lessons && (
+            <>
+              <h3 className="panel-subhead">{ui.panel.wentWrong}</h3>
+              <p className="panel-summary">{entry.lessons.wentWrong}</p>
+              <h3 className="panel-subhead">{ui.panel.learned}</h3>
+              <p className="panel-summary">{entry.lessons.learned}</p>
+            </>
+          )}
+
           {entry.role && (
             <p className="panel-meta">
               <span>{ui.panel.role}</span> {entry.role}

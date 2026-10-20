@@ -1,4 +1,4 @@
-import type { Entry } from "@/content/types";
+import type { VesselEntry } from "@/content/types";
 
 export type Pose = { x: number; z: number; heading: number };
 
@@ -17,7 +17,7 @@ const DISTANCES = [52, 82, 64, 100, 58, 90, 72];
  * slow loop around its anchor. Positions are derived from list order so a
  * ship stays in the same part of the sea between visits.
  */
-export function driftFor(entry: Entry, index: number, total: number): Drift {
+export function driftFor(entry: VesselEntry, index: number, total: number): Drift {
   if (entry.kind === "rowboat") return { fixed: true, pose: ROWBOAT_POSE };
 
   // Golden ratio steps spread any number of ships across the arc without

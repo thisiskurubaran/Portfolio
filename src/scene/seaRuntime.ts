@@ -1,4 +1,4 @@
-import { Vector2 } from "three";
+import { Vector2, Vector3 } from "three";
 
 /**
  * Sea values as drawn this frame. The water shader holds these objects as
@@ -11,6 +11,12 @@ export const seaRuntime = {
   windDir: { value: new Vector2(0.3, -1).normalize() },
   /** F06: -1 low water to 1 high water, eased. */
   tide: { value: 0 },
+  /** F17: how clear the water is where the beam lands, 0 to 1. */
+  clarity: { value: 0 },
+  /** Where the beam lights the seabed; the clear window is centred on it. */
+  clearCenter: { value: new Vector3() },
+  seabedY: { value: -16 },
+  clearRadius: { value: 11 },
 };
 
 /** Metres the sea rises or falls at the extremes of the tide. */

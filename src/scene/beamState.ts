@@ -35,12 +35,12 @@ export function directionFrom(yaw: number, pitch: number, out: Vector3): Vector3
   return out.set(-Math.sin(yaw) * c, Math.sin(pitch), -Math.cos(yaw) * c);
 }
 
-/** Yaw and tilt that point the beam at a spot on the water. */
-export function aimAt(x: number, z: number): { yaw: number; tilt: number } {
+/** Yaw and tilt that point the beam at a spot on the water, or below it. */
+export function aimAt(x: number, z: number, y = 0): { yaw: number; tilt: number } {
   const dx = x - beamRuntime.origin.x;
   const dz = z - beamRuntime.origin.z;
   const yaw = Math.atan2(-dx, -dz);
-  const pitch = -Math.atan2(beamRuntime.origin.y, Math.hypot(dx, dz));
+  const pitch = -Math.atan2(beamRuntime.origin.y - y, Math.hypot(dx, dz));
   const tilt = (pitch - BEAM.pitchNear) / (BEAM.pitchFar - BEAM.pitchNear);
   return { yaw, tilt };
 }

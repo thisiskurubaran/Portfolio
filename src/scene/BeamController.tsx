@@ -32,7 +32,7 @@ export function BeamController() {
     const heldId = panelOpen ? selectedId : focusedId;
     const held = heldId ? shipRuntime.get(heldId) : undefined;
     if (held) {
-      const aim = aimAt(held.anchor.x, held.anchor.z);
+      const aim = aimAt(held.anchor.x, held.anchor.z, held.aimY);
       useSceneStore.getState().setBeamTarget(aim.yaw, aim.tilt);
     }
 

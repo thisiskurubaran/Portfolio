@@ -1,10 +1,10 @@
-import type { Entry } from "./types";
+import type { VesselEntry } from "./types";
 
 // Entries that are not on the water from the start. They are found by playing,
 // and also listed on the plain site so nobody misses the content.
 
 /** F09: opened when a visitor guides the boat in distress to the jetty. */
-export const rescueReward: Entry = {
+export const rescueReward: VesselEntry = {
   id: "rescued",
   kind: "fishing",
   title: "Thank you, keeper",
@@ -16,7 +16,7 @@ export const rescueReward: Entry = {
 };
 
 /** F06: wedged on the rocks, only reachable when the tide is low. */
-export const lowTideFind: Entry = {
+export const lowTideFind: VesselEntry = {
   id: "low-tide",
   kind: "fishing",
   title: "Found at low water",
@@ -26,4 +26,4 @@ export const lowTideFind: Entry = {
   media: [],
 };
 
-export const hiddenEntries: Entry[] = [rescueReward, lowTideFind];
+export const hiddenEntries: VesselEntry[] = [rescueReward, lowTideFind];

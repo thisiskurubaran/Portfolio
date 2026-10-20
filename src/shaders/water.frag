@@ -11,6 +11,10 @@ uniform vec3 uBeamColor;
 uniform float uBeamCos;
 uniform float uBeamIntensity;
 uniform float uFlash;
+uniform float uClarity;
+uniform vec3 uClearCenter;
+uniform float uClearRadius;
+uniform float uSeabedY;
 
 varying vec3 vWorldPos;
 varying float vCrest;
@@ -47,7 +51,16 @@ void main() {
 
   float dist = length(cameraPosition - vWorldPos);
   float fog = smoothstep(uFogNear, uFogFar, dist);
-  gl_FragColor = vec4(mix(color, uFogColor, fog), 1.0);
+  // F17: with the beam tilted steeply down, the water where it lands turns
+  // clear enough to see the seabed and the wrecks on it.
+  // Follow the view ray down to the seabed, so the window opens over what the
+  // eye actually sees through it rather than straight above it.
+  vec3 ray = normalize(vWorldPos - cameraPosition);
+  vec3 bed = vWorldPos + ray * ((uSeabedY - vWorldPos.y) / min(ray.y, -0.05));
+  float clearZone = 1.0 - smoothstep(uClearRadius * 0.35, uClearRadius, length(bed.xz - uClearCenter.xz));
+  float clear = uClarity * clearZone;
+  color = mix(color, color + vec3(0.0, 0.05, 0.06), clear);
+  gl_FragColor = vec4(mix(color, uFogColor, fog), 1.0 - clear * 0.82);
 
   #include <colorspace_fragment>
 }

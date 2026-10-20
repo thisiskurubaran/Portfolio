@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group, Vector3 } from "three";
 import { entries } from "@/content";
-import type { Entry } from "@/content/types";
+import type { VesselEntry } from "@/content/types";
 import { isInBeam } from "../beamState";
 import { envRuntime } from "../envRuntime";
 import { isHarborMode, useSceneStore } from "@/state/store";
@@ -18,7 +18,7 @@ import { shipMaterial } from "./shipMaterial";
 const LINGER_SECONDS = 2.5;
 const toShip = new Vector3();
 
-function Ship({ entry, index }: { entry: Entry; index: number }) {
+function Ship({ entry, index }: { entry: VesselEntry; index: number }) {
   const group = useRef<Group>(null);
   const drift = useMemo(() => driftFor(entry, index, entries.length - 1), [entry, index]);
   const geometry = shipGeometry(entry.kind);

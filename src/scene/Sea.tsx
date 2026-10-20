@@ -36,6 +36,8 @@ export function Sea() {
       new ShaderMaterial({
         vertexShader,
         fragmentShader,
+        // Opaque except in the F17 clear zone, which shows the seabed below.
+        transparent: true,
         uniforms: {
           uTime: seaRuntime.time,
           uSeaState: seaRuntime.seaState,
@@ -55,6 +57,10 @@ export function Sea() {
           // Slightly wider than the drawn cone so the pool reads as the beam's footprint.
           uBeamCos: { value: Math.cos(BEAM.halfAngle * 1.3) },
           uBeamIntensity: beamRuntime.intensity,
+          uClarity: seaRuntime.clarity,
+          uClearCenter: seaRuntime.clearCenter,
+          uClearRadius: seaRuntime.clearRadius,
+          uSeabedY: seaRuntime.seabedY,
           uFlash: envRuntime.flash,
         },
       }),

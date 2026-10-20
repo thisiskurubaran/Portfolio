@@ -7,10 +7,13 @@ export type Media =
   | { kind: "image"; src: string; alt: string; width: number; height: number }
   | { kind: "video"; src: string; poster?: string; alt: string };
 
+/** Ships afloat, plus wrecks on the seabed (F17). */
+export type EntryKind = ShipKind | "wreck";
+
 /** Everything one ship carries. The panel and the plain site both render from this. */
 export type Entry = {
   id: string;
-  kind: ShipKind;
+  kind: EntryKind;
   title: string;
   /** A few words shown next to the ship when the beam finds it. */
   tag: string;
@@ -19,4 +22,9 @@ export type Entry = {
   stack?: string[];
   links: Link[];
   media: Media[];
+  /** F17: what went wrong and what was learned, for abandoned projects. */
+  lessons?: { wentWrong: string; learned: string };
 };
+
+/** An entry drawn as a vessel on the water, so it has a hull model. */
+export type VesselEntry = Entry & { kind: ShipKind };
