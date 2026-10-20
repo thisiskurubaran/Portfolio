@@ -13,7 +13,9 @@ import {
 } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { bakeFlat, hash3 } from "./bake";
+import { useSceneStore } from "@/state/store";
 import { envRuntime } from "./envRuntime";
+import { SNOW_COLOR } from "./palette";
 import { LANTERN_Y, ROCK_TOP, TOWER_HEIGHT } from "./layout";
 
 const LAMP_ON = new Color("#ffd98a");
@@ -27,7 +29,7 @@ const DAY_BOOST = 1.8;
 const ROCK_SCALE = { x: 10, y: 4.2, z: 8.5 };
 const ROCK_FLAT_TOP = 0.72;
 
-function rock(): BufferGeometry {
+function rock(snow?: string): BufferGeometry {
   const g = new IcosahedronGeometry(1, 1);
   const pos = g.getAttribute("position");
   for (let i = 0; i < pos.count; i++) {
@@ -40,10 +42,10 @@ function rock(): BufferGeometry {
   }
   g.scale(ROCK_SCALE.x, ROCK_SCALE.y, ROCK_SCALE.z);
   g.translate(0, ROCK_TOP - ROCK_FLAT_TOP * ROCK_SCALE.y, 0);
-  return bakeFlat(g, "#3b3f45");
+  return bakeFlat(g, "#3b3f45", undefined, snow);
 }
 
-function tower(): BufferGeometry[] {
+function tower(snow?: string): BufferGeometry[] {
   const parts: BufferGeometry[] = [];
   const bands = 4;
   const h = TOWER_HEIGHT / bands;
@@ -63,11 +65,11 @@ function tower(): BufferGeometry[] {
 
   const roof = new ConeGeometry(1.0, 1.1, 10);
   roof.translate(0, LANTERN_Y + 0.75 + 0.55, 0);
-  parts.push(bakeFlat(roof, "#7d2622"));
+  parts.push(bakeFlat(roof, "#7d2622", undefined, snow));
   return parts;
 }
 
-function hut(): BufferGeometry[] {
+function hut(snow?: string): BufferGeometry[] {
   const walls = new BoxGeometry(2.6, 1.6, 2);
   walls.rotateY(0.35);
   walls.translate(3.6, ROCK_TOP + 0.8, 1.4);
@@ -76,7 +78,7 @@ function hut(): BufferGeometry[] {
   roof.rotateY(Math.PI / 4 + 0.35);
   roof.translate(3.6, ROCK_TOP + 1.6 + 0.55, 1.4);
 
-  return [bakeFlat(walls, "#bfb6a3"), bakeFlat(roof, "#4a2f26")];
+  return [bakeFlat(walls, "#bfb6a3"), bakeFlat(roof, "#4a2f26", undefined, snow)];
 }
 
 function jetty(): BufferGeometry[] {
@@ -96,7 +98,12 @@ function jetty(): BufferGeometry[] {
 }
 
 export function Island() {
-  const geometry = useMemo(() => mergeGeometries([rock(), ...tower(), ...hut(), ...jetty()]), []);
+  // F11: snow on the rock and roofs in winter. Rebaked only when the season changes.
+  const winter = useSceneStore((s) => s.season === "winter");
+  const geometry = useMemo(() => {
+    const snow = winter ? SNOW_COLOR : undefined;
+    return mergeGeometries([rock(snow), ...tower(snow), ...hut(snow), ...jetty()]);
+  }, [winter]);
   const bodyRef = useRef<MeshBasicMaterial>(null);
   const lampRef = useRef<MeshBasicMaterial>(null);
 

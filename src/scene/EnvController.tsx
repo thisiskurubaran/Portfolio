@@ -6,10 +6,11 @@ import { Color, Fog, Vector3 } from "three";
 import { useSceneStore } from "@/state/store";
 import { CLEAR_NIGHT, weatherToScene } from "@/weather/mapping";
 import { moonPhase } from "@/weather/moon";
+import { SEASON_EFFECTS, seasonAt, type Season } from "@/weather/season";
 import { sunFromClock, sunPosition } from "@/weather/sun";
 import { envRuntime } from "./envRuntime";
 import { seaRuntime } from "./seaRuntime";
-import { FOG, GLOW_COLOR, MOON_DIR, PALETTES, type SkyPalette } from "./palette";
+import { FOG, GLOW_COLOR, MOON_DIR, PALETTES, SEASON_TINT, type SkyPalette } from "./palette";
 
 const RAD = Math.PI / 180;
 const UPDATE_EVERY_S = 1;
@@ -75,6 +76,7 @@ const sunKey = new Vector3();
 /** Works out the sky for this moment and eases every shared colour toward it. */
 export function EnvController() {
   const devHour = useRef<number | null>(null);
+  const devSeason = useRef<Season | null>(null);
   const nextUpdate = useRef(0);
 
   useEffect(() => {
@@ -82,12 +84,15 @@ export function EnvController() {
     // ?hour=19.5 shows the sky at that local time.
     const h = Number(new URLSearchParams(window.location.search).get("hour"));
     if (new URLSearchParams(window.location.search).has("hour") && Number.isFinite(h)) devHour.current = h;
+    // ?season=winter to see a season out of its months.
+    const s = new URLSearchParams(window.location.search).get("season");
+    if (s === "winter" || s === "spring" || s === "summer" || s === "autumn") devSeason.current = s;
   }, []);
 
   useFrame(({ clock, scene }, delta) => {
     if (clock.elapsedTime >= nextUpdate.current) {
       nextUpdate.current = clock.elapsedTime + UPDATE_EVERY_S;
-      computeTarget(devHour.current);
+      computeTarget(devHour.current, devSeason.current);
     }
 
     const k = 1 - Math.exp(-EASE * delta);
@@ -122,12 +127,15 @@ export function EnvController() {
   return null;
 }
 
-function computeTarget(devHour: number | null) {
+function computeTarget(devHour: number | null, devSeason: Season | null) {
   const now = new Date();
   if (devHour !== null) now.setHours(Math.floor(devHour), Math.round((devHour % 1) * 60), 0, 0);
 
-  const { conditions, forceNight, sunUp, setSunUp, seaOverride, seaState, setSeaState, precipOverride } =
-    useSceneStore.getState();
+  const store = useSceneStore.getState();
+  const { conditions, forceNight, sunUp, setSunUp, seaOverride, seaState, setSeaState, precipOverride } = store;
+  const season = devSeason ?? seasonAt(now, conditions?.location?.lat ?? null);
+  if (season !== store.season) store.setSeason(season);
+  const effects = SEASON_EFFECTS[season];
   const weather = conditions?.weather ? weatherToScene(conditions.weather) : CLEAR_NIGHT;
   const loc = conditions?.location;
   const sun = loc ? sunPosition(now, loc.lat, loc.lon) : sunFromClock(now);
@@ -139,6 +147,12 @@ function computeTarget(devHour: number | null) {
 
   mixPalette(PALETTES.night, PALETTES.day, daylight, scratch);
   mixPalette(scratch, PALETTES.twilight, twilight * 0.85, target.palette);
+  if (season === "winter" || season === "summer") {
+    const tint = SEASON_TINT[season];
+    target.palette.horizon.multiply(tint);
+    target.palette.zenith.multiply(tint);
+    target.palette.seaDeep.multiply(tint);
+  }
   const flatten = weather.cloud * 0.6;
   overcast(target.palette.horizon, flatten);
   overcast(target.palette.zenith, flatten);
@@ -155,13 +169,16 @@ function computeTarget(devHour: number | null) {
   target.stars = (1 - smoothstep(-10, -2, elevation)) * (1 - weather.cloud * 0.95);
   target.moon = (1 - daylight * 0.85) * (1 - weather.cloud * 0.8);
 
-  target.fogNear = FOG.near + (2 - FOG.near) * weather.fog;
-  target.fogFar = FOG.far + (55 - FOG.far) * weather.fog;
+  const fog = Math.min(1, weather.fog * effects.fog);
+  // Summer haze: the far distance softens even in clear air.
+  const haze = season === "summer" ? 0.85 : 1;
+  target.fogNear = FOG.near + (2 - FOG.near) * fog;
+  target.fogFar = (FOG.far + (55 - FOG.far) * fog) * haze;
   target.rain = precipOverride.rain ?? weather.rain;
   target.snow = precipOverride.snow ?? weather.snow;
   directionFor(weather.waveBearing, 0, target.windDir);
 
-  const sea = seaOverride ?? weather.seaState;
+  const sea = seaOverride ?? Math.min(1, weather.seaState * effects.wind);
   if (Math.abs(sea - seaState) > 0.001) setSeaState(sea);
 
   envRuntime.glowColor.value.copy(GLOW_COLOR);

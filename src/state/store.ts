@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Conditions } from "@/weather/schema";
+import type { Season } from "@/weather/season";
 
 type SceneState = {
   /** 0 is flat calm, 1 is hurricane. Every sea and weather effect reads from this. */
@@ -39,6 +40,10 @@ type SceneState = {
   /** Location and weather from /api/conditions. Null until it answers, or if it fails. */
   conditions: Conditions | null;
   setConditions: (c: Conditions | null) => void;
+
+  /** F11: from the date and hemisphere. */
+  season: Season;
+  setSeason: (s: Season) => void;
 
   /** True while the sun is up at the visitor's location, whatever they chose. */
   sunUp: boolean;
@@ -86,6 +91,9 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   conditions: null,
   setConditions: (conditions) => set({ conditions }),
+
+  season: "autumn",
+  setSeason: (season) => set({ season }),
 
   sunUp: false,
   setSunUp: (sunUp) => set({ sunUp }),

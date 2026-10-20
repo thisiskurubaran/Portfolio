@@ -8,13 +8,20 @@ const AMBIENT = 0.38;
  * light. Only the beam gets a real light, which keeps the shader cost flat.
  * Returns a non-indexed geometry with only position and color, ready to merge.
  */
-export function bakeFlat(source: BufferGeometry, hex: string, ambient = AMBIENT): BufferGeometry {
+export function bakeFlat(
+  source: BufferGeometry,
+  hex: string,
+  ambient = AMBIENT,
+  /** Paint upward facing faces with this colour instead, for winter snow. */
+  snowHex?: string,
+): BufferGeometry {
   const g = source.index ? source.toNonIndexed() : source.clone();
   g.deleteAttribute("uv");
   g.deleteAttribute("normal");
   g.computeVertexNormals();
 
   const base = new Color(hex);
+  const snow = snowHex ? new Color(snowHex) : null;
   const normals = g.getAttribute("normal");
   const colors = new Float32Array(normals.count * 3);
   const n = new Vector3();
@@ -23,7 +30,8 @@ export function bakeFlat(source: BufferGeometry, hex: string, ambient = AMBIENT)
   for (let i = 0; i < normals.count; i++) {
     n.fromBufferAttribute(normals, i);
     const light = ambient + (1 - ambient) * Math.max(0, n.dot(MOON_DIR));
-    c.copy(base).multiplyScalar(light);
+    // Snow settles on faces that point mostly up.
+    c.copy(snow && n.y > 0.55 ? snow : base).multiplyScalar(light);
     colors.set([c.r, c.g, c.b], i * 3);
   }
 

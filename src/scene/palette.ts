@@ -23,6 +23,17 @@ export const PALETTES = {
   day: palette("#b8d3e6", "#4a86c5", "#1f5675", "#6aa2c0", "#fff6e0"),
 };
 
+/**
+ * Seasonal tint multiplied into the sky and sea: colder in winter, a warm
+ * haze in summer. Multiplying shifts the hue without lifting a night sky.
+ */
+export const SEASON_TINT = {
+  winter: new Color(0.86, 0.95, 1.12),
+  summer: new Color(1.12, 1.02, 0.86),
+} as const;
+
+export const SNOW_COLOR = "#e6ecf2";
+
 export const GLOW_COLOR = new Color("#ff9a5a");
 
 export const FOG = { near: 40, far: 260 };
