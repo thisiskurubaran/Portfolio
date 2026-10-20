@@ -46,4 +46,36 @@ export const ui = {
     night: "Night mode",
     hint: "Jump to night and use the lighthouse beam",
   },
+  barometer: {
+    button: "Weather",
+    legend: "Choose the weather",
+    live: "Live weather",
+    liveFallback: "Clear night (no local weather)",
+    resets: "Only on this page. It resets when you reload.",
+    presets: {
+      clear: "Clear",
+      fog: "Fog",
+      rain: "Rain",
+      storm: "Storm",
+      "tropical-storm": "Tropical storm",
+      major: { hurricane: "Hurricane", typhoon: "Typhoon", cyclone: "Cyclone" },
+      "monsoon-squall": "Monsoon squall",
+      noreaster: "Nor'easter",
+    },
+    wind: "km/h wind",
+  },
+  storm: {
+    calmNote: "There is rough weather near you right now, so the sea here is kept calm. Stay safe.",
+  },
+  // WMO weather codes in words, for the live weather line.
+  weatherWords: {
+    clear: "clear",
+    cloudy: "cloudy",
+    fog: "fog",
+    drizzle: "drizzle",
+    rain: "rain",
+    snow: "snow",
+    showers: "showers",
+    thunder: "thunderstorm",
+  },
 };

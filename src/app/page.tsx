@@ -1,4 +1,5 @@
 import { SceneLoader } from "@/scene/SceneLoader";
+import { Barometer } from "@/ui/Barometer";
 import { GyroToggle } from "@/ui/GyroToggle";
 import { NightToggle } from "@/ui/NightToggle";
 import { Panel } from "@/ui/Panel";
@@ -12,6 +13,7 @@ export default function Home() {
       <PlainLink />
       <h1 className="sr-only">Lighthouse portfolio</h1>
       <SceneLoader />
+      <Barometer />
       <Panel />
       <PlainOffer />
       <div className="corner">
