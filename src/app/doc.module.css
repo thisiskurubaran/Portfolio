@@ -1,0 +1,91 @@
+/* Shared layout for the text pages (/plain, /privacy). Plain HTML, no scene. */
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+  line-height: 1.6;
+}
+
+.page a {
+  color: #ffe2a8;
+}
+
+.page a:focus-visible {
+  outline: 2px solid #ffe2a8;
+  outline-offset: 2px;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+
+.page h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.lead {
+  margin: 0 0 40px;
+  color: #c4ccd8;
+}
+
+.page h2 {
+  margin: 40px 0 16px;
+  padding-bottom: 6px;
+  font-size: 22px;
+  border-bottom: 1px solid rgba(232, 237, 245, 0.18);
+}
+
+.entry {
+  margin: 0 0 32px;
+}
+
+.entry h3 {
+  margin: 0 0 6px;
+  font-size: 19px;
+}
+
+.tag {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #ffe2a8;
+}
+
+.meta {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #c4ccd8;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.media {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.media img,
+.media video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.footer {
+  margin-top: 56px;
+  font-size: 14px;
+  color: #c4ccd8;
+}

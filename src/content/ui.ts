@@ -17,4 +17,16 @@ export const ui = {
       rowboat: "Contact",
     },
   },
+  plain: {
+    title: "Plain version",
+    intro: "Everything from the lighthouse as a simple page: projects, experiments, about and contact.",
+    back: "Back to the lighthouse",
+    privacy: "Privacy",
+    sections: {
+      cargo: "Products",
+      fishing: "Experiments",
+      sailboat: "About",
+      rowboat: "Contact",
+    },
+  },
 };
