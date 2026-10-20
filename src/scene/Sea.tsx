@@ -63,8 +63,10 @@ export function Sea() {
     seaRuntime.time.value += delta * (reducedMotion ? REDUCED_TIME_SCALE : 1);
     // Ease toward the target so weather changes roll in instead of snapping.
     const state = useSceneStore.getState();
-    // Harbor mode is calm water whatever the wind is doing.
-    const target = isHarborMode(state) ? Math.min(state.seaState, HARBOR_SEA) : state.seaState;
+    // Harbor mode is calm water whatever the wind is doing, unless the
+    // visitor picked weather on the barometer.
+    const calm = isHarborMode(state) && !state.weatherPreset;
+    const target = calm ? Math.min(state.seaState, HARBOR_SEA) : state.seaState;
     seaRuntime.seaState.value += (target - seaRuntime.seaState.value) * Math.min(1, delta * 0.8);
   });
 

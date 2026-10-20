@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Conditions } from "@/weather/schema";
+import type { PresetId } from "@/weather/presets";
 import type { Season } from "@/weather/season";
 
 type SceneState = {
@@ -40,6 +41,13 @@ type SceneState = {
   /** Location and weather from /api/conditions. Null until it answers, or if it fails. */
   conditions: Conditions | null;
   setConditions: (c: Conditions | null) => void;
+
+  /** F18: weather the visitor picked. Null follows the real weather. Not saved, so it resets on reload. */
+  weatherPreset: PresetId | null;
+  setWeatherPreset: (id: PresetId | null) => void;
+  /** F03: a dangerous real storm is near, so the scene is being kept calm. */
+  calmForRealStorm: boolean;
+  setCalmForRealStorm: (v: boolean) => void;
 
   /** F11: from the date and hemisphere. */
   season: Season;
@@ -91,6 +99,11 @@ export const useSceneStore = create<SceneState>()((set) => ({
 
   conditions: null,
   setConditions: (conditions) => set({ conditions }),
+
+  weatherPreset: null,
+  setWeatherPreset: (weatherPreset) => set({ weatherPreset }),
+  calmForRealStorm: false,
+  setCalmForRealStorm: (calmForRealStorm) => set({ calmForRealStorm }),
 
   season: "autumn",
   setSeason: (season) => set({ season }),

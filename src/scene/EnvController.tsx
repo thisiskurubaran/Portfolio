@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Color, Fog, Vector3 } from "three";
 import { useSceneStore } from "@/state/store";
-import { CLEAR_NIGHT, weatherToScene } from "@/weather/mapping";
+import { CLEAR_NIGHT, weatherToScene, type SceneWeather } from "@/weather/mapping";
+import { isDangerous, PRESETS } from "@/weather/presets";
 import { moonPhase } from "@/weather/moon";
 import { SEASON_EFFECTS, seasonAt, type Season } from "@/weather/season";
 import { sunFromClock, sunPosition } from "@/weather/sun";
@@ -14,6 +15,8 @@ import { FOG, GLOW_COLOR, MOON_DIR, PALETTES, SEASON_TINT, type SkyPalette } fro
 
 const RAD = Math.PI / 180;
 const UPDATE_EVERY_S = 1;
+// Sea state used while a dangerous real storm is near: lively, not dramatic.
+const REAL_STORM_SEA = 0.3;
 // Seconds for colours to settle after a change, like the night switch.
 const EASE = 1.5;
 
@@ -56,6 +59,7 @@ const target = {
   fogFar: FOG.far,
   rain: 0,
   snow: 0,
+  storm: 0,
   lightDir: new Vector3(),
   sunDir: new Vector3(),
   glow: 0,
@@ -112,6 +116,7 @@ export function EnvController() {
     envRuntime.fogFar.value += (target.fogFar - envRuntime.fogFar.value) * k;
     envRuntime.rain.value += (target.rain - envRuntime.rain.value) * k;
     envRuntime.snow.value += (target.snow - envRuntime.snow.value) * k;
+    envRuntime.storm.value += (target.storm - envRuntime.storm.value) * k;
     // Wind swings slowly so waves turn rather than snap.
     const w = seaRuntime.windDir.value;
     w.set(w.x + (target.windDir.x - w.x) * k * 0.3, w.y + (target.windDir.z - w.y) * k * 0.3).normalize();
@@ -136,7 +141,7 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
   const season = devSeason ?? seasonAt(now, conditions?.location?.lat ?? null);
   if (season !== store.season) store.setSeason(season);
   const effects = SEASON_EFFECTS[season];
-  const weather = conditions?.weather ? weatherToScene(conditions.weather) : CLEAR_NIGHT;
+  const { weather, storm, lightning } = pickWeather(store);
   const loc = conditions?.location;
   const sun = loc ? sunPosition(now, loc.lat, loc.lon) : sunFromClock(now);
   const elevation = forceNight ? -30 : sun.elevation;
@@ -174,11 +179,15 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
   const haze = season === "summer" ? 0.85 : 1;
   target.fogNear = FOG.near + (2 - FOG.near) * fog;
   target.fogFar = (FOG.far + (55 - FOG.far) * fog) * haze;
+  target.storm = storm;
+  envRuntime.lightningRate.value = lightning;
   target.rain = precipOverride.rain ?? weather.rain;
   target.snow = precipOverride.snow ?? weather.snow;
   directionFor(weather.waveBearing, 0, target.windDir);
 
-  const sea = seaOverride ?? Math.min(1, weather.seaState * effects.wind);
+  let sea = seaOverride ?? Math.min(1, weather.seaState * effects.wind);
+  // The sensitivity cap has the last word, after any seasonal boost.
+  if (useSceneStore.getState().calmForRealStorm) sea = Math.min(sea, REAL_STORM_SEA);
   if (Math.abs(sea - seaState) > 0.001) setSeaState(sea);
 
   envRuntime.glowColor.value.copy(GLOW_COLOR);
@@ -186,4 +195,29 @@ function computeTarget(devHour: number | null, devSeason: Season | null) {
 
   const up = smoothstep(-4, 8, sun.elevation) > 0.5;
   if (up !== sunUp) setSunUp(up);
+}
+
+/**
+ * Which weather the scene shows. A barometer choice wins. Otherwise the real
+ * weather, except that a dangerous real storm is shown calm (F03 sensitivity
+ * rule): drama is only for storms the visitor picks.
+ */
+function pickWeather(store: ReturnType<typeof useSceneStore.getState>): {
+  weather: SceneWeather;
+  storm: number;
+  lightning: number;
+} {
+  const chosen = store.weatherPreset ? PRESETS[store.weatherPreset] : null;
+  const real = store.conditions?.weather ?? null;
+  const dangerous = !chosen && real !== null && isDangerous(real);
+  if (dangerous !== store.calmForRealStorm) store.setCalmForRealStorm(dangerous);
+
+  if (chosen) return { weather: chosen, storm: chosen.storm, lightning: chosen.lightning };
+  if (!real) return { weather: CLEAR_NIGHT, storm: 0, lightning: 0 };
+
+  const w = weatherToScene(real);
+  if (dangerous) {
+    return { weather: { ...w, seaState: Math.min(w.seaState, REAL_STORM_SEA), rain: w.rain * 0.4, fog: w.fog * 0.5 }, storm: 0, lightning: 0 };
+  }
+  return { weather: w, storm: 0, lightning: 0 };
 }

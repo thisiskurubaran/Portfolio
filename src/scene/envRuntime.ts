@@ -28,4 +28,8 @@ export const envRuntime = {
   /** Precipitation, 0 to 1, read by the rain and snow layer. */
   rain: { value: 0 },
   snow: { value: 0 },
+  /** F03: 0 calm to 1 full storm. Drives flicker, tossing and rescues. */
+  storm: { value: 0 },
+  /** Lightning strikes per minute right now. */
+  lightningRate: { value: 0 },
 };

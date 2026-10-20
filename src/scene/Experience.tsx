@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { useEffect } from "react";
 import gsap from "gsap";
 import { useSceneStore } from "@/state/store";
+import { PRESETS, type PresetId } from "@/weather/presets";
 import { ShipLabels } from "@/ui/ShipLabels";
 import { Beam } from "./Beam";
 import { BeamController } from "./BeamController";
@@ -32,6 +33,9 @@ function useDevHooks() {
     if (raw !== null && !Number.isNaN(Number(raw))) {
       useSceneStore.getState().setSeaOverride(Number(raw));
     }
+    // ?preset=major to try a storm before the barometer exists.
+    const presetParam = new URLSearchParams(window.location.search).get("preset");
+    if (presetParam && presetParam in PRESETS) useSceneStore.getState().setWeatherPreset(presetParam as PresetId);
     // ?rain=0.8 or ?snow=0.8 to check precipitation without waiting for weather.
     const q = new URLSearchParams(window.location.search);
     for (const key of ["rain", "snow"] as const) {
