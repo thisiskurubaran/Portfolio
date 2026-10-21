@@ -6,7 +6,18 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.6.0`, access, security and privacy:
+`v0.7.0`, Mars approach and orbit:
+
+- Arrival is planned from the transfer's own arrival velocity. The approach is an exact hyperbola, turned about the incoming direction so that apoapsis of the capture orbit falls on Mars's equator at Phobos's orbital radius.
+- Aerocapture: a pass 45 km above the datum sheds about 1.3 km/s in the upper atmosphere with no propellant, shown as a glowing shock layer. A 0.9 km/s burn at apoapsis then puts the ship on Phobos's orbit, changing plane at the same time.
+- Phobos is the first stop: a station in its orbit holds the featured project (Instant Eats). Deimos is a Hohmann transfer away (0.75 km/s, 8.9 hours).
+- Propellant is finite and shown with the delta-v it still buys. The ship was resized to 110 t with 80 t of propellant so the Mars burns fit at all; even so, after capture the budget covers Deimos or a landing from Phobos's orbit, not both.
+- Landing site pick from real sites (Jezero, Gale, Utopia Planitia, Arcadia Planitia) with the deorbit burn each needs; the chosen site is marked on the globe.
+- Mars is drawn with a real colour map and its IAU rotation model (pole and prime meridian), so the right face turns toward the Sun.
+
+Simplified, and said so: Phobos and Deimos sit on circular orbits in Mars's equator at their real radii and periods, but their position along the orbit is set so each rendezvous lines up. There is no MOLA elevation yet; the surface terrain comes with the landing.
+
+From `v0.6.0`, access, security and privacy:
 
 - `/plain`, the mission file: the whole portfolio as plain server rendered HTML (about, experience, projects, skills, education, certifications, the route, contact). No WebGL, physics or sound. Lighthouse on `/plain`: performance 99, accessibility 100, best practices 100, SEO 100.
 - A "skip to mission file" link is the first thing in the tab order and the first thing on screen, then shrinks to a small tab once the visitor starts flying.
@@ -28,7 +39,7 @@ From `v0.5.0`, waypoint stops:
 From `v0.4.0`, transit to Mars:
 
 - A transfer planner in Earth orbit finds the next real launch window from today's planet positions: a porkchop search over departure date and flight time, solving Lambert's problem for each pair. From October 2026 it finds the late 2026 window (311 days, C3 about 9 km²/s²). Run from April 2020 it picks a departure of 1 August 2020 and arrival in late February 2021, close to what Perseverance flew.
-- Departure jumps mission time to the window and fires the trans-Mars injection burn. Propellant comes from the rocket equation (70 t ship, 45 t propellant, 450 s engine).
+- Departure jumps mission time to the window and fires the trans-Mars injection burn. Propellant comes from the rocket equation (450 s engine; ship size as given under v0.7.0).
 - The cruise follows the transfer ellipse as an exact two-body orbit around the Sun. The sky switches to a ship centred frame in millions of km, with the orbits of Earth and Mars, the transfer arc, Earth shrinking behind and Mars ahead.
 - Seven stations sit on the transfer arc. The ship stops at each, holds 40 m off, and docks to open that part of the portfolio: education, the three employers with their roles, an outpost for early career roles, certifications, and the Instant Eats project. Undocking resumes the cruise. Stations with a habitat ring spin it at the rate that gives Mars gravity at its radius.
 - Comms panel with contact links, telemetry for the cruise (distance from the Sun, speed, distance to Mars, arrival, propellant), and a station timeline.
