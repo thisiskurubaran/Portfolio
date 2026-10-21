@@ -4,25 +4,18 @@ import { useEffect, useState } from "react";
 import { bodies } from "@/content/bodies";
 import { ui } from "@/content/ui";
 import { lightTimeSeconds } from "@/physics/lightTimeDelay";
-import { sub } from "@/physics/vec";
-import { heliocentric } from "@/space/elements";
-import { OTHER_PLANETS, type OtherPlanet } from "@/scene/skyRuntime";
-import { simNow } from "@/state/simClock";
+import { PLANETS, type PlanetId } from "@/space/elements";
+import { sky } from "@/scene/skyRuntime";
 import { useStore } from "@/state/store";
 import { formatDistance, formatDuration } from "./format";
 
-function distanceFromEarth(id: OtherPlanet): number {
-  const t = simNow();
-  return Math.hypot(...sub(heliocentric(id, t).r, heliocentric("earth", t).r));
-}
-
-function Facts({ id }: { id: OtherPlanet }) {
+function Facts({ id }: { id: PlanetId }) {
   const facts = bodies[id];
   const selectBody = useStore((s) => s.selectBody);
   const [distance, setDistance] = useState<number | null>(null);
 
   useEffect(() => {
-    const tick = () => setDistance(distanceFromEarth(id));
+    const tick = () => setDistance(sky.planets[id].distanceAu);
     tick();
     const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
@@ -57,11 +50,14 @@ function Facts({ id }: { id: OtherPlanet }) {
 export function BodyPanel() {
   const selected = useStore((s) => s.selectedBody);
   const selectBody = useStore((s) => s.selectBody);
+  // Near Earth, Earth is underfoot rather than in the list.
+  const phase = useStore((s) => s.phase);
+  const list = phase === "transit" ? PLANETS : PLANETS.filter((p) => p !== "earth");
 
   return (
     <section className="hud-bodies" aria-label={ui.bodies.listLabel}>
       <div className="body-list">
-        {OTHER_PLANETS.map((id) => (
+        {list.map((id) => (
           <button
             key={id}
             type="button"

@@ -33,10 +33,10 @@ export function Sun() {
 
   useFrame(() => {
     if (disc.current) {
-      disc.current.position.copy(sky.sunDir).multiplyScalar(SUN_SCENE_DISTANCE);
-      disc.current.scale.setScalar(sunSceneRadius(sky.sunDistanceAu));
+      disc.current.position.copy(sky.view.sunDir).multiplyScalar(SUN_SCENE_DISTANCE);
+      disc.current.scale.setScalar(sunSceneRadius(sky.view.sunDistanceAu));
     }
-    light.current?.position.copy(sky.sunDir).multiplyScalar(10);
+    light.current?.position.copy(sky.view.sunDir).multiplyScalar(10);
   });
 
   return (

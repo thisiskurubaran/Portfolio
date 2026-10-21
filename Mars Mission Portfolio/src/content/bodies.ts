@@ -14,7 +14,7 @@ export type BodyFacts = {
 };
 
 /** Values from NASA's planetary fact sheets. */
-export const bodies: Record<Exclude<PlanetId, "earth">, BodyFacts> = {
+export const bodies: Record<PlanetId, BodyFacts> = {
   mercury: {
     name: "Mercury",
     radiusKm: 2439.7,
@@ -30,6 +30,14 @@ export const bodies: Record<Exclude<PlanetId, "earth">, BodyFacts> = {
     day: "117 Earth days",
     absMag: -4.47,
     note: "Hottest surface in the solar system, under clouds of sulphuric acid.",
+  },
+  earth: {
+    name: "Earth",
+    radiusKm: 6371.0,
+    periodDays: 365.256,
+    day: "24 h",
+    absMag: -3.99,
+    note: "Home. The only planet known to have liquid water on its surface.",
   },
   mars: {
     name: "Mars",
