@@ -6,7 +6,19 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.8.0`, landing and the Mars surface:
+`v0.9.0`, sound:
+
+- Off until the visitor turns it on (the "Sound off" button, bottom right). The audio graph is only built on that click, so browsers never block it, and it pauses while the tab is hidden.
+- Everything is synthesised with the Web Audio API; there are no recordings. Vacuum is silent: on the ascent the engine roar and crackle ride on the air and thin out with it, and above the atmosphere only the low rumble carried through the hull is left. The same rumble comes back for the Mars burns and entry buffeting.
+- Inside the ship: fans, a low pump hum and the odd relay click. A sparse, quiet open fifth plays in the cruise.
+- On the surface: suit breathing, faster with a heartbeat under it when the rover is on a dangerous slope, rover motors that follow wheel speed, and beacon pings. Motors and pings are placed in 3D with PannerNodes (HRTF), with the camera as the listener.
+- Mission control sends a message at each phase. It arrives after the real round trip of light time from wherever the ship is: under a second near Earth, about half an hour at Mars, counted down on screen. With sound on, each message opens and closes with Quindar tones over carrier hiss.
+- Captions: with sound on, a small list says in words what is audible. The messages are text, so they need no captions.
+- Reduced motion halves the launch rumble and drops the heartbeat.
+
+Simplified, and said so: the brief asked for recorded launch audio. This build synthesises it instead, so no clip needs a licence; recorded NASA audio can replace it later.
+
+From `v0.8.0`, landing and the Mars surface:
 
 - With a site picked, "Begin descent" spends the deorbit burn and waits in orbit for the site's morning (the Sun about 30 degrees up, found from Mars's real rotation and the Sun's direction), as real landers time their entry for daylight.
 - Entry, parachute and powered descent follow the shape of a real Mars landing with the altitude and speed shown. This is the one compressed part of the flight: about 25 seconds instead of seven minutes.

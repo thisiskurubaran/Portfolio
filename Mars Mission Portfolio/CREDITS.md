@@ -29,4 +29,4 @@ Rover physics uses Rapier (`@dimforge/rapier3d-compat`, Apache 2.0, Dimforge). M
 
 ## Audio
 
-None yet.
+No recorded clips. Every sound is synthesised in the browser with the Web Audio API from noise and oscillators, so there is nothing to license: engine roar and crackle, hull rumble, fans and pump hum, relay clicks, suit breathing, a heartbeat, the rover motors, beacon pings and the cruise music. The Quindar tones (2525 Hz on, 2475 Hz off) follow the frequencies NASA used on Apollo ground transmitters. Mission control's messages are text; no voice is recorded or cloned.
