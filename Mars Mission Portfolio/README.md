@@ -6,7 +6,17 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.3.0`, launch and Earth orbit:
+`v0.4.0`, transit to Mars:
+
+- A transfer planner in Earth orbit finds the next real launch window from today's planet positions: a porkchop search over departure date and flight time, solving Lambert's problem for each pair. From October 2026 it finds the late 2026 window (311 days, C3 about 9 km²/s²). Run from April 2020 it picks a departure of 1 August 2020 and arrival in late February 2021, close to what Perseverance flew.
+- Departure jumps mission time to the window and fires the trans-Mars injection burn. Propellant comes from the rocket equation (70 t ship, 45 t propellant, 450 s engine).
+- The cruise follows the transfer ellipse as an exact two-body orbit around the Sun. The sky switches to a ship centred frame in millions of km, with the orbits of Earth and Mars, the transfer arc, Earth shrinking behind and Mars ahead.
+- Seven stations sit on the transfer arc. The ship stops at each, holds 40 m off, and docks to open that part of the portfolio: education, the three employers with their roles, an outpost for early career roles, certifications, and the Instant Eats project. Undocking resumes the cruise. Stations with a habitat ring spin it at the rate that gives Mars gravity at its radius.
+- Comms panel with contact links, telemetry for the cruise (distance from the Sun, speed, distance to Mars, arrival, propellant), and a station timeline.
+
+The first 12 hours after the burn blend the escape from Earth orbit onto the transfer. A real burn is aimed so the escape leaves along the transfer direction and is then trimmed by correction burns; the blend stands in for both and is the one scripted part of the cruise.
+
+From `v0.3.0`, launch and Earth orbit:
 
 - Phase 1, the pad: a launch complex at Satish Dhawan Space Centre under the real local sky (day, dusk or a floodlit night), with the mission brief (about) and a launch button
 - Countdown, liftoff with exhaust and smoke, max Q, staging, abort tower jettison, second stage burn, orbit insertion, spacecraft separation and solar array deployment
@@ -62,7 +72,8 @@ src/
   scene/     three.js scene: sky layer (Earth, Sun, stars, planets) and local layer (pad, rocket, ship)
     craft/   rocket and spacecraft models
     launch/  launch site and the scripted ascent profile
-  physics/   kepler propagation, verlet integrator, fixed stepper, light time
+    transit/ cruise sky (orbits, transfer arc, Mars) and stations
+  physics/   kepler propagation, lambert solver, launch windows, rocket equation, verlet integrator, fixed stepper, light time
   space/     astronomy: planet elements, time, reference frames
   shaders/   GLSL for planets, atmosphere, Sun and stars
   state/     simulation clock and store

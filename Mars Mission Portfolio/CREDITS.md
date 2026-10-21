@@ -20,7 +20,7 @@ The `three-globe` package (MIT, Vasco Asturiano) redistributes these images; the
 |---|---|---|
 | `public/data/stars.json` | Hipparcos catalogue stars to magnitude 6, from `d3-celestial` (`data/stars.6.json`) by Olaf Frohn | Catalogue data: ESA Hipparcos, free for use. Package: BSD 3-Clause |
 
-Planet positions use JPL's approximate Keplerian elements (Standish, Table 1, valid 1800 to 2050), https://ssd.jpl.nasa.gov/planets/approx_pos.html. Planet GM values are from JPL DE440. Planet facts are from the NASA planetary fact sheets. Sidereal time uses the IAU 1982 expression. The Astronomical Almanac low precision Sun formula is used as an independent check in the tests.
+Planet positions use JPL's approximate Keplerian elements (Standish, Table 1, valid 1800 to 2050), https://ssd.jpl.nasa.gov/planets/approx_pos.html. Planet GM values are from JPL DE440. Planet facts are from the NASA planetary fact sheets. Sidereal time uses the IAU 1982 expression. The Astronomical Almanac low precision Sun formula is used as an independent check in the tests. The Lambert solver follows the universal variable algorithm in H. D. Curtis, Orbital Mechanics for Engineering Students (algorithm 5.2), and is tested against that book's example 5.2.
 
 ## Audio
 
