@@ -7,6 +7,7 @@ import { LaunchHud } from "./LaunchHud";
 import { CaptureHud, MarsOrbitHud } from "./MarsHud";
 import { MissionBrief } from "./MissionBrief";
 import { OrbitHud } from "./OrbitHud";
+import { DescentHud, SurfaceHud } from "./SurfaceHud";
 import { TimeWarp } from "./TimeWarp";
 import { TmiHud, TransitHud } from "./TransitHud";
 
@@ -26,10 +27,12 @@ export default function Hud() {
       {phase === "transit" && <TransitHud />}
       {phase === "capture" && <CaptureHud />}
       {phase === "marsOrbit" && <MarsOrbitHud />}
+      {phase === "descent" && <DescentHud />}
+      {phase === "surface" && <SurfaceHud />}
       {/* The station panel takes the right side while docked. */}
       {(phase === "orbit" || ((phase === "transit" || phase === "marsOrbit") && mode !== "docked")) && <BodyPanel />}
       {warpAllowed && <TimeWarp />}
-      {phase !== "countdown" && phase !== "ascent" && <Comms />}
+      {phase !== "countdown" && phase !== "ascent" && phase !== "descent" && <Comms />}
     </>
   );
 }

@@ -9,7 +9,7 @@ import { type Stop, stops } from "@/content/stops";
 import { ui } from "@/content/ui";
 import { moonFlyby, transit, type Visit } from "@/scene/transitRuntime";
 
-function RoleCard({ role }: { role: Role }) {
+export function RoleCard({ role }: { role: Role }) {
   return (
     <article className="role">
       <h3>

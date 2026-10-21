@@ -21,6 +21,8 @@ import { skyCamera, skyScene } from "./skyLayer";
 import { Starfield } from "./Starfield";
 import { Sun } from "./Sun";
 import { Station } from "./transit/Station";
+import { DriveKeys } from "./surface/DriveKeys";
+import { Surface } from "./surface/Surface";
 import { TransitSky } from "./transit/TransitSky";
 
 function SkyLayer() {
@@ -60,6 +62,8 @@ export default function Experience() {
       <LaunchSite />
       <Rocket />
       <Station />
+      <Surface />
+      <DriveKeys />
       <AeroGlow />
       <CameraDirector />
       <FpsProbe />

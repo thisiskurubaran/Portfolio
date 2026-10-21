@@ -772,3 +772,55 @@ a.hud-button {
   max-height: calc(100vh - 370px);
   overflow-y: auto;
 }
+
+.panel-close {
+  float: right;
+  margin-left: 8px;
+}
+
+.telemetry-note.warn {
+  color: #ffcf9e;
+}
+
+.drive-pad {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 56px);
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-areas:
+    ". fwd ."
+    "left brake right"
+    ". rev .";
+  gap: 6px;
+  touch-action: none;
+  user-select: none;
+}
+
+.drive-key {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  font-size: 18px;
+}
+
+.drive-key:nth-child(1) { grid-area: left; }
+.drive-key:nth-child(2) { grid-area: fwd; }
+.drive-key:nth-child(3) { grid-area: rev; }
+.drive-key:nth-child(4) { grid-area: right; }
+.drive-key:nth-child(5) { grid-area: brake; }
+
+/* Fine pointers drive with the keyboard; the pad is for touch. */
+@media (hover: hover) and (pointer: fine) {
+  .drive-pad {
+    opacity: 0.6;
+  }
+}
+
+.rover-telemetry {
+  min-width: 230px;
+}
+
+.rover-telemetry .hud-key {
+  width: 5.5em;
+}

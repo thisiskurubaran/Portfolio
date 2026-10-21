@@ -7,7 +7,9 @@ function contentSecurityPolicy(nonce: string, dev: boolean): string {
     "default-src 'self'",
     // Only scripts carrying this request's nonce run, plus whatever they load.
     // React needs eval in development for its error overlays, never in production.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ""}`,
+    // wasm-unsafe-eval lets the rover physics (Rapier) compile its WebAssembly;
+    // it allows no JavaScript eval.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${dev ? " 'unsafe-eval'" : ""}`,
     // Dev mode injects CSS through style tags without a nonce.
     dev ? "style-src 'self' 'unsafe-inline'" : `style-src 'self' 'nonce-${nonce}'`,
     // Server rendered markup (next/image among others) uses style attributes.
