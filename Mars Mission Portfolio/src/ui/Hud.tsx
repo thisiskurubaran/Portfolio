@@ -3,11 +3,13 @@
 import { useStore } from "@/state/store";
 import { BodyPanel } from "./BodyPanel";
 import { Comms } from "./Comms";
+import { CommsFeed } from "./CommsFeed";
 import { LaunchHud } from "./LaunchHud";
 import { CaptureHud, MarsOrbitHud } from "./MarsHud";
 import { MissionBrief } from "./MissionBrief";
 import { OrbitHud } from "./OrbitHud";
 import { DescentHud, SurfaceHud } from "./SurfaceHud";
+import { SoundControls } from "./SoundControls";
 import { TimeWarp } from "./TimeWarp";
 import { TmiHud, TransitHud } from "./TransitHud";
 
@@ -33,6 +35,8 @@ export default function Hud() {
       {(phase === "orbit" || ((phase === "transit" || phase === "marsOrbit") && mode !== "docked")) && <BodyPanel />}
       {warpAllowed && <TimeWarp />}
       {phase !== "countdown" && phase !== "ascent" && phase !== "descent" && <Comms />}
+      <CommsFeed />
+      <SoundControls />
     </>
   );
 }
