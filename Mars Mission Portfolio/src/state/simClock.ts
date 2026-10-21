@@ -30,3 +30,10 @@ export function setWarp(warp: number, real = Date.now()): void {
 export function getWarp(): number {
   return state.warp;
 }
+
+/** Jumps back to the wall clock at 1x. */
+export function resetToNow(real = Date.now()): void {
+  state.anchorSim = real;
+  state.anchorReal = real;
+  state.warp = 1;
+}
