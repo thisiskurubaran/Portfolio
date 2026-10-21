@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useStore } from "@/state/store";
+import { progress } from "../astronaut/guideRuntime";
 import { driveInput } from "./roverState";
 
 /** W/S or up/down to drive, A/D or left/right to steer, space to brake. */
@@ -21,6 +22,8 @@ export function DriveKeys() {
       driveInput.brake = held.has(" ");
     };
     const down = (e: KeyboardEvent) => {
+      // On foot, the astronaut's keys are in charge.
+      if (!progress.inRover) return;
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
       const k = e.key.toLowerCase();

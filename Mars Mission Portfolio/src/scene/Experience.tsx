@@ -26,6 +26,8 @@ import { DriveKeys } from "./surface/DriveKeys";
 import { Surface } from "./surface/Surface";
 import { TransitSky } from "./transit/TransitSky";
 import { Meteors } from "./weather/Meteors";
+import { Astronaut } from "./astronaut/Astronaut";
+import { AstroKeys } from "./astronaut/AstroKeys";
 import { RescueDrone } from "./weather/RescueDrone";
 import { Sightings } from "./weather/Sightings";
 
@@ -71,6 +73,8 @@ export default function Experience() {
       <RescueDrone />
       <Surface />
       <DriveKeys />
+      <Astronaut />
+      <AstroKeys />
       <AudioDriver />
       <AeroGlow />
       <CameraDirector />

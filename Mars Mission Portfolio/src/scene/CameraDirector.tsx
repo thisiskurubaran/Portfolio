@@ -55,6 +55,7 @@ export function CameraDirector() {
   const phase = useStore((s) => s.phase);
   const transitMode = useStore((s) => s.transitMode);
   const reduced = useReducedMotion();
+  const onFoot = useStore((s) => s.astroMode) !== "aboard";
   const freeLook = phase !== "ascent";
   const onPad = phase === "pad" || phase === "countdown";
   const previous = useRef(phase);
@@ -117,8 +118,8 @@ export function CameraDirector() {
     const onKey = (e: KeyboardEvent) => {
       const c = controls.current;
       if (!c || !c.enabled) return;
-      // On the surface the arrow keys drive the rover instead.
-      if (useStore.getState().phase === "surface") return;
+      // On the surface and whenever the astronaut is out, the arrow keys move instead.
+      if (useStore.getState().phase === "surface" || useStore.getState().astroMode !== "aboard") return;
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
       const step = 0.08;
@@ -202,8 +203,8 @@ export function CameraDirector() {
       enablePan={false}
       enableDamping={!reduced}
       dampingFactor={0.08}
-      minDistance={onPad ? 30 : phase === "surface" ? 6 : 9}
-      maxDistance={phase === "transit" ? 500 : onPad ? 400 : phase === "surface" ? 120 : 300}
+      minDistance={onFoot ? 2.5 : onPad ? 30 : phase === "surface" ? 6 : 9}
+      maxDistance={onFoot ? 60 : phase === "transit" ? 500 : onPad ? 400 : phase === "surface" ? 120 : 300}
       // On the pad, keep the camera above the ground.
       maxPolarAngle={onPad || phase === "surface" ? Math.PI / 2 + 0.2 : Math.PI}
       rotateSpeed={0.5}

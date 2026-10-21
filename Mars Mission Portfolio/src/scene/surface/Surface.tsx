@@ -31,6 +31,9 @@ import { SM_HEIGHT } from "../craft/Spacecraft";
 import { local } from "../localRuntime";
 import { surface } from "../surfaceRuntime";
 import { createRoverSim, ROVER, type RoverSim } from "./roverSim";
+import { astro } from "../astronaut/astronautRuntime";
+import { followTarget } from "../follow";
+import { progress } from "../astronaut/guideRuntime";
 import { driveInput, roverState } from "./roverState";
 import { makeTerrain, TERRAIN_CELLS, TERRAIN_SIZE_M, type Terrain } from "./terrain";
 
@@ -236,12 +239,15 @@ function RoverModel({ sim }: { sim: RoverSim | null }) {
   );
 }
 
+/** The current terrain, for anything else that walks on it. */
+export const surfaceWorld: { terrain: Terrain | null } = { terrain: null };
+
 const follow = new Vector3();
-const last = new Vector3();
+const chaseStart = new Vector3();
 const upAxis = new Vector3();
 const fwdAxis = new Vector3();
 const chassis = new Quaternion();
-const chase = { reset: false };
+const PARKED = { throttle: 0, steer: 0, brake: true };
 
 /**
  * The surface: ground, rocks, base, beacons and the rover. Built in the
@@ -255,6 +261,9 @@ export function Surface() {
   const dome = useRef<Mesh>(null);
   const [sim, setSim] = useState<RoverSim | null>(null);
   const terrain = useMemo(() => makeTerrain(site?.id ?? "jezero"), [site]);
+  useEffect(() => {
+    surfaceWorld.terrain = terrain;
+  }, [terrain]);
   const geometry = useMemo(() => terrainGeometry(terrain), [terrain]);
   const mats = useMemo(
     () => ({
@@ -285,8 +294,6 @@ export function Surface() {
       .then((s) => {
         if (!live) return s.dispose();
         made = s;
-        // Camera behind and above the rover once it exists.
-        chase.reset = true;
         setSim(s);
       })
       .catch((e: unknown) => console.error("rover physics failed to load", e));
@@ -317,7 +324,8 @@ export function Surface() {
     if (dome.current) dome.current.position.copy(camera.position);
 
     if (!sim) return;
-    sim.advance(delta, driveInput);
+    // Parked with the brake on until the astronaut climbs in.
+    sim.advance(delta, progress.inRover ? driveInput : PARKED);
     const t = sim.body.translation();
     const q = sim.body.rotation();
     surface.rover.set(t.x, t.y, t.z);
@@ -340,9 +348,12 @@ export function Surface() {
         return { id: `wreck:${d.id}`, x: Math.cos(a) * 160, z: Math.sin(a) * 160 };
       }),
     ];
+    // Beacons open for whoever is there: the rover, or the astronaut on foot.
+    const fx = progress.inRover ? t.x : astro.pos.x;
+    const fz = progress.inRover ? t.z : astro.pos.z;
     let nearest: { id: string; d: number } | null = null;
     for (const p of places) {
-      const d = Math.hypot(p.x - t.x, p.z - t.z);
+      const d = Math.hypot(p.x - fx, p.z - fz);
       if (!nearest || d < nearest.d) nearest = { id: p.id, d };
     }
     roverState.nearest = nearest;
@@ -350,18 +361,11 @@ export function Surface() {
     const store = useStore.getState();
     if (store.surfaceTarget !== target) store.setSurfaceTarget(target);
 
-    // Chase camera: the orbit controls keep their angle while the target follows the rover.
-    if (chase.reset) {
-      chase.reset = false;
-      last.set(0, 0, 0);
-      camera.position.set(ROVER_START.x - 14, GROUND_Y + 7, ROVER_START.z + 10);
-    }
-    if (controls) {
+    // Chase camera while driving; on foot the astronaut's own camera follows.
+    if (progress.inRover) {
       follow.set(t.x, t.y + GROUND_Y + 1, t.z);
-      if (last.lengthSq() === 0) last.copy(follow);
-      camera.position.add(follow).sub(last);
-      controls.target.copy(follow);
-      last.copy(follow);
+      chaseStart.set(-14, 7, 10);
+      followTarget(camera, controls, follow, "rover", chaseStart);
     }
   });
 
