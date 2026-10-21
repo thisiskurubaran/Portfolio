@@ -39,6 +39,13 @@ const TOWER_X = -13;
 const TOWER_HEIGHT = 66;
 
 const sunColor = { value: new Color() };
+
+export const EARTH_SKY = {
+  uZenith: { value: new Color(0.1, 0.24, 0.62) },
+  uHorizon: { value: new Color(0.55, 0.66, 0.82) },
+  uSunset: { value: new Color(1.0, 0.42, 0.14) },
+  uHalo: { value: new Color(1.0, 0.9, 0.75) },
+};
 const groundOpacity = { value: 1 };
 
 function groundGeometry() {
@@ -201,6 +208,7 @@ function Smoke() {
 export function LaunchSite() {
   const ground = useRef<Group>(null);
   const dome = useRef<Mesh>(null);
+  const root = useRef<Group>(null);
   const camera = useThree((s) => s.camera);
 
   const geo = useMemo(
@@ -212,7 +220,12 @@ export function LaunchSite() {
       dome: new ShaderMaterial({
         vertexShader: localVert,
         fragmentShader: skydomeFrag,
-        uniforms: { uSunDir: local.sunDirUniform, uDaylight: local.daylight, uAir: local.air },
+        uniforms: {
+          uSunDir: local.sunDirUniform,
+          uDaylight: local.daylight,
+          uAir: local.air,
+          ...EARTH_SKY,
+        },
         side: BackSide,
         transparent: true,
         depthWrite: false,
@@ -233,6 +246,10 @@ export function LaunchSite() {
   );
 
   useFrame(() => {
+    const phase = useStore.getState().phase;
+    const onEarth = phase === "pad" || phase === "countdown" || phase === "ascent";
+    if (root.current) root.current.visible = onEarth;
+    if (!onEarth) return;
     sunColor.value.copy(local.sunColor);
     const altKm = local.altitudeM / 1000;
     groundOpacity.value = 1 - smoothstep(12, 40, altKm);
@@ -247,7 +264,7 @@ export function LaunchSite() {
   });
 
   return (
-    <>
+    <group ref={root}>
       <mesh ref={dome} material={mats.dome} renderOrder={-10}>
         <sphereGeometry args={[DOME_RADIUS, 48, 24]} />
       </mesh>
@@ -257,7 +274,7 @@ export function LaunchSite() {
         <mesh geometry={geo.masts} material={materials.steel} />
         <Smoke />
       </group>
-    </>
+    </group>
   );
 }
 

@@ -18,6 +18,7 @@ import {
   spend,
   updateMarsFrame,
 } from "./marsRuntime";
+import { EDL, edlAltitudeKm, edlStep, surface, surfaceAu, updateSurfaceFrame } from "./surfaceRuntime";
 import { marsVisits, resetMarsVisits } from "./visits";
 import { updateSky, updateView } from "./skyRuntime";
 import { beginTransfer, shipAu, TMI_REAL_S, transit, updateTransitFrame } from "./transitRuntime";
@@ -193,13 +194,25 @@ export function PhaseDriver() {
       updateView(au, null);
       observer.au = au;
       stepTransit(t);
-    } else {
+    } else if (phase === "capture" || phase === "marsOrbit") {
       updateMarsFrame(t, phase);
       const au = shipAuAtMars();
       updateView(au, null);
       observer.au = au;
       if (phase === "capture") stepCapture(t);
       else stepMarsOrbit();
+    } else {
+      const since = phase === "descent" ? (Date.now() - surface.startedAt) / 1000 : EDL.touchdown;
+      updateSurfaceFrame(t, edlAltitudeKm(since));
+      const au = surfaceAu();
+      updateView(au, "mars");
+      observer.au = au;
+      const step = edlStep(since);
+      local.engineBurn = phase === "descent" && (step === "deorbit" || step === "powered");
+      if (phase === "descent" && step === "touchdown") {
+        local.engineBurn = false;
+        store.setPhase("surface");
+      }
     }
     updateLocal();
   }, -100);

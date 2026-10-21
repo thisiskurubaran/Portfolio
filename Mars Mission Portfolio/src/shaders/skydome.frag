@@ -10,9 +10,12 @@ uniform float uAir;
 
 varying vec3 vWorldPos;
 
-const vec3 ZENITH = vec3(0.10, 0.24, 0.62);
-const vec3 HORIZON = vec3(0.55, 0.66, 0.82);
-const vec3 SUNSET = vec3(1.0, 0.42, 0.14);
+// Earth: blue overhead, red sunsets. Mars inverts it: fine dust makes the
+// day sky butterscotch and the glow around a setting Sun blue.
+uniform vec3 uZenith;
+uniform vec3 uHorizon;
+uniform vec3 uSunset;
+uniform vec3 uHalo;
 // cos(0.267 deg): the Sun's angular radius.
 const float SUN_COS = 0.999989;
 
@@ -23,20 +26,20 @@ void main() {
   float sunEl = uSunDir.y;
 
   float toHorizon = pow(1.0 - clamp(h, 0.0, 1.0), 4.0);
-  vec3 color = mix(ZENITH, HORIZON, toHorizon);
+  vec3 color = mix(uZenith, uHorizon, toHorizon);
 
-  // Low Sun: the horizon glows orange on the Sun's side.
+  // Low Sun: the horizon on the Sun's side takes the sunset colour.
   float low = 1.0 - smoothstep(0.0, 0.3, sunEl);
-  color = mix(color, SUNSET, low * toHorizon * pow(max(mu, 0.0) * 0.5 + 0.5, 6.0));
+  color = mix(color, uSunset, low * toHorizon * pow(max(mu, 0.0) * 0.5 + 0.5, 6.0));
 
   // Mie forward scattering around the Sun.
-  color += vec3(1.0, 0.9, 0.75) * (pow(max(mu, 0.0), 300.0) * 3.0 + pow(max(mu, 0.0), 16.0) * 0.35);
+  color += uHalo * (pow(max(mu, 0.0), 300.0) * 3.0 + pow(max(mu, 0.0), 16.0) * 0.35);
 
   // Thin air scatters less, so the sky darkens toward black with altitude.
   color *= uDaylight * mix(0.25, 1.0, uAir) * 1.4;
 
   // Below the horizon the dome reads as distant haze.
-  if (h < 0.0) color = mix(HORIZON, HORIZON * 0.6, clamp(-h * 8.0, 0.0, 1.0)) * uDaylight * 1.2;
+  if (h < 0.0) color = mix(uHorizon, uHorizon * 0.6, clamp(-h * 8.0, 0.0, 1.0)) * uDaylight * 1.2;
 
   float disc = step(SUN_COS, mu) * step(0.0, h + 0.005);
   color += vec3(1.0, 0.95, 0.88) * disc * 60.0 * mix(0.4, 1.0, smoothstep(0.0, 0.2, sunEl));

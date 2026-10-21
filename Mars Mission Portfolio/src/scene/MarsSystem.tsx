@@ -28,6 +28,7 @@ import { useStore } from "@/state/store";
 import { mars, moonPositionKm } from "./marsRuntime";
 import { rockyMaterial } from "./rockyMaterial";
 import { sky } from "./skyRuntime";
+import { surface } from "./surfaceRuntime";
 
 const marsUniforms = {
   uDay: { value: null as unknown },
@@ -99,6 +100,9 @@ export function MarsSystem() {
   useFrame(() => {
     const g = globe.current;
     if (!g) return;
+    // Low down the local terrain takes over; the globe would only clip into it.
+    const phaseNow = useStore.getState().phase;
+    g.visible = !(phaseNow === "surface" || (phaseNow === "descent" && surface.altitudeKm < 20));
     // Body frame: longitude 0 on local +x, north on +y, 90 E on -z, as for Earth.
     const ax = marsAxes(sky.simMs);
     xb.set(...eclipticToScene(ax.lon0));
@@ -133,7 +137,8 @@ export function MarsSystem() {
     }
   });
 
-  if (phase !== "capture" && phase !== "marsOrbit") return null;
+  const marsPhase = phase === "capture" || phase === "marsOrbit" || phase === "descent" || phase === "surface";
+  if (!marsPhase) return null;
   return (
     <>
       <group ref={globe}>

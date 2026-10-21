@@ -1,6 +1,8 @@
 import { ascent, skipToOrbit } from "@/scene/missionRuntime";
 import type { LandingSite } from "@/content/landingSites";
-import { canAfford, hohmannToMoon, mars, planCapture, startTransfer } from "@/scene/marsRuntime";
+import { canAfford, deorbitDv, hohmannToMoon, mars, planCapture, spend, startTransfer } from "@/scene/marsRuntime";
+import { nextMorning, surface } from "@/scene/surfaceRuntime";
+import { roverState } from "@/scene/surface/roverState";
 import { planTransfer, transit } from "@/scene/transitRuntime";
 import { marsVisits } from "@/scene/visits";
 import type { MarsMoon } from "@/space/mars";
@@ -76,4 +78,23 @@ export function transferTo(to: MarsMoon): void {
 export function chooseLandingSite(site: LandingSite): void {
   mars.landingSite = site;
   useStore.getState().setLandingSite(site);
+}
+
+/** Deorbit burn, then entry, parachute and powered descent to the chosen site. */
+export function beginDescent(): void {
+  const site = mars.landingSite;
+  const dv = deorbitDv();
+  if (!site || !canAfford(dv)) return;
+  spend(dv);
+  // Wait in orbit for the site's morning, as real landers do, then come down.
+  jumpTo(nextMorning(site, simNow()));
+  surface.site = site;
+  surface.startedAt = Date.now();
+  const store = useStore.getState();
+  store.setWarp(1);
+  store.setPhase("descent");
+}
+
+export function rightRover(): void {
+  roverState.sim?.rightUp();
 }

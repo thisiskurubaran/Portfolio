@@ -7,8 +7,6 @@ import { useStore } from "@/state/store";
 import { JOINT_HEIGHT } from "./craft/Rocket";
 import { local } from "./localRuntime";
 
-const padSky = new Color(0.55, 0.66, 0.82);
-const padGround = new Color(0.45, 0.4, 0.32);
 const space = new Color(0.01, 0.01, 0.015);
 
 /**
@@ -30,8 +28,8 @@ export function LocalLights() {
     }
     if (fill.current) {
       if (onGround) {
-        fill.current.color.copy(padSky);
-        fill.current.groundColor.copy(padGround);
+        fill.current.color.copy(local.skyColor);
+        fill.current.groundColor.copy(local.groundColor);
         fill.current.intensity = 0.03 + 0.7 * local.daylight.value * local.air.value;
       } else {
         // Near Earth, it fills most of the lower sky and is bright only on its day side.

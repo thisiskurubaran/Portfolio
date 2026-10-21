@@ -19,7 +19,7 @@ import { MARS_MOONS, MARS_RADIUS_KM } from "@/space/mars";
 import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 import { DockBar } from "./DockBar";
-import { chooseLandingSite, transferTo } from "./missionActions";
+import { beginDescent, chooseLandingSite, transferTo } from "./missionActions";
 
 type Reading = { alt: string; vel: string; fuel: string; dv: string; step: CaptureStep };
 
@@ -148,7 +148,14 @@ function Moons() {
               </li>
             ))}
           </ul>
-          {site && <p className="planner-note">{ui.mars.siteLocked(site.name)}</p>}
+          {site && (
+            <>
+              <p className="planner-note">{ui.mars.siteLocked(site.name)}</p>
+              <button type="button" className="hud-button" disabled={!deorbitOk} onClick={beginDescent}>
+                {ui.mars.descend}
+              </button>
+            </>
+          )}
         </>
       )}
     </section>

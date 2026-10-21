@@ -24,6 +24,8 @@ const AHEAD_TARGET = new Vector3(40, 0, 0);
 /** High above the ship, looking down past it at the planet below. */
 const DOWN_CAMERA = new Vector3(-8, 30, 9);
 const ORIGIN = new Vector3(0, 0, 0);
+/** Coming down: level with the lander, so the ground rises into view beneath it. */
+const DESCENT_CAMERA = new Vector3(-34, 6, 26);
 
 /** Docking view looks at a point between ship and station. */
 const STATION_TARGET = new Vector3(18, 0, 0);
@@ -86,6 +88,13 @@ export function CameraDirector() {
     controls.current?.update();
   }, [phase, transitMode, camera]);
 
+  useEffect(() => {
+    if (phase !== "descent") return;
+    controls.current?.target.copy(ORIGIN);
+    camera.position.copy(DESCENT_CAMERA);
+    controls.current?.update();
+  }, [phase, camera]);
+
   // Stations: pull back and look ahead so ship and station share the frame.
   useEffect(() => {
     if (phase !== "transit") return;
@@ -108,6 +117,8 @@ export function CameraDirector() {
     const onKey = (e: KeyboardEvent) => {
       const c = controls.current;
       if (!c || !c.enabled) return;
+      // On the surface the arrow keys drive the rover instead.
+      if (useStore.getState().phase === "surface") return;
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
       const step = 0.08;
@@ -191,10 +202,10 @@ export function CameraDirector() {
       enablePan={false}
       enableDamping={!reduced}
       dampingFactor={0.08}
-      minDistance={onPad ? 30 : 9}
-      maxDistance={phase === "transit" ? 500 : onPad ? 400 : 300}
+      minDistance={onPad ? 30 : phase === "surface" ? 6 : 9}
+      maxDistance={phase === "transit" ? 500 : onPad ? 400 : phase === "surface" ? 120 : 300}
       // On the pad, keep the camera above the ground.
-      maxPolarAngle={onPad ? Math.PI / 2 + 0.35 : Math.PI}
+      maxPolarAngle={onPad || phase === "surface" ? Math.PI / 2 + 0.2 : Math.PI}
       rotateSpeed={0.5}
       zoomSpeed={0.6}
     />

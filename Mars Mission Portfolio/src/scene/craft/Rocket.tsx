@@ -109,7 +109,10 @@ export function Rocket() {
 
     if (stack.current) {
       // Tilt toward east by the pitch program, then hang the stack from the joint.
-      const tilt = t < 0 ? 0 : Math.PI / 2 - s.pitch;
+      // Upright on the pad and again for landing on Mars, engine down.
+      const phase = useStore.getState().phase;
+      const upright = t < 0 || phase === "descent" || phase === "surface";
+      const tilt = upright ? 0 : Math.PI / 2 - s.pitch;
       stack.current.rotation.z = -tilt;
       stack.current.position.set(-Math.sin(tilt) * JOINT_HEIGHT, -Math.cos(tilt) * JOINT_HEIGHT, 0);
     }

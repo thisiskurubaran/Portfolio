@@ -1,6 +1,7 @@
 import { Color, Quaternion, Vector3 } from "three";
 import { useStore } from "@/state/store";
 import { inMarsShadow } from "./marsRuntime";
+import { surface } from "./surfaceRuntime";
 import { ascent, frame, inEarthShadow } from "./missionRuntime";
 import { sky } from "./skyRuntime";
 
@@ -27,6 +28,11 @@ export const local = {
   shineColor: new Color(0.32, 0.42, 0.58),
   /** Main engine firing outside the launch, for the plume. */
   engineBurn: false,
+  /** Sky and ground colours for the fill light when standing on a planet. */
+  skyColor: new Color(0.55, 0.66, 0.82),
+  groundColor: new Color(0.45, 0.4, 0.32),
+  /** On the ground at Mars, or coming down to it. */
+  onMars: false,
   sunDirUniform: { value: new Vector3(0, 1, 0) },
 };
 
@@ -38,6 +44,12 @@ const dusk = new Color(1, 0.55, 0.25);
 // Sunlit Earth reflects about 30% of light, mostly blue and white; Mars about 25%, ochre.
 const earthShine = new Color(0.32, 0.42, 0.58);
 const marsShine = new Color(0.5, 0.3, 0.18);
+const earthSky = new Color(0.55, 0.66, 0.82);
+const earthGround = new Color(0.45, 0.4, 0.32);
+const marsSky = new Color(0.62, 0.45, 0.32);
+const marsGround = new Color(0.45, 0.28, 0.17);
+const marsNoon = new Color(1, 0.92, 0.82);
+const marsLow = new Color(1, 0.7, 0.5);
 
 export function updateLocal(): void {
   inverse.copy(frame.rotation).invert();
@@ -47,6 +59,13 @@ export function updateLocal(): void {
   const phase = useStore.getState().phase;
   const onAscent = phase === "ascent";
   const onGround = phase === "pad" || phase === "countdown";
+  local.onMars = phase === "descent" || phase === "surface";
+  if (local.onMars) {
+    updateMarsGround();
+    return;
+  }
+  local.skyColor.copy(earthSky);
+  local.groundColor.copy(earthGround);
   const altKm = onAscent ? ascent.sample.altitudeKm : onGround ? 0 : 1e4;
   local.altitudeM = altKm * 1000;
   local.downrangeM = onAscent ? ascent.sample.downrangeKm * 1000 : 0;
@@ -67,6 +86,26 @@ export function updateLocal(): void {
   local.sunStrength = 1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu);
   local.earthshine = phase === "transit" ? 0 : smoothstep(-0.35, 0.5, local.sunDir.y);
   local.shineColor.copy(phase === "capture" || phase === "marsOrbit" ? marsShine : earthShine);
+}
+
+/**
+ * Standing on Mars: the air is about 1% of Earth's, but fine dust keeps the
+ * sky bright by day, so the dome stays visible at reduced strength.
+ */
+function updateMarsGround(): void {
+  const altKm = surface.altitudeKm;
+  local.altitudeM = altKm * 1000;
+  local.downrangeM = 0;
+  // Mars's atmosphere has a scale height of about 11 km.
+  local.air.value = 0.4 * Math.exp(-altKm / 11);
+  const el = local.sunDir.y;
+  local.daylight.value = smoothstep(-0.12, 0.05, el);
+  // Dust reddens sunlight slightly even at midday.
+  local.sunColor.copy(marsLow).lerp(marsNoon, smoothstep(0.0, 0.4, el));
+  local.sunStrength = 1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu);
+  local.earthshine = 0;
+  local.skyColor.copy(marsSky);
+  local.groundColor.copy(marsGround);
 }
 
 export function smoothstep(a: number, b: number, x: number): number {

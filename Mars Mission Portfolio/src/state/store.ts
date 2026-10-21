@@ -7,7 +7,7 @@ import { resetToNow, setWarp as setClockWarp } from "./simClock";
  * Mission phases on the one timeline. Later milestones add transit, Mars
  * approach and surface.
  */
-export type Phase = "pad" | "countdown" | "ascent" | "orbit" | "tmi" | "transit" | "capture" | "marsOrbit";
+export type Phase = "pad" | "countdown" | "ascent" | "orbit" | "tmi" | "transit" | "capture" | "marsOrbit" | "descent" | "surface";
 
 /**
  * Cruise sub states. The ship coasts until it reaches a station, holds
@@ -45,6 +45,9 @@ type State = {
   /** Simulated seconds per real second. */
   warp: number;
   selectedBody: PlanetId | null;
+  /** Deep dive, base or wreck the rover is parked next to, by id. */
+  surfaceTarget: string | null;
+  setSurfaceTarget: (id: string | null) => void;
   /** Where the crew means to land, picked in Mars orbit. */
   landingSite: LandingSite | null;
   setLandingSite: (site: LandingSite) => void;
@@ -76,6 +79,8 @@ export const useStore = create<State>((set, get) => ({
   warp: 1,
   selectedBody: null,
   landingSite: null,
+  surfaceTarget: null,
+  setSurfaceTarget: (surfaceTarget) => set({ surfaceTarget }),
   setLandingSite: (landingSite) => set({ landingSite }),
   transitMode: "cruise",
   visitIndex: 0,
