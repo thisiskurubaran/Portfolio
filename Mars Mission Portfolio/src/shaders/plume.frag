@@ -4,6 +4,8 @@
 
 uniform float uIntensity;
 uniform float uTime;
+// 0 for visitors who ask for reduced motion: a steady flame instead of a flickering one.
+uniform float uFlicker;
 
 varying vec3 vWorldPos;
 varying vec3 vNormal;
@@ -13,7 +15,7 @@ void main() {
   float along = vUv.y; // 1 at the nozzle, 0 at the tail
   vec3 viewDir = normalize(cameraPosition - vWorldPos);
   float core = pow(abs(dot(normalize(vNormal), viewDir)), 1.5);
-  float flicker = 0.85 + 0.15 * sin(uTime * 53.0 + vUv.x * 40.0) * sin(uTime * 31.0);
+  float flicker = 1.0 - uFlicker * (0.15 - 0.15 * sin(uTime * 53.0 + vUv.x * 40.0) * sin(uTime * 31.0));
   vec3 hot = vec3(1.0, 0.92, 0.75);
   vec3 cool = vec3(1.0, 0.45, 0.12);
   vec3 color = mix(cool, hot, smoothstep(0.4, 1.0, along));

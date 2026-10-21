@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Euler, Vector3 } from "three";
+import { Euler, Spherical, Vector3 } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useStore } from "@/state/store";
@@ -28,6 +28,8 @@ function orbitCamera(aspect: number): Vector3 {
   return ORBIT_CAMERA.clone().multiplyScalar(aspect < 1 ? Math.min(1 / aspect, 2.2) : 1);
 }
 
+const offset = new Vector3();
+const spherical = new Spherical();
 const desired = new Vector3();
 const look = new Vector3();
 const rocketRot = new Euler();
@@ -81,6 +83,51 @@ export function CameraDirector() {
     }
     controls.current?.update();
   }, [phase, transitMode, camera]);
+
+  // Keyboard look: arrows orbit the view, + and - zoom, wherever focus is
+  // except in a text field. Mirrors what dragging and scrolling do.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const c = controls.current;
+      if (!c || !c.enabled) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      const step = 0.08;
+      offset.copy(camera.position).sub(c.target);
+      spherical.setFromVector3(offset);
+      switch (e.key) {
+        case "ArrowLeft":
+          spherical.theta -= step;
+          break;
+        case "ArrowRight":
+          spherical.theta += step;
+          break;
+        case "ArrowUp":
+          spherical.phi -= step;
+          break;
+        case "ArrowDown":
+          spherical.phi += step;
+          break;
+        case "+":
+        case "=":
+          spherical.radius *= 0.9;
+          break;
+        case "-":
+        case "_":
+          spherical.radius *= 1.1;
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      spherical.phi = Math.min(Math.max(spherical.phi, 0.05), c.maxPolarAngle);
+      spherical.radius = Math.min(Math.max(spherical.radius, c.minDistance), c.maxDistance);
+      camera.position.copy(c.target).add(offset.setFromSpherical(spherical));
+      c.update();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [camera]);
 
   useFrame((_, delta) => {
     if (useStore.getState().phase !== "ascent") return;

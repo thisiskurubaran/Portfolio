@@ -72,6 +72,7 @@ export function MissionClock() {
         <span className="hud-key">{ui.clock.signal}</span>
         <span className="hud-value">{reading?.signal ?? "...."}</span>
       </div>
+      <p className="keys-hint">{ui.keys.hint}</p>
       <details className="hud-scale">
         <summary>{ui.clock.scale}</summary>
         <p>{ui.clock.scaleNote}</p>

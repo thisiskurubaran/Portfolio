@@ -15,6 +15,7 @@ import {
 } from "three";
 import localVert from "@/shaders/local.vert";
 import plumeFrag from "@/shaders/plume.frag";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useStore } from "@/state/store";
 import { EVENTS, sampleAscent } from "../launch/ascentProfile";
 import { local, smoothstep } from "../localRuntime";
@@ -52,7 +53,7 @@ function plumeGeometry() {
   return g;
 }
 
-const plumeShared = { uTime: { value: 0 } };
+const plumeShared = { uTime: { value: 0 }, uFlicker: { value: 1 } };
 const plumeIntensity: [{ value: number }, { value: number }, { value: number }] = [
   { value: 0 },
   { value: 0 },
@@ -79,6 +80,7 @@ function missionTime(): number {
 }
 
 export function Rocket() {
+  const reduced = useReducedMotion();
   const stack = useRef<Group>(null);
   const stage1 = useRef<Group>(null);
   const stage2 = useRef<Group>(null);
@@ -103,6 +105,7 @@ export function Rocket() {
     const t = missionTime();
     const s = sampleAscent(Math.max(t, 0));
     plumeShared.uTime.value = state.clock.elapsedTime;
+    plumeShared.uFlicker.value = reduced ? 0 : 1;
 
     if (stack.current) {
       // Tilt toward east by the pitch program, then hang the stack from the joint.

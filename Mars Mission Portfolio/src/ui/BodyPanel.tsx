@@ -63,7 +63,9 @@ export function BodyPanel() {
             type="button"
             className="hud-button"
             aria-pressed={selected === id}
-            onClick={() => selectBody(selected === id ? null : id)}
+            onClick={() => selectBody(id)}
+            // Tabbing onto a planet aims the reticle at it, as clicking it in the sky does.
+            onFocus={() => selectBody(id)}
           >
             {bodies[id].name}
           </button>
