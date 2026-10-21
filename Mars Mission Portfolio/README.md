@@ -6,7 +6,17 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.5.0`, waypoint stops:
+`v0.6.0`, access, security and privacy:
+
+- `/plain`, the mission file: the whole portfolio as plain server rendered HTML (about, experience, projects, skills, education, certifications, the route, contact). No WebGL, physics or sound. Lighthouse on `/plain`: performance 99, accessibility 100, best practices 100, SEO 100.
+- A "skip to mission file" link is the first thing in the tab order and the first thing on screen, then shrinks to a small tab once the visitor starts flying.
+- The plain site is offered automatically when WebGL is missing, on devices with two cores or fewer, or when the measured frame rate stays under 24 fps.
+- Keyboard: arrow keys orbit the view and + and - zoom wherever free look is active; Tab reaches every control, and tabbing onto a planet aims the reticle at it.
+- Reduced motion: no camera shake, no rotating titles, no ring spin, a steady engine flame, and CSS transitions switched off.
+- Security headers: a nonce based Content Security Policy per request, HSTS, nosniff, Referrer-Policy, X-Frame-Options, COOP, and a Permissions-Policy that denies camera, microphone, geolocation and motion sensors. No console errors or CSP violations in any phase.
+- `/privacy` in plain language: what the site stores today (nothing about visitors) and what planned features will store.
+
+From `v0.5.0`, waypoint stops:
 
 - Two real stops on the way out, defined in `src/content/stops.ts`: the Moon (a small station in low lunar orbit, holding education and early career roles) and Sun-Earth L2 (a deep space observatory, holding the technical highlights from the roles).
 - Stops are gated by real geometry. At the burn, the escape path is searched for the moment it reaches each stop's distance from Earth, and the angle between path and stop decides whether it is on the way. The late 2026 departure passes within about 14 degrees of the Moon a day and a half out, so the Moon is a stop and takes over the education and early career stations. L2 lies away from the Sun, about 84 degrees off that path, so it is listed as off the path with a "visit anyway" override.
@@ -77,7 +87,7 @@ git config core.hooksPath "Mars Mission Portfolio/.githooks"
 
 ```
 src/
-  app/       routes and layout
+  app/       routes and layout: the mission, /plain, /privacy
   scene/     three.js scene: sky layer (Earth, Sun, stars, planets) and local layer (pad, rocket, ship)
     craft/   rocket and spacecraft models
     launch/  launch site and the scripted ascent profile
