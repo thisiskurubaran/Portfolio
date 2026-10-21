@@ -305,6 +305,36 @@ export const ui = {
     progress: "Correction burn",
     done: "Correction burn sent. The drone has stopped tumbling and its operators have it back. There is no hidden project behind this yet; the owner has not added one.",
   },
+  sightings: {
+    label: "Rare sighting",
+    dismiss: "Close",
+    comet: (sunAu: number, usAu: number, mag: number, period: number) =>
+      `Where it really is today: ${sunAu.toFixed(2)} AU from the Sun and ${usAu.toFixed(2)} AU from the ship, around magnitude ${mag.toFixed(0)}${mag > 6 ? ", too faint for the eye, so it is marked brighter than it is" : ""}. It comes round every ${period.toFixed(1)} years and is the parent of the Taurid meteors.`,
+    voyagerTitle: "The Voyagers",
+    voyager: (name: string, au: number, launched: string, note: string) =>
+      `${name}: about ${au} AU out, launched ${launched}. ${note}`,
+    issTitle: "The International Space Station",
+    iss: (km: number) => `Passing ${Math.round(km).toLocaleString("en")} km from the ship, on its own 51.6 degree orbit about 420 km up. Position from CelesTrak's latest element set.`,
+    trainTitle: "A Starlink train",
+    train: (n: number, km: number) =>
+      `${n} satellites from the newest Starlink launch, still in a line at their insertion altitude before they spread out, ${Math.round(km).toLocaleString("en")} km away at the closest.`,
+  },
+  nightPass: {
+    label: "Night pass",
+    intro: "Past midnight where you are. A quiet pass over the dark side carries the first role in the record, where the work started.",
+  },
+  hazard: {
+    quakeTitle: "Strong earthquake recorded near you",
+    quake: (m: number, place: string, km: number) => `Magnitude ${m.toFixed(1)}, ${place}, about ${km} km away.`,
+    stormTitle: "Tropical cyclone near you",
+    storm: (name: string, category: string, km: number) => `${name}: ${category}, about ${km} km away.`,
+    spaceTitle: "Severe space weather",
+    space: (g: number, s: number, r: number) =>
+      `NOAA reports ${[g >= 4 && `a G${g} geomagnetic storm`, s >= 3 && `an S${s} radiation storm`, r >= 3 && `an R${r} radio blackout`].filter(Boolean).join(", ")}. Power grids, satellites and HF radio can be affected.`,
+    advice: "This is information, not a warning from this site. Follow your local authorities.",
+    source: "Official source",
+    dismiss: "Dismiss",
+  },
   sound: {
     on: "Sound on",
     off: "Sound off",

@@ -939,3 +939,46 @@ a.hud-button {
 .pad-weather .hold {
   color: #ffcf9e;
 }
+
+.sighting {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  top: 120px;
+  width: min(320px, calc(100vw - 32px));
+  max-height: 50vh;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.sighting h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.sighting p {
+  margin: 0 0 6px;
+}
+
+.hazard-banner {
+  position: fixed;
+  left: 50%;
+  top: 60px;
+  transform: translateX(-50%);
+  width: min(460px, calc(100vw - 32px));
+  z-index: 4;
+  font-size: 13px;
+  border-color: #ffb36b;
+}
+
+.hazard-banner p {
+  margin: 0 0 6px;
+}
+
+.night-pass {
+  top: auto;
+  right: auto;
+  left: 50%;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px);
+  transform: translateX(-50%);
+  width: min(380px, calc(100vw - 32px));
+}

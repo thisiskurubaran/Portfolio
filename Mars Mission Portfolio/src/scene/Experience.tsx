@@ -27,6 +27,7 @@ import { Surface } from "./surface/Surface";
 import { TransitSky } from "./transit/TransitSky";
 import { Meteors } from "./weather/Meteors";
 import { RescueDrone } from "./weather/RescueDrone";
+import { Sightings } from "./weather/Sightings";
 
 function SkyLayer() {
   return (
@@ -45,6 +46,7 @@ function SkyLayer() {
         <MarsSystem />
       </Suspense>
       <TransitSky />
+      <Sightings />
     </>
   );
 }

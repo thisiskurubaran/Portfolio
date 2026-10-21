@@ -5,13 +5,16 @@ import { BodyPanel } from "./BodyPanel";
 import { Comms } from "./Comms";
 import { CommsFeed } from "./CommsFeed";
 import { ConditionsLoader } from "./ConditionsLoader";
+import { HazardBanner } from "./HazardBanner";
 import { LaunchHud } from "./LaunchHud";
 import { CaptureHud, MarsOrbitHud } from "./MarsHud";
 import { MissionBrief } from "./MissionBrief";
 import { MissionConsole } from "./MissionConsole";
+import { NightPass } from "./NightPass";
 import { OrbitHud } from "./OrbitHud";
 import { RescueHud } from "./RescueHud";
 import { DescentHud, SurfaceHud } from "./SurfaceHud";
+import { SightingsHud } from "./SightingsHud";
 import { SoundControls } from "./SoundControls";
 import { SpaceWeatherHud } from "./SpaceWeatherHud";
 import { TimeWarp } from "./TimeWarp";
@@ -43,6 +46,9 @@ export default function Hud() {
       <ConditionsLoader />
       <SpaceWeatherHud />
       {(phase === "orbit" || phase === "transit") && <RescueHud />}
+      <SightingsHud />
+      <NightPass />
+      <HazardBanner />
       {phase !== "countdown" && phase !== "ascent" && <MissionConsole />}
       <SoundControls />
     </>
