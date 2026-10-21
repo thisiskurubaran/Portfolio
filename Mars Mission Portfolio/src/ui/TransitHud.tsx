@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type StopId, stops } from "@/content/stops";
 import { ui } from "@/content/ui";
 import { AU_KM } from "@/physics/constants";
 import { SHIP } from "@/physics/ship";
 import { frame } from "@/scene/missionRuntime";
 import { sky } from "@/scene/skyRuntime";
-import { distanceToStop, forceStop, transit, visitLabel } from "@/scene/transitRuntime";
+import { distanceToStop, transit, visitLabel } from "@/scene/transitRuntime";
 import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 import { toNextStation } from "./missionActions";
@@ -61,20 +60,10 @@ function Timeline() {
   const index = useStore((s) => s.visitIndex);
   const mode = useStore((s) => s.transitMode);
   const [now, setNow] = useState(() => simNow());
-  const [, setRevision] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => setNow(simNow()), 250);
     return () => window.clearInterval(id);
   }, []);
-
-  const offPath = stops.filter((s) => {
-    const st = transit.stopStatus[s.id];
-    return st && !st.available && !st.forced && st.tMs !== null && st.tMs > now;
-  });
-  const override = (id: StopId) => {
-    forceStop(id);
-    setRevision((r) => r + 1);
-  };
 
   return (
     <section className="panel timeline" aria-label={ui.transit.stations}>
@@ -100,18 +89,8 @@ function Timeline() {
             </li>
           );
         })}
-        {offPath.map((s) => (
-          <li key={s.id} className="off-path">
-            <span>
-              {s.name}
-              <span className="timeline-tag">{ui.transit.offPath}</span>
-            </span>
-            <button type="button" className="hud-button small" title={ui.transit.overrideNote} onClick={() => override(s.id)}>
-              {ui.transit.override}
-            </button>
-          </li>
-        ))}
       </ol>
+      {/* F18: stops off the path can be forced into a flyby from the mission console. */}
       {mode === "cruise" && index < transit.visits.length && (
         <button type="button" className="hud-button" onClick={toNextStation}>
           {ui.transit.next}
