@@ -6,7 +6,20 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.9.0`, sound:
+`v0.10.0`, live conditions and the mission console:
+
+- F02: the pad shows Sriharikota's real weather from Open-Meteo. Launch rules hold for thunderstorms, gusts over 30 knots and heavy rain, and the next clear hour in the forecast becomes "launch when it clears", which moves mission time there (often into the night). Cloud cover greys the pad sky and softens the Sun until the rocket climbs through it. The visitor's own city weather is shown beside it, from the request's geo headers, rounded to about 11 km and never stored. The pad stays at Sriharikota rather than moving to the visitor, since the mission flies from India's crewed launch site.
+- F04: the mission clock adds the visitor's local time, from the browser's time zone.
+- F11: the transfer planner says how far off the next real window is, how far apart Earth and Mars are today, and the season on both planets, with Mars's solar longitude (Ls), its year number and whether it is dust storm season.
+- F03 and F05: live Kp, X-ray flares and proton flux from NOAA SWPC and CMEs from NASA DONKI, mapped onto NOAA's G, S and R scales. A geomagnetic storm lights the auroral ovals around Earth's geomagnetic poles, moving them toward the equator as Kp rises. Radiation storms and radio blackouts get a calm, factual note; a blackout adds static to the radio. The note is collapsed to a one line summary by default.
+- Meteor showers from the IMO calendar. On 21 October the Orionids are at their peak, and from Earth orbit they burn up in the air below the ship, but only on the side of Earth facing the shower's radiant. Rates are sped up so a shower shows inside a minute.
+- F18: the mission console. Clear space, a solar storm, a meteor shower or a Mars dust storm, local to the visitor and gone on reload. Dramatic events are opt-in. Forcing an off-path flyby (L2 on the 2026 departure) moved here from the station list.
+- Mars dust storm: the dust optical depth rises from about 0.5 to 4 or more, direct sunlight falls by Beer-Lambert along the slant path, and the sky goes dark red.
+- F09: in a severe storm (live, or staged with dramatic events on) a cargo drone tumbles near the ship. Holding on it, or holding the button, for five seconds sends a correction burn and it stops tumbling. The brief says a rescue opens a hidden project; there is none yet, and the panel says so.
+
+The feeds are fetched by the server, validated with zod and cached. When a feed is unreachable the route still answers and the scene falls back to a quiet default.
+
+From `v0.9.0`, sound:
 
 - Off until the visitor turns it on (the "Sound off" button, bottom right). The audio graph is only built on that click, so browsers never block it, and it pauses while the tab is hidden.
 - Everything is synthesised with the Web Audio API; there are no recordings. Vacuum is silent: on the ascent the engine roar and crackle ride on the air and thin out with it, and above the atmosphere only the low rumble carried through the hull is left. The same rumble comes back for the Mars burns and entry buffeting.
