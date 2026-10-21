@@ -13,11 +13,8 @@ import {
   type Mesh,
   Points,
   PointsMaterial,
-  ShaderMaterial,
   Vector3,
 } from "three";
-import marsVert from "@/shaders/mars.vert";
-import marsFrag from "@/shaders/mars.frag";
 import { AU_KM } from "@/physics/constants";
 import { propagate, stateFromElements } from "@/physics/kepler";
 import { GM_SUN_KM } from "@/physics/transfer";
@@ -25,7 +22,8 @@ import { elementsAt, type PlanetId } from "@/space/elements";
 import { eclipticToScene } from "@/space/frames";
 import { useStore } from "@/state/store";
 import { sky } from "../skyRuntime";
-import { MARS_RADIUS_KM, transit, TRANSIT_UNIT_KM } from "../transitRuntime";
+import { MARS_LOOK, rockyMaterial } from "../rockyMaterial";
+import { L2_DISTANCE_KM, MARS_RADIUS_KM, transit, TRANSIT_UNIT_KM } from "../transitRuntime";
 
 const AU_UNITS = AU_KM / TRANSIT_UNIT_KM;
 
@@ -55,12 +53,15 @@ function transferGeometry(): { arc: BufferGeometry; stations: BufferGeometry } |
   const arc = new BufferGeometry();
   arc.setAttribute("position", new BufferAttribute(new Float32Array(pts), 3));
   const stations = new BufferGeometry();
-  stations.setAttribute("position", new BufferAttribute(new Float32Array(transit.stops.flatMap((s) => at(s.tMs))), 3));
+  const stationTimes = transit.visits.filter((v) => v.kind === "station").map((v) => v.tMs);
+  stations.setAttribute("position", new BufferAttribute(new Float32Array(stationTimes.flatMap(at)), 3));
   return { arc, stations };
 }
 
 const ship = new Vector3();
-const marsUniforms = { uSunDir: { value: new Vector3() }, uSunIntensity: { value: 1 } };
+const mars3d = rockyMaterial(MARS_LOOK);
+const l2Point = new BufferGeometry();
+l2Point.setAttribute("position", new BufferAttribute(new Float32Array(3), 3));
 
 /**
  * What the crew sees in the cruise beyond the Sun and stars: the orbits of
@@ -95,7 +96,14 @@ export function TransitSky() {
         depthWrite: false,
         transparent: true,
       }),
-      planet: new ShaderMaterial({ vertexShader: marsVert, fragmentShader: marsFrag, uniforms: marsUniforms }),
+      l2: new PointsMaterial({
+        color: new Color(0.6, 0.8, 2),
+        size: 7,
+        sizeAttenuation: false,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        transparent: true,
+      }),
     }),
     [],
   );
@@ -108,6 +116,7 @@ export function TransitSky() {
     () => (geo.transfer ? new Points(geo.transfer.stations, mats.stations) : null),
     [geo, mats],
   );
+  const l2 = useMemo(() => new Points(l2Point, mats.l2), [mats]);
 
   useFrame(() => {
     if (!root.current) return;
@@ -118,21 +127,31 @@ export function TransitSky() {
       const m = sky.helio.mars;
       mars.current.position.set(...eclipticToScene([m[0] * AU_UNITS, m[1] * AU_UNITS, m[2] * AU_UNITS]));
       mars.current.scale.setScalar(MARS_RADIUS_KM / TRANSIT_UNIT_KM);
-      marsUniforms.uSunDir.value.copy(mars.current.position).normalize().negate();
-      marsUniforms.uSunIntensity.value = 1.6 / sky.planets.mars.sunDistanceAu ** 2;
+      mars3d.uniforms.uSunDir.value.copy(mars.current.position).normalize().negate();
+      mars3d.uniforms.uSunIntensity.value = 1.6 / sky.planets.mars.sunDistanceAu ** 2;
     }
+    // L2 marker, straight out from the Sun past Earth, relative to the ship.
+    const e = sky.helio.earth;
+    const en = Math.hypot(...e);
+    const k = (en * AU_KM + L2_DISTANCE_KM) / en;
+    const lp = eclipticToScene([e[0] * k - p.x, e[1] * k - p.y, e[2] * k - p.z]);
+    l2Point.getAttribute("position").setXYZ(0, lp[0] / TRANSIT_UNIT_KM, lp[1] / TRANSIT_UNIT_KM, lp[2] / TRANSIT_UNIT_KM);
+    l2Point.getAttribute("position").needsUpdate = true;
   });
 
   if (phase !== "transit") return null;
   return (
-    <group ref={root}>
-      {lines.map((l, i) => (
-        <primitive key={i} object={l} />
-      ))}
-      {stationPoints && <primitive object={stationPoints} />}
-      <mesh ref={mars} material={mats.planet}>
-        <sphereGeometry args={[1, 64, 32]} />
-      </mesh>
-    </group>
+    <>
+      <primitive object={l2} />
+      <group ref={root}>
+        {lines.map((l, i) => (
+          <primitive key={i} object={l} />
+        ))}
+        {stationPoints && <primitive object={stationPoints} />}
+        <mesh ref={mars} material={mars3d.material}>
+          <sphereGeometry args={[1, 64, 32]} />
+        </mesh>
+      </group>
+    </>
   );
 }

@@ -1,9 +1,14 @@
-// Mars from a distance, before real MOLA and orbiter maps arrive with the
-// approach phase: ochre dust, darker basalt regions, white polar caps and a
-// thin limb haze. Lit by the Sun only.
+// A rocky body seen from a distance, until real elevation and colour maps
+// arrive with the Mars approach: bright and dark regions from noise, polar
+// caps where a body has them, and a faint limb haze where it has air.
+// Lit by the Sun only.
 
 uniform vec3 uSunDir;
 uniform float uSunIntensity;
+uniform vec3 uLight;
+uniform vec3 uDark;
+uniform float uCaps;
+uniform float uHaze;
 
 varying vec3 vNormal;
 varying vec3 vObjPos;
@@ -37,16 +42,16 @@ float fbm(vec3 p) {
 void main() {
   vec3 p = normalize(vObjPos);
   float n = fbm(p * 3.0);
-  vec3 dust = vec3(0.62, 0.32, 0.16);
-  vec3 basalt = vec3(0.30, 0.17, 0.10);
-  vec3 albedo = mix(dust, basalt, smoothstep(0.48, 0.62, n));
-  float cap = smoothstep(0.86, 0.92, abs(p.y) + 0.04 * (n - 0.5));
+  // Finer mottling for close passes; it averages out to nothing from afar.
+  float fine = fbm(p * 48.0) - 0.5;
+  vec3 albedo = mix(uLight, uDark, smoothstep(0.48, 0.62, n)) * (1.0 + 0.35 * fine);
+  float cap = uCaps * smoothstep(0.86, 0.92, abs(p.y) + 0.04 * (n - 0.5));
   albedo = mix(albedo, vec3(0.9, 0.88, 0.85), cap);
 
   vec3 nrm = normalize(vNormal);
   float light = max(dot(nrm, uSunDir), 0.0);
   vec3 color = albedo * light * uSunIntensity;
   float rim = pow(1.0 - abs(nrm.z), 4.0);
-  color += vec3(0.9, 0.55, 0.35) * rim * 0.05 * smoothstep(-0.2, 0.3, dot(nrm, uSunDir));
+  color += uLight * rim * uHaze * smoothstep(-0.2, 0.3, dot(nrm, uSunDir));
   gl_FragColor = vec4(color, 1.0);
 }

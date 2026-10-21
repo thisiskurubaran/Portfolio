@@ -10,6 +10,7 @@ import { EarthPlacement } from "./EarthPlacement";
 import { LaunchSite } from "./launch/LaunchSite";
 import { LocalEnvironment } from "./LocalEnvironment";
 import { LocalLights } from "./LocalLights";
+import { MoonBody } from "./MoonBody";
 import { PhaseDriver } from "./PhaseDriver";
 import { Planets } from "./Planets";
 import { Renderer } from "./Renderer";
@@ -30,6 +31,7 @@ function SkyLayer() {
           <Earth />
         </EarthPlacement>
       </Suspense>
+      <MoonBody />
       <TransitSky />
     </>
   );
