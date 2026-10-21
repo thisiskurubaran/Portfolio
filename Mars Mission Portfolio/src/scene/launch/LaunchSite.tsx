@@ -26,6 +26,7 @@ import skydomeFrag from "@/shaders/skydome.frag";
 import groundFrag from "@/shaders/ground.frag";
 import smokeVert from "@/shaders/smoke.vert";
 import smokeFrag from "@/shaders/smoke.frag";
+import { useConditions } from "@/state/conditions";
 import { useStore } from "@/state/store";
 import { JOINT_HEIGHT } from "../craft/Rocket";
 import { materials } from "../craft/materials";
@@ -46,6 +47,8 @@ export const EARTH_SKY = {
   uSunset: { value: new Color(1.0, 0.42, 0.14) },
   uHalo: { value: new Color(1.0, 0.9, 0.75) },
 };
+const CLEAR = { zenith: new Color(0.1, 0.24, 0.62), horizon: new Color(0.55, 0.66, 0.82) };
+const OVERCAST = new Color(0.5, 0.53, 0.58);
 const groundOpacity = { value: 1 };
 
 function groundGeometry() {
@@ -252,6 +255,14 @@ export function LaunchSite() {
     if (!onEarth) return;
     sunColor.value.copy(local.sunColor);
     const altKm = local.altitudeM / 1000;
+    // F02: the pad's real cloud cover greys the sky and softens the Sun,
+    // until the rocket climbs through the deck (most cloud is under 10 km).
+    const pad = useConditions.getState().conditions?.pad.weather;
+    const today = Math.abs(sky.simMs - Date.now()) < 3 * 3_600_000;
+    const cloud = pad && today ? pad.cloudCover * (1 - smoothstep(2, 10, altKm)) : 0;
+    EARTH_SKY.uZenith.value.copy(CLEAR.zenith).lerp(OVERCAST, cloud * 0.85);
+    EARTH_SKY.uHorizon.value.copy(CLEAR.horizon).lerp(OVERCAST, cloud * 0.7);
+    sunColor.value.multiplyScalar(1 - cloud * 0.6);
     groundOpacity.value = 1 - smoothstep(12, 40, altKm);
     if (ground.current) {
       ground.current.visible = groundOpacity.value > 0;

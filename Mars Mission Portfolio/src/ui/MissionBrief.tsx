@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { profile } from "@/content/profile";
 import { ui } from "@/content/ui";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { launch, skip } from "./missionActions";
+import { launch, launchAt, skip } from "./missionActions";
+import { PadWeather, useLaunchCall } from "./PadWeather";
 
 const TITLE_MS = 3200;
 
@@ -12,6 +13,7 @@ const TITLE_MS = 3200;
 export function MissionBrief() {
   const [titleIndex, setTitleIndex] = useState(0);
   const reduced = useReducedMotion();
+  const call = useLaunchCall();
 
   useEffect(() => {
     if (reduced) return;
@@ -43,10 +45,17 @@ export function MissionBrief() {
         ))}
       </dl>
       <p className="brief-site">{ui.brief.site}</p>
+      <PadWeather call={call} />
       <div className="brief-actions">
-        <button type="button" className="hud-button primary" onClick={launch}>
-          {ui.brief.launch}
-        </button>
+        {call.go || call.slotMs === null ? (
+          <button type="button" className="hud-button primary" onClick={launch}>
+            {ui.brief.launch}
+          </button>
+        ) : (
+          <button type="button" className="hud-button primary" onClick={() => launchAt(call.slotMs!)}>
+            {ui.weather.launchAtSlot}
+          </button>
+        )}
         <button type="button" className="hud-button" onClick={skip}>
           {ui.brief.skip}
         </button>

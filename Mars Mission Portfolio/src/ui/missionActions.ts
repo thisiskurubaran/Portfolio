@@ -16,6 +16,12 @@ export function launch(): void {
   useStore.getState().startCountdown();
 }
 
+/** F02: waits out a weather hold by moving mission time to the next clear slot, then counts down. */
+export function launchAt(slotMs: number): void {
+  jumpTo(slotMs);
+  useStore.getState().startCountdown();
+}
+
 export function hold(): void {
   useStore.getState().setPhase("pad");
 }
