@@ -12,7 +12,7 @@ export const ui = {
     signalNote: "One way radio delay to Mars at light speed",
     scale: "Scale",
     scaleNote:
-      "Earth and the Sun are drawn at their real relative sizes. The Sun is placed about 12 times closer than it really is so it fits in view, and shrunk to keep its real apparent size. Planets are points of light in their real directions. Positions use the real current time, or simulated time under warp.",
+      "Earth and the Sun are drawn at their real relative sizes. The Sun is placed about 12 times closer than it really is so it fits in view, and shrunk to keep its real apparent size. Planets are points of light in their real directions. The rocket, ship and pad are drawn at true size in metres, in a separate layer around the camera. Positions use the real current time, or simulated time under warp.",
   },
   warp: {
     label: "Time warp",
@@ -24,6 +24,41 @@ export const ui = {
     ],
     reset: "Now",
     resetDescription: "Back to real time and the current date",
+  },
+  brief: {
+    label: "Mission brief",
+    commander: "Commander",
+    launch: "Launch",
+    skip: "Skip to orbit",
+    site: "Pad: Satish Dhawan Space Centre, Sriharikota",
+  },
+  countdown: {
+    label: "Countdown",
+    hold: "Hold",
+  },
+  telemetry: {
+    label: "Telemetry",
+    altitude: "ALT",
+    speed: "VEL",
+    period: "PER",
+    inclination: "INC",
+    warpNote: "Mission time runs fast between key events",
+  },
+  events: {
+    liftoff: "Liftoff",
+    maxQ: "Max Q: peak aerodynamic pressure",
+    meco: "Main engine cutoff",
+    stageSeparation: "Stage separation",
+    secondStageIgnition: "Second stage ignition",
+    towerJettison: "Launch abort tower jettisoned",
+    seco: "Second stage cutoff, orbit reached",
+    spacecraftSeparation: "Spacecraft separation",
+    arraysDeploy: "Solar arrays deploying",
+    orbit: "In orbit",
+  },
+  skills: {
+    label: "Instruments",
+    hint: "Skills, grouped as ship systems",
   },
   bodies: {
     listLabel: "Planets in view",

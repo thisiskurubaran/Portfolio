@@ -5,9 +5,19 @@ import { ui } from "@/content/ui";
 import { lightTimeSeconds } from "@/physics/lightTimeDelay";
 import { sub } from "@/physics/vec";
 import { heliocentric } from "@/space/elements";
-import { missionElapsed, simNow } from "@/state/simClock";
+import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 import { formatDistance, formatDuration, formatElapsed, formatUtc } from "./format";
+
+/** Mission elapsed time from liftoff, in mission (simulated) time. */
+function formatMet(t: number): string {
+  const liftoff = useStore.getState().liftoffMs;
+  if (liftoff === null) return "--:--:--";
+  const ms = Math.max(t - liftoff, 0);
+  const days = Math.floor(ms / 86_400_000);
+  const rest = formatElapsed(ms % 86_400_000);
+  return days > 0 ? `${days}d ${rest}` : rest;
+}
 
 type Reading = { utc: string; met: string; mars: string; signal: string };
 
@@ -18,7 +28,7 @@ function read(): Reading {
   const marsAu = Math.hypot(...sub(heliocentric("mars", t).r, heliocentric("earth", t).r));
   return {
     utc: formatUtc(t),
-    met: formatElapsed(missionElapsed()),
+    met: formatMet(t),
     mars: formatDistance(marsAu),
     signal: formatDuration(lightTimeSeconds(marsAu)),
   };
@@ -45,7 +55,7 @@ export function MissionClock() {
       </div>
       <div>
         <span className="hud-key">{ui.clock.met}</span>
-        <span className="hud-value">{reading?.met ?? "00:00:00"}</span>
+        <span className="hud-value">{reading?.met ?? "--:--:--"}</span>
       </div>
       <div>
         <span className="hud-key">{ui.clock.mars}</span>
