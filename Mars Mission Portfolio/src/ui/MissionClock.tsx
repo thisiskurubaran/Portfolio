@@ -5,6 +5,7 @@ import { ui } from "@/content/ui";
 import { lightTimeSeconds } from "@/physics/lightTimeDelay";
 import { sub } from "@/physics/vec";
 import { heliocentric } from "@/space/elements";
+import { observer } from "@/state/observer";
 import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 import { formatDistance, formatDuration, formatElapsed, formatUtc } from "./format";
@@ -19,18 +20,24 @@ function formatMet(t: number): string {
   return days > 0 ? `${days}d ${rest}` : rest;
 }
 
-type Reading = { utc: string; met: string; mars: string; signal: string };
+type Reading = { utc: string; met: string; mars: string; signal: string; signalNote: string };
 
 function read(): Reading {
   const t = simNow();
   // Computed here rather than read from the scene so the HUD still works
   // when WebGL is missing.
-  const marsAu = Math.hypot(...sub(heliocentric("mars", t).r, heliocentric("earth", t).r));
+  const earth = heliocentric("earth", t).r;
+  const mars = heliocentric("mars", t).r;
+  const ship = observer.au;
+  const marsAu = Math.hypot(...sub(mars, ship ?? earth));
+  // Before departure the delay that matters is Earth to Mars; after it, ship to mission control.
+  const signalAu = ship ? Math.hypot(...sub(ship, earth)) : marsAu;
   return {
     utc: formatUtc(t),
     met: formatMet(t),
     mars: formatDistance(marsAu),
-    signal: formatDuration(lightTimeSeconds(marsAu)),
+    signal: formatDuration(lightTimeSeconds(signalAu)),
+    signalNote: ship ? ui.clock.signalNoteShip : ui.clock.signalNote,
   };
 }
 
@@ -61,7 +68,7 @@ export function MissionClock() {
         <span className="hud-key">{ui.clock.mars}</span>
         <span className="hud-value">{reading?.mars ?? "...."}</span>
       </div>
-      <div title={ui.clock.signalNote}>
+      <div title={reading?.signalNote ?? ui.clock.signalNote}>
         <span className="hud-key">{ui.clock.signal}</span>
         <span className="hud-value">{reading?.signal ?? "...."}</span>
       </div>
