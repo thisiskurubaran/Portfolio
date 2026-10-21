@@ -7,6 +7,8 @@ export function TimeWarp() {
   const warp = useStore((s) => s.warp);
   const setWarp = useStore((s) => s.setWarp);
   const resetTime = useStore((s) => s.resetTime);
+  // After departure the flight is committed; jumping back to today would undo it.
+  const canReset = useStore((s) => s.phase !== "transit");
 
   return (
     <div className="hud-warp" role="group" aria-label={ui.warp.label}>
@@ -22,9 +24,11 @@ export function TimeWarp() {
           {o.label}
         </button>
       ))}
-      <button type="button" className="hud-button" title={ui.warp.resetDescription} onClick={resetTime}>
-        {ui.warp.reset}
-      </button>
+      {canReset && (
+        <button type="button" className="hud-button" title={ui.warp.resetDescription} onClick={resetTime}>
+          {ui.warp.reset}
+        </button>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { orbitalPeriod } from "@/physics/kepler";
 import { frame, MU_EARTH_KM, orbit } from "@/scene/missionRuntime";
 import { EARTH_RADIUS_KM } from "@/scene/scale";
 import { sky } from "@/scene/skyRuntime";
+import { TransferPlanner } from "./TransferPlanner";
 
 type Reading = { alt: string; vel: string; per: string; inc: string };
 
@@ -93,6 +94,7 @@ export function OrbitHud() {
     <>
       <Telemetry />
       <Instruments />
+      <TransferPlanner />
     </>
   );
 }
