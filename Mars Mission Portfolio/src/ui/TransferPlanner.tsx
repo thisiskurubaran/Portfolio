@@ -5,6 +5,10 @@ import { ui } from "@/content/ui";
 import { PROPELLANT_KG } from "@/physics/ship";
 import type { Transfer } from "@/physics/transfer";
 import { departureBurnPropellant, planTransfer, transit } from "@/scene/transitRuntime";
+import { sub } from "@/physics/vec";
+import { heliocentric } from "@/space/elements";
+import { marsDustSeason, marsLs, marsYear, northernSeason } from "@/space/seasons";
+import { sunPosition } from "@/space/sun";
 import { simNow } from "@/state/simClock";
 import { formatUtc } from "./format";
 import { depart } from "./missionActions";
@@ -13,6 +17,27 @@ const DAY = 86_400_000;
 
 function date(ms: number): string {
   return formatUtc(ms).slice(0, 10);
+}
+
+/** F11: today's real geometry and seasons, which set how hard the trip is. */
+function Seasons({ plan }: { plan: Transfer }) {
+  const now = simNow();
+  const apart = Math.hypot(...sub(heliocentric("mars", now).r, heliocentric("earth", now).r));
+  const ls = marsLs(now);
+  const earthSeason = northernSeason((sunPosition(now).lon * 180) / Math.PI);
+  const days = (plan.departMs - now) / DAY;
+  return (
+    <>
+      <p className="planner-note">
+        {days < 45 ? ui.transfer.windowNear(Math.max(Math.round(days), 0)) : ui.transfer.windowFar(Math.round(days))}{" "}
+        {ui.transfer.apart(apart)}
+      </p>
+      <p className="planner-note">
+        {ui.transfer.seasons(earthSeason, Math.round(ls), northernSeason(ls), marsYear(now))}
+        {marsDustSeason(ls) && ` ${ui.transfer.dustSeason}`}
+      </p>
+    </>
+  );
 }
 
 /** Finds the next Earth to Mars window from real positions and offers to fly it. */
@@ -66,6 +91,7 @@ export function TransferPlanner() {
           </div>
         ))}
       </dl>
+      <Seasons plan={plan} />
       <p className="planner-note">{ui.transfer.waitNote}</p>
       <button type="button" className="hud-button primary" onClick={depart}>
         {ui.transfer.go}
