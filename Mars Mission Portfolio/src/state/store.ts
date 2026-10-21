@@ -36,12 +36,12 @@ type State = {
   warp: number;
   selectedBody: PlanetId | null;
   transitMode: TransitMode;
-  /** Index into the station list: the station being visited, or the next one. */
-  stationIndex: number;
+  /** Index into the visit list: the station or stop being visited, or the next one. */
+  visitIndex: number;
   /** Wall clock time the current transit mode started, ms. */
   modeSince: number;
   setTransitMode: (mode: TransitMode) => void;
-  setStationIndex: (index: number) => void;
+  setVisitIndex: (index: number) => void;
   setPhase: (phase: Phase) => void;
   setLiftoff: (ms: number | null) => void;
   startCountdown: () => void;
@@ -57,10 +57,10 @@ export const useStore = create<State>((set) => ({
   warp: 1,
   selectedBody: null,
   transitMode: "cruise",
-  stationIndex: 0,
+  visitIndex: 0,
   modeSince: 0,
   setTransitMode: (transitMode) => set({ transitMode, modeSince: Date.now() }),
-  setStationIndex: (stationIndex) => set({ stationIndex }),
+  setVisitIndex: (visitIndex) => set({ visitIndex }),
   setPhase: (phase) => set({ phase }),
   setLiftoff: (liftoffMs) => set({ liftoffMs }),
   startCountdown: () =>

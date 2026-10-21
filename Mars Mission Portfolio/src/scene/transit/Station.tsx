@@ -2,14 +2,16 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { type Group, MeshStandardMaterial } from "three";
+import { DoubleSide, type Group, MeshStandardMaterial, Vector3 } from "three";
 import { stations, type StationModel } from "@/content/stations";
+import { stops } from "@/content/stops";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { useStore } from "@/state/store";
 import { CAPSULE_TOP } from "../craft/Spacecraft";
 import { materials } from "../craft/materials";
 import { local } from "../localRuntime";
 import { APPROACH_S, DOCKING_S, UNDOCKING_S } from "../PhaseDriver";
+import { transit } from "../transitRuntime";
 
 /** Where the ship's docking ring sits on the local x axis (nose forward). */
 const SHIP_PORT_X = CAPSULE_TOP + 0.1;
@@ -132,12 +134,77 @@ function Model({ model }: { model: StationModel }) {
   );
 }
 
-/** The station being visited, placed ahead of the ship's nose along the docking axis. */
+const sunshieldLayer = new MeshStandardMaterial({
+  color: "#b9a6c9",
+  roughness: 0.25,
+  metalness: 0.8,
+  side: DoubleSide,
+});
+const worldPos = new Vector3();
+const mirrorGold = new MeshStandardMaterial({ color: "#e0b04a", roughness: 0.12, metalness: 1 });
+
+/**
+ * A deep space observatory: a five layer sunshield the size of a tennis
+ * court keeps the mirror and instruments in permanent shade, cold enough
+ * to see in the infrared.
+ */
+function Observatory() {
+  const shield = useRef<Group>(null);
+
+  useFrame(() => {
+    // Shield faces the Sun, mirror side away from it.
+    const sh = shield.current;
+    if (sh) sh.lookAt(sh.getWorldPosition(worldPos).sub(local.sunDir));
+  });
+
+  return (
+    <group position={[14, 0, 0]}>
+      <group ref={shield}>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <mesh key={i} material={sunshieldLayer} position={[0, 0, -i * 0.35]} rotation={[0, 0, Math.PI / 4]}>
+            <planeGeometry args={[16 - i * 0.6, 11 - i * 0.4]} />
+          </mesh>
+        ))}
+        {/* Primary mirror of hexagonal segments, on the shaded side. */}
+        <group position={[0, 0, 3.2]}>
+          {[
+            [0, 0],
+            [1.3, 0.75],
+            [-1.3, 0.75],
+            [1.3, -0.75],
+            [-1.3, -0.75],
+            [0, 1.5],
+            [0, -1.5],
+          ].map(([x, y]) => (
+            <mesh key={`${x}${y}`} material={mirrorGold} position={[x!, y!, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.72, 0.72, 0.1, 6]} />
+            </mesh>
+          ))}
+          <mesh material={materials.frame} position={[0, 0, 2.2]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 4.4, 8]} />
+          </mesh>
+        </group>
+        <mesh material={materials.gold} position={[0, 0, 1.5]}>
+          <boxGeometry args={[2.4, 2.4, 1.6]} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+/** The station or stop object being visited, placed ahead of the ship's nose along the docking axis. */
 export function Station() {
   const group = useRef<Group>(null);
   const phase = useStore((s) => s.phase);
-  const index = useStore((s) => s.stationIndex);
-  const station = stations[index];
+  const index = useStore((s) => s.visitIndex);
+  // Visits are fixed at the burn, before this component sees the cruise phase.
+  const visit = phase === "transit" ? transit.visits[index] : undefined;
+  const model =
+    visit?.kind === "station"
+      ? stations[visit.station]?.model
+      : visit?.kind === "stop"
+        ? stops.find((s) => s.id === visit.stop)?.model
+        : undefined;
 
   useFrame(() => {
     const g = group.current;
@@ -147,10 +214,10 @@ export function Station() {
     g.position.set(SHIP_PORT_X + Math.max(gap, 0), 0, 0);
   });
 
-  if (phase !== "transit" || !station) return null;
+  if (!visit || !model) return null;
   return (
     <group ref={group} visible={false}>
-      <Model key={station.id} model={station.model} />
+      {"kind" in model && model.kind === "observatory" ? <Observatory /> : <Model key={visit.id} model={model} />}
     </group>
   );
 }
