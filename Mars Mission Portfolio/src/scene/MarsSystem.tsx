@@ -19,6 +19,7 @@ import {
   TextureLoader,
   Vector3,
 } from "three";
+import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import planetVert from "@/shaders/planet.vert";
 import marsFrag from "@/shaders/mars.frag";
 import { eclipticToScene } from "@/space/frames";
@@ -45,8 +46,9 @@ function marsMaterial(day: Texture): ShaderMaterial {
 }
 
 /** A lumpy body: an icosphere pushed in and out by low frequency noise, then stretched to the real axes. */
-function moonGeometry(seed: number): IcosahedronGeometry {
-  const g = new IcosahedronGeometry(1, 5);
+function moonGeometry(seed: number): BufferGeometry {
+  // Icosahedra come with separate vertices per face; merging them gives smooth normals.
+  const g = mergeVertices(new IcosahedronGeometry(1, 6));
   const pos = g.getAttribute("position");
   const v = new Vector3();
   for (let i = 0; i < pos.count; i++) {
