@@ -1,0 +1,76 @@
+:root {
+  --space: #000000;
+  --ink: #e6ebf2;
+  --ink-dim: #9aa6b8;
+  --panel: rgba(6, 10, 18, 0.72);
+  --panel-edge: rgba(230, 235, 242, 0.22);
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--space);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hud-clock {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  left: max(16px, env(safe-area-inset-left));
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 6px;
+  max-width: min(320px, calc(100vw - 32px));
+}
+
+.hud-key {
+  display: inline-block;
+  width: 3.5em;
+  color: var(--ink-dim);
+}
+
+.hud-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-scale summary {
+  cursor: pointer;
+  color: var(--ink-dim);
+}
+
+.hud-scale p {
+  margin: 6px 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+}
