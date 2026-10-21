@@ -1,22 +1,20 @@
-import { daysSinceJ2000, toRad } from "./time";
+import { heliocentric } from "./elements";
 
 export type EclipticPosition = {
-  /** Ecliptic longitude in radians. */
+  /** Ecliptic longitude in radians, J2000 frame. */
   lon: number;
   /** Distance in AU. */
   r: number;
 };
 
 /**
- * Geocentric Sun position from the Astronomical Almanac low precision
- * formula. Good to about 0.01 degrees between 1950 and 2050, which is far
- * finer than one pixel of the Sun disc in the scene.
+ * Geocentric Sun position, taken as the reverse of Earth's heliocentric
+ * position. Using the same orbital elements as the planets keeps the Sun,
+ * planets and stars in one frame (J2000) instead of mixing in the equinox
+ * of date, which has precessed about 0.37 degrees since 2000.
  */
 export function sunPosition(ms: number): EclipticPosition {
-  const n = daysSinceJ2000(ms);
-  const L = toRad(280.46 + 0.9856474 * n);
-  const g = toRad(357.528 + 0.9856003 * n);
-  const lon = L + toRad(1.915) * Math.sin(g) + toRad(0.02) * Math.sin(2 * g);
-  const r = 1.00014 - 0.01671 * Math.cos(g) - 0.00014 * Math.cos(2 * g);
-  return { lon: ((lon % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), r };
+  const [x, y, z] = heliocentric("earth", ms).r;
+  const lon = Math.atan2(-y, -x);
+  return { lon: lon < 0 ? lon + 2 * Math.PI : lon, r: Math.hypot(x, y, z) };
 }

@@ -24,6 +24,23 @@ export function equatorialToScene(v: Vec3): Vec3 {
   return eclipticToScene(equatorialToEcliptic(v));
 }
 
+/**
+ * Accumulated general precession in longitude since J2000, in radians.
+ * 5029 arcseconds per century; the slower tilt of the ecliptic itself is
+ * ignored, which costs under 0.01 degrees this century.
+ */
+export function precessionSinceJ2000(centuries: number): number {
+  return toRad((5029.0966 / 3600) * centuries);
+}
+
+/** Moves an ecliptic vector of date back to the J2000 ecliptic. */
+export function eclipticOfDateToJ2000([x, y, z]: Vec3, centuries: number): Vec3 {
+  const p = -precessionSinceJ2000(centuries);
+  const c = Math.cos(p);
+  const s = Math.sin(p);
+  return [x * c - y * s, x * s + y * c, z];
+}
+
 /** Unit vector from right ascension and declination, both in radians. */
 export function fromRaDec(ra: number, dec: number): Vec3 {
   const c = Math.cos(dec);
@@ -40,14 +57,17 @@ export function fromEclipticLon(lon: number): Vec3 {
  * local +y and longitude 0 on local +x. three.js sphere UVs put longitude 0
  * at +x and 90 E at -z, which is what this basis expects.
  */
-export function earthBasis(gmstRad: number): { x: Vec3; y: Vec3; z: Vec3 } {
+export function earthBasis(gmstRad: number, centuries: number): { x: Vec3; y: Vec3; z: Vec3 } {
+  // Sidereal time counts from the equinox of date, so the body frame is
+  // built in that frame and then precessed back to the scene's J2000 frame.
+  const toScene = (v: Vec3) =>
+    eclipticToScene(eclipticOfDateToJ2000(equatorialToEcliptic(v), centuries));
   const lon0: Vec3 = [Math.cos(gmstRad), Math.sin(gmstRad), 0];
   const lon90e: Vec3 = [-Math.sin(gmstRad), Math.cos(gmstRad), 0];
-  const north: Vec3 = [0, 0, 1];
-  const z = equatorialToScene(lon90e);
+  const z = toScene(lon90e);
   return {
-    x: equatorialToScene(lon0),
-    y: equatorialToScene(north),
+    x: toScene(lon0),
+    y: toScene([0, 0, 1]),
     z: [-z[0], -z[1], -z[2]],
   };
 }
