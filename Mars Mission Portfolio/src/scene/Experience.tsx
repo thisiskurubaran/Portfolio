@@ -6,6 +6,7 @@ import { NoToneMapping } from "three";
 import { CameraDirector } from "./CameraDirector";
 import { Rocket } from "./craft/Rocket";
 import { Earth } from "./Earth";
+import { EarthPlacement } from "./EarthPlacement";
 import { LaunchSite } from "./launch/LaunchSite";
 import { LocalEnvironment } from "./LocalEnvironment";
 import { LocalLights } from "./LocalLights";
@@ -15,6 +16,8 @@ import { Renderer } from "./Renderer";
 import { skyCamera, skyScene } from "./skyLayer";
 import { Starfield } from "./Starfield";
 import { Sun } from "./Sun";
+import { Station } from "./transit/Station";
+import { TransitSky } from "./transit/TransitSky";
 
 function SkyLayer() {
   return (
@@ -23,8 +26,11 @@ function SkyLayer() {
       <Planets />
       <Sun />
       <Suspense fallback={null}>
-        <Earth />
+        <EarthPlacement>
+          <Earth />
+        </EarthPlacement>
       </Suspense>
+      <TransitSky />
     </>
   );
 }
@@ -45,6 +51,7 @@ export default function Experience() {
       <LocalEnvironment />
       <LaunchSite />
       <Rocket />
+      <Station />
       <CameraDirector />
       <Renderer />
     </Canvas>

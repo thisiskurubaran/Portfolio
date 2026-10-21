@@ -13,7 +13,7 @@ import {
   SphereGeometry,
   type Texture,
 } from "three";
-import { local, smoothstep } from "./localRuntime";
+import { local } from "./localRuntime";
 
 /** Gradient sphere: one colour above the horizon, another below, blended across it. */
 function gradientScene(above: Color, horizon: Color, below: Color): Scene {
@@ -69,7 +69,7 @@ export function LocalEnvironment() {
     if (scene.environment !== map) scene.environment = map;
     scene.environmentIntensity = onGround
       ? 0.05 + 0.6 * local.daylight.value
-      : 0.03 + 0.8 * smoothstep(-0.35, 0.5, local.sunDir.y);
+      : 0.03 + 0.8 * local.earthshine;
   });
 
   return null;

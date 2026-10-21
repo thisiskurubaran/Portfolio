@@ -23,6 +23,10 @@ export const frame = {
   originKm: new Vector3(),
   /** Ship velocity in km/s, sky axes. Zero on the pad. */
   velocityKmS: new Vector3(),
+  /** Size of one sky layer unit in km: an Earth radius near Earth, a million km in the cruise. */
+  skyScaleKm: EARTH_RADIUS_KM,
+  /** Sky camera near plane in sky units, when the layer is not Earth centred. */
+  skyNear: 0.05,
 };
 
 export const ascent = {
@@ -45,6 +49,14 @@ const xAxis = new Vector3();
 const zAxis = new Vector3();
 
 function setFrame(x: Vector3, y: Vector3): void {
+  zAxis.crossVectors(x, y);
+  m.makeBasis(x, y, zAxis);
+  frame.rotation.setFromRotationMatrix(m);
+  frame.skyScaleKm = EARTH_RADIUS_KM;
+}
+
+/** Sets the local axes from travel direction (x) and up (y), both unit length and orthogonal. */
+export function setFrameAxes(x: Vector3, y: Vector3): void {
   zAxis.crossVectors(x, y);
   m.makeBasis(x, y, zAxis);
   frame.rotation.setFromRotationMatrix(m);

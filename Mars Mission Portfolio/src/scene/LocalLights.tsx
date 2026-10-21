@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { Color, type DirectionalLight, type HemisphereLight, type SpotLight } from "three";
 import { useStore } from "@/state/store";
 import { JOINT_HEIGHT } from "./craft/Rocket";
-import { local, smoothstep } from "./localRuntime";
+import { local } from "./localRuntime";
 
 const padSky = new Color(0.55, 0.66, 0.82);
 const padGround = new Color(0.45, 0.4, 0.32);
@@ -28,7 +28,7 @@ export function LocalLights() {
     if (sun.current) {
       sun.current.position.copy(local.sunDir).multiplyScalar(100);
       sun.current.color.copy(local.sunColor);
-      sun.current.intensity = 3.2 * local.daylight.value;
+      sun.current.intensity = 3.2 * local.daylight.value * local.sunStrength;
     }
     if (fill.current) {
       if (onGround) {
@@ -36,11 +36,10 @@ export function LocalLights() {
         fill.current.groundColor.copy(padGround);
         fill.current.intensity = 0.03 + 0.7 * local.daylight.value * local.air.value;
       } else {
-        // Earth fills most of the lower sky, and is bright only on its day side.
-        const litBelow = smoothstep(-0.35, 0.5, local.sunDir.y);
+        // Near Earth, it fills most of the lower sky and is bright only on its day side.
         fill.current.color.copy(space);
         fill.current.groundColor.copy(earthshine);
-        fill.current.intensity = 0.04 + 0.9 * litBelow;
+        fill.current.intensity = 0.04 + 0.9 * local.earthshine;
       }
     }
     if (flood.current) {

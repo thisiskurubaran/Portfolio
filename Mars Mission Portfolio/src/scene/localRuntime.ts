@@ -18,6 +18,10 @@ export const local = {
   /** Ground distance travelled east, metres. */
   downrangeM: 0,
   sunColor: new Color(1, 1, 1),
+  /** Sunlight relative to its strength at 1 AU. */
+  sunStrength: 1,
+  /** How much sunlit Earth fills the view below, 0 to 1. */
+  earthshine: 0,
   sunDirUniform: { value: new Vector3(0, 1, 0) },
 };
 
@@ -29,12 +33,13 @@ const dusk = new Color(1, 0.55, 0.25);
 
 export function updateLocal(): void {
   inverse.copy(frame.rotation).invert();
-  local.sunDir.copy(sky.sunDir).applyQuaternion(inverse);
+  local.sunDir.copy(sky.view.sunDir).applyQuaternion(inverse);
   local.sunDirUniform.value.copy(local.sunDir);
 
   const phase = useStore.getState().phase;
   const onAscent = phase === "ascent";
-  const altKm = onAscent ? ascent.sample.altitudeKm : phase === "orbit" ? 1e4 : 0;
+  const onGround = phase === "pad" || phase === "countdown";
+  const altKm = onAscent ? ascent.sample.altitudeKm : onGround ? 0 : 1e4;
   local.altitudeM = altKm * 1000;
   local.downrangeM = onAscent ? ascent.sample.downrangeKm * 1000 : 0;
   local.air.value = Math.exp(-altKm / SCALE_HEIGHT_KM);
@@ -45,9 +50,13 @@ export function updateLocal(): void {
     local.daylight.value = smoothstep(-0.1, 0.05, elevation);
     local.sunColor.copy(dusk).lerp(noon, smoothstep(0.0, 0.35, elevation));
   } else {
-    local.daylight.value = inEarthShadow() ? 0 : 1;
+    const nearEarth = phase === "orbit" || phase === "tmi" || onAscent;
+    local.daylight.value = nearEarth && inEarthShadow() ? 0 : 1;
     local.sunColor.copy(noon);
   }
+  // Sunlight thins with the square of distance from the Sun.
+  local.sunStrength = 1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu);
+  local.earthshine = phase === "transit" ? 0 : smoothstep(-0.35, 0.5, local.sunDir.y);
 }
 
 export function smoothstep(a: number, b: number, x: number): number {

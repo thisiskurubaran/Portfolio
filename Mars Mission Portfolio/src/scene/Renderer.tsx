@@ -63,12 +63,16 @@ export function Renderer() {
     // point, expressed in the sky layer's frame and units.
     skyCamera.quaternion.copy(frame.rotation).multiply(camera.quaternion);
     offset.copy(camera.position).multiplyScalar(0.001).applyQuaternion(frame.rotation);
-    skyCamera.position.copy(frame.originKm).add(offset).divideScalar(EARTH_RADIUS_KM);
+    skyCamera.position.copy(frame.originKm).add(offset).divideScalar(frame.skyScaleKm);
     skyCamera.fov = camera.fov;
-    // Near plane scaled to the height above the ground, so a low camera can
-    // still see Earth close up without starving the far depth range.
-    const altitude = skyCamera.position.length() - 1;
-    skyCamera.near = Math.min(Math.max(altitude * 0.3, 1e-4), 0.05);
+    if (frame.skyScaleKm === EARTH_RADIUS_KM) {
+      // Near plane scaled to the height above the ground, so a low camera can
+      // still see Earth close up without starving the far depth range.
+      const altitude = skyCamera.position.length() - 1;
+      skyCamera.near = Math.min(Math.max(altitude * 0.3, 1e-4), 0.05);
+    } else {
+      skyCamera.near = frame.skyNear;
+    }
     skyCamera.updateProjectionMatrix();
     skyCamera.updateMatrixWorld();
     composer.render(delta);

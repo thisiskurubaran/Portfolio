@@ -53,7 +53,11 @@ function plumeGeometry() {
 }
 
 const plumeShared = { uTime: { value: 0 } };
-const plumeIntensity: [{ value: number }, { value: number }] = [{ value: 0 }, { value: 0 }];
+const plumeIntensity: [{ value: number }, { value: number }, { value: number }] = [
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
+];
 
 function plumeMaterial(intensity: { value: number }) {
   return new ShaderMaterial({
@@ -81,6 +85,7 @@ export function Rocket() {
   const tower = useRef<Group>(null);
   const plume1 = useRef<Mesh>(null);
   const plume2 = useRef<Mesh>(null);
+  const plume3 = useRef<Mesh>(null);
   const glow = useRef<PointLight>(null);
   const craft = useRef<SpacecraftHandle>(null);
 
@@ -157,6 +162,14 @@ export function Rocket() {
       plume2.current.scale.set(1.2 + 10 * vac, 14 + 50 * vac, 1.2 + 10 * vac);
       plumeIntensity[1].value = 6;
     }
+    // Departure burn on the service module engine. Hydrogen and oxygen burn
+    // to nearly clear water vapour, so in vacuum the plume is only a faint glow.
+    if (plume3.current) {
+      const burning = useStore.getState().phase === "tmi";
+      plume3.current.visible = burning;
+      plume3.current.scale.set(1.6, 7, 1.6);
+      plumeIntensity[2].value = burning ? 2.5 : 0;
+    }
     if (glow.current) {
       // The flame lights up the stack and the pad, strongest near the ground.
       glow.current.intensity = s1On ? 5e4 * spool * local.air.value : 0;
@@ -200,6 +213,7 @@ export function Rocket() {
 
       <group position={[0, JOINT_HEIGHT, 0]}>
         <Spacecraft ref={craft} />
+        <mesh ref={plume3} geometry={geo.plume} material={plumes[2]} position={[0, -SM_HEIGHT - 1.5, 0]} />
         <group ref={tower}>
           <mesh material={materials.paint} position={[0, 4.3, 0]}>
             <cylinderGeometry args={[0.35, 0.9, 1.6, 24]} />

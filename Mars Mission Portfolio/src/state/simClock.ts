@@ -31,3 +31,9 @@ export function resetToNow(real = Date.now()): void {
   state.anchorReal = real;
   state.warp = 1;
 }
+
+/** Moves simulated time to a given instant, keeping the current warp. */
+export function jumpTo(simMs: number, real = Date.now()): void {
+  state.anchorSim = simMs;
+  state.anchorReal = real;
+}
