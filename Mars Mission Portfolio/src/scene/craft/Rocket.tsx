@@ -168,7 +168,7 @@ export function Rocket() {
     // Departure burn on the service module engine. Hydrogen and oxygen burn
     // to nearly clear water vapour, so in vacuum the plume is only a faint glow.
     if (plume3.current) {
-      const burning = useStore.getState().phase === "tmi";
+      const burning = useStore.getState().phase === "tmi" || local.engineBurn;
       plume3.current.visible = burning;
       plume3.current.scale.set(1.6, 7, 1.6);
       plumeIntensity[2].value = burning ? 2.5 : 0;

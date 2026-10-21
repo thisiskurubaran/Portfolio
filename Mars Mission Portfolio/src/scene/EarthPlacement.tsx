@@ -21,7 +21,10 @@ export function EarthPlacement({ children }: { children: ReactNode }) {
   useFrame(() => {
     const g = group.current;
     if (!g) return;
-    if (useStore.getState().phase !== "transit") {
+    const phase = useStore.getState().phase;
+    // At Mars, Earth is only a point of light; the planet list draws that.
+    g.visible = phase !== "capture" && phase !== "marsOrbit";
+    if (phase !== "transit") {
       g.position.set(0, 0, 0);
       g.scale.setScalar(1);
       return;

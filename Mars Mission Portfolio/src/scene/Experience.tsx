@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Canvas, createPortal } from "@react-three/fiber";
 import { NoToneMapping } from "three";
 import { CameraDirector } from "./CameraDirector";
+import { AeroGlow } from "./craft/AeroGlow";
 import { Rocket } from "./craft/Rocket";
 import { Earth } from "./Earth";
 import { FpsProbe } from "./FpsProbe";
@@ -11,6 +12,7 @@ import { EarthPlacement } from "./EarthPlacement";
 import { LaunchSite } from "./launch/LaunchSite";
 import { LocalEnvironment } from "./LocalEnvironment";
 import { LocalLights } from "./LocalLights";
+import { MarsSystem } from "./MarsSystem";
 import { MoonBody } from "./MoonBody";
 import { PhaseDriver } from "./PhaseDriver";
 import { Planets } from "./Planets";
@@ -33,6 +35,9 @@ function SkyLayer() {
         </EarthPlacement>
       </Suspense>
       <MoonBody />
+      <Suspense fallback={null}>
+        <MarsSystem />
+      </Suspense>
       <TransitSky />
     </>
   );
@@ -55,6 +60,7 @@ export default function Experience() {
       <LaunchSite />
       <Rocket />
       <Station />
+      <AeroGlow />
       <CameraDirector />
       <FpsProbe />
       <Renderer />

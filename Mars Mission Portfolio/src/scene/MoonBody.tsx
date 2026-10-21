@@ -25,7 +25,9 @@ export function MoonBody() {
     const m = mesh.current;
     if (!m) return;
     const g = moonGeocentric(sky.simMs);
-    if (useStore.getState().phase === "transit") {
+    const phase = useStore.getState().phase;
+    m.visible = phase !== "capture" && phase !== "marsOrbit";
+    if (phase === "transit") {
       const e = sky.helio.earth;
       const s = transit.shipHelioKm;
       m.position
