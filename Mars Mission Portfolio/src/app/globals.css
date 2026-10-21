@@ -437,7 +437,7 @@ body {
 .planner {
   position: fixed;
   left: max(16px, env(safe-area-inset-left));
-  top: 150px;
+  top: 184px;
   width: min(300px, calc(100vw - 32px));
 }
 
@@ -472,7 +472,7 @@ body {
 .timeline {
   position: fixed;
   left: max(16px, env(safe-area-inset-left));
-  top: 150px;
+  top: 184px;
   width: min(300px, calc(100vw - 32px));
 }
 
@@ -769,6 +769,6 @@ a.hud-button {
 }
 
 .timeline {
-  max-height: calc(100vh - 340px);
+  max-height: calc(100vh - 370px);
   overflow-y: auto;
 }

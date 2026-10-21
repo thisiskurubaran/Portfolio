@@ -18,6 +18,13 @@ const PAD_TARGET = new Vector3(0, -JOINT_HEIGHT / 2, 0);
 /** In orbit: off to one side, a little behind and above, with Earth below in frame. */
 const ORBIT_CAMERA = new Vector3(-12, 7, 26);
 
+/** Behind the ship, looking along the direction of travel. */
+const AHEAD_CAMERA = new Vector3(-30, 9, 16);
+const AHEAD_TARGET = new Vector3(40, 0, 0);
+/** High above the ship, looking down past it at the planet below. */
+const DOWN_CAMERA = new Vector3(-8, 30, 9);
+const ORIGIN = new Vector3(0, 0, 0);
+
 /** Docking view looks at a point between ship and station. */
 const STATION_TARGET = new Vector3(18, 0, 0);
 const UP = new Vector3(0, 1, 0);
@@ -67,6 +74,17 @@ export function CameraDirector() {
     previous.current = phase;
     controls.current?.update();
   }, [phase, camera, size]);
+
+  // At Mars the sights are ahead (the planet on approach, a moon along the
+  // orbit) or straight down (Mars from a parking orbit), far outside the
+  // side view that suits stations.
+  useEffect(() => {
+    if (phase !== "capture" && phase !== "marsOrbit") return;
+    const aboveMars = phase === "marsOrbit" && (transitMode === "cruise" || transitMode === "transfer");
+    controls.current?.target.copy(aboveMars ? ORIGIN : AHEAD_TARGET);
+    camera.position.copy(aboveMars ? DOWN_CAMERA : AHEAD_CAMERA);
+    controls.current?.update();
+  }, [phase, transitMode, camera]);
 
   // Stations: pull back and look ahead so ship and station share the frame.
   useEffect(() => {

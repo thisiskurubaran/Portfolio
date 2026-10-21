@@ -16,6 +16,8 @@ export function formatElapsed(ms: number): string {
 
 /** "1.62 AU (242.5M km)". */
 export function formatDistance(au: number): string {
+  // Close to a planet, AU and millions of km both read as zero.
+  if (au < 0.01) return `${Math.round(au * AU_KM).toLocaleString("en")} km`;
   const mkm = (au * AU_KM) / 1e6;
   return `${au.toFixed(2)} AU (${mkm.toFixed(1)}M km)`;
 }
