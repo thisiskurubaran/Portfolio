@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { certifications } from "@/content/certifications";
 import { contactLinks } from "@/content/contact";
+import { debris } from "@/content/debris";
+import { deepDives } from "@/content/surface";
 import { education } from "@/content/education";
 import { experience } from "@/content/experience";
 import { profile } from "@/content/profile";
@@ -170,6 +172,42 @@ export default function PlainPage() {
           ))}
         </ul>
       </section>
+
+      <section aria-labelledby="surface">
+        <h2 id="surface">{ui.plain.surface}</h2>
+        <p>{ui.plain.surfaceIntro}</p>
+        <ul>
+          {deepDives.map((d) => (
+            <li key={d.id}>
+              <strong>{d.name}</strong>:{" "}
+              {experience
+                .filter((r) => r.skills.some((s) => d.skills.includes(s)))
+                .map((r) => `${r.title}, ${r.company}`)
+                .join("; ")}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Shown only once the owner adds entries; nothing here is invented. */}
+      {debris.length > 0 && (
+        <section aria-labelledby="debris">
+          <h2 id="debris">{ui.plain.debris}</h2>
+          {debris.map((d) => (
+            <article key={d.id}>
+              <h3>{d.name}</h3>
+              {d.years && <p>{d.years}</p>}
+              <p>{d.summary}</p>
+              <p>
+                <strong>{ui.plain.wentWrong}:</strong> {d.wentWrong}
+              </p>
+              <p>
+                <strong>{ui.plain.learned}:</strong> {d.learned}
+              </p>
+            </article>
+          ))}
+        </section>
+      )}
 
       <section aria-labelledby="contact">
         <h2 id="contact">{ui.plain.contact}</h2>
