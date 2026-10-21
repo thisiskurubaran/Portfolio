@@ -138,7 +138,7 @@ function stopGeocentric(id: StopId, ms: number): Vec3 {
 
 /** Checks each stop against the real escape path: is it passed close enough to visit? */
 function gateStops(): void {
-  for (const stop of stops) {
+  for (const stop of stops.filter((s) => s.leg === "earth")) {
     const distance = stop.id === "moon" ? Math.hypot(...moonGeocentric(transit.plan!.departMs)) : L2_DISTANCE_KM;
     const t = timeAtDistance(distance);
     const angle = t === null ? null : angleDeg(geocentric(t), stopGeocentric(stop.id, t));
@@ -158,9 +158,11 @@ export function buildVisits(): void {
   const end = plan.arriveMs - 3 * DAY_MS;
   const visiting = stops.filter((s) => {
     const st = transit.stopStatus[s.id];
-    return st && st.tMs !== null && (st.available || st.forced);
+    return s.leg === "earth" && st && st.tMs !== null && (st.available || st.forced);
   });
-  const absorbed = new Set(visiting.flatMap((s) => s.absorbs));
+  // Mars stops are always reached, so their content never waits on the cruise.
+  const marsLeg = stops.filter((s) => s.leg === "mars");
+  const absorbed = new Set([...visiting, ...marsLeg].flatMap((s) => s.absorbs));
   const list: Visit[] = [];
   stations.forEach((s, station) => {
     if (!absorbed.has(s.id)) list.push({ id: s.id, kind: "station", station, tMs: start + s.at * (end - start) });

@@ -4,11 +4,21 @@ import { useFrame } from "@react-three/fiber";
 import { DAY_MS } from "@/physics/constants";
 import type { StopId } from "@/content/stops";
 import { observer } from "@/state/observer";
-import { simNow } from "@/state/simClock";
+import { jumpTo, simNow } from "@/state/simClock";
 import { CRUISE_WARP, useStore } from "@/state/store";
 import { ascentWarp, EVENTS } from "./launch/ascentProfile";
 import { ascent, beginAscent, frame, updateAscentFrame, updateOrbitFrame, updatePadFrame } from "./missionRuntime";
-import { updateLocal } from "./localRuntime";
+import { local, updateLocal } from "./localRuntime";
+import {
+  AEROCAPTURE_HALF_S,
+  BURN_REAL_S,
+  captureStep,
+  mars,
+  shipAuAtMars,
+  spend,
+  updateMarsFrame,
+} from "./marsRuntime";
+import { marsVisits, resetMarsVisits } from "./visits";
 import { updateSky, updateView } from "./skyRuntime";
 import { beginTransfer, shipAu, TMI_REAL_S, transit, updateTransitFrame } from "./transitRuntime";
 
@@ -21,19 +31,25 @@ const ARRIVAL_MARGIN_MS = 2.5 * DAY_MS;
 
 function stepTransit(t: number): void {
   const store = useStore.getState();
+  if (store.transitMode === "cruise") {
+    const next = transit.visits[store.visitIndex];
+    if (next && t >= next.tMs) {
+      store.setWarp(1);
+      store.setTransitMode("approach");
+    } else if (!next && transit.plan && t >= transit.plan.arriveMs - ARRIVAL_MARGIN_MS) {
+      store.setWarp(1);
+      store.setTransitMode("arrived");
+    }
+    return;
+  }
+  stepDocking(transit.visits.length, CRUISE_WARP);
+}
+
+/** The scripted docking moves, shared by stations, Earth stops and Mars stops. */
+function stepDocking(visitCount: number, warpAfter: number): void {
+  const store = useStore.getState();
   const since = (Date.now() - store.modeSince) / 1000;
   switch (store.transitMode) {
-    case "cruise": {
-      const next = transit.visits[store.visitIndex];
-      if (next && t >= next.tMs) {
-        store.setWarp(1);
-        store.setTransitMode("approach");
-      } else if (!next && transit.plan && t >= transit.plan.arriveMs - ARRIVAL_MARGIN_MS) {
-        store.setWarp(1);
-        store.setTransitMode("arrived");
-      }
-      break;
-    }
     case "approach":
       if (since >= APPROACH_S) store.setTransitMode("holding");
       break;
@@ -42,9 +58,9 @@ function stepTransit(t: number): void {
       break;
     case "undocking":
       if (since >= UNDOCKING_S) {
-        store.setVisitIndex(Math.min(store.visitIndex + 1, transit.visits.length));
+        store.setVisitIndex(Math.min(store.visitIndex + 1, visitCount));
         store.setTransitMode("cruise");
-        store.setWarp(CRUISE_WARP);
+        store.setWarp(warpAfter);
       }
       break;
     default:
@@ -52,11 +68,68 @@ function stepTransit(t: number): void {
   }
 }
 
+/**
+ * Warp that drains the time left to an event in a few real seconds while
+ * never overshooting it: the remaining time halves every couple of seconds.
+ */
+function easeWarp(remainingMs: number, max: number): number {
+  return Math.min(Math.max(remainingMs / 1000 / 2, 1), max);
+}
+
+function setWarpIfChanged(warp: number): void {
+  const store = useStore.getState();
+  // Avoid re-rendering the HUD every frame for tiny changes.
+  if (Math.abs(warp - store.warp) / Math.max(store.warp, 1) > 0.1 || (warp === 1 && store.warp !== 1)) store.setWarp(warp);
+}
+
+function stepCapture(t: number): void {
+  const store = useStore.getState();
+  const step = captureStep(t);
+  local.engineBurn = false;
+  if (step === "approach") setWarpIfChanged(easeWarp(mars.periMs - AEROCAPTURE_HALF_S * 1000 - t, 86_400));
+  else if (step === "aerocapture") setWarpIfChanged(40);
+  else if (step === "coast") setWarpIfChanged(easeWarp(mars.apoMs - t, 3600));
+  else {
+    // At apoapsis: hold time still and play the insertion burn.
+    if (store.warp !== 0) {
+      store.setWarp(0);
+      store.setTransitMode("cruise");
+    }
+    local.engineBurn = true;
+    if ((Date.now() - store.modeSince) / 1000 >= BURN_REAL_S) {
+      local.engineBurn = false;
+      spend(mars.insertionDv);
+      resetMarsVisits();
+      jumpTo(mars.apoMs + 1000);
+      store.setWarp(1);
+      store.setVisitIndex(0);
+      store.setPhase("marsOrbit");
+      store.setTransitMode("approach");
+    }
+  }
+}
+
+function stepMarsOrbit(): void {
+  const store = useStore.getState();
+  if (store.transitMode === "transfer") {
+    local.engineBurn = false;
+    if (!mars.transfer) {
+      store.setWarp(1);
+      store.setTransitMode("approach");
+    } else {
+      setWarpIfChanged(easeWarp(mars.transfer.endMs - simNow(), 3600));
+    }
+    return;
+  }
+  if (store.transitMode === "cruise") return;
+  stepDocking(marsVisits.length, 1);
+}
+
 /** Which stop the ship is parked at, and how far into the move there or back it is. */
 function stopFraming(): { stopId: StopId | null; blend: number } {
   const store = useStore.getState();
   const visit = transit.visits[store.visitIndex];
-  if (!visit || visit.kind !== "stop") return { stopId: null, blend: 0 };
+  if (!visit || visit.kind !== "stop" || (visit.stop !== "moon" && visit.stop !== "l2")) return { stopId: null, blend: 0 };
   const since = (Date.now() - store.modeSince) / 1000;
   switch (store.transitMode) {
     case "approach":
@@ -113,13 +186,20 @@ export function PhaseDriver() {
         store.setPhase("transit");
         store.setWarp(CRUISE_WARP);
       }
-    } else {
+    } else if (phase === "transit") {
       const { stopId, blend } = stopFraming();
       updateTransitFrame(t, stopId, blend);
       const au = shipAu();
       updateView(au, null);
       observer.au = au;
       stepTransit(t);
+    } else {
+      updateMarsFrame(t, phase);
+      const au = shipAuAtMars();
+      updateView(au, null);
+      observer.au = au;
+      if (phase === "capture") stepCapture(t);
+      else stepMarsOrbit();
     }
     updateLocal();
   }, -100);

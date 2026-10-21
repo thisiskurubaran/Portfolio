@@ -11,7 +11,7 @@ import { CAPSULE_TOP } from "../craft/Spacecraft";
 import { materials } from "../craft/materials";
 import { local } from "../localRuntime";
 import { APPROACH_S, DOCKING_S, UNDOCKING_S } from "../PhaseDriver";
-import { transit } from "../transitRuntime";
+import { currentVisits } from "../visits";
 
 /** Where the ship's docking ring sits on the local x axis (nose forward). */
 const SHIP_PORT_X = CAPSULE_TOP + 0.1;
@@ -197,8 +197,8 @@ export function Station() {
   const group = useRef<Group>(null);
   const phase = useStore((s) => s.phase);
   const index = useStore((s) => s.visitIndex);
-  // Visits are fixed at the burn, before this component sees the cruise phase.
-  const visit = phase === "transit" ? transit.visits[index] : undefined;
+  // Visit lists are fixed before this component sees the phase that uses them.
+  const visit = phase === "transit" || phase === "marsOrbit" ? currentVisits()[index] : undefined;
   const model =
     visit?.kind === "station"
       ? stations[visit.station]?.model

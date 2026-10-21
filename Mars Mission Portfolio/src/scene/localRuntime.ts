@@ -1,5 +1,6 @@
 import { Color, Quaternion, Vector3 } from "three";
 import { useStore } from "@/state/store";
+import { inMarsShadow } from "./marsRuntime";
 import { ascent, frame, inEarthShadow } from "./missionRuntime";
 import { sky } from "./skyRuntime";
 
@@ -20,8 +21,12 @@ export const local = {
   sunColor: new Color(1, 1, 1),
   /** Sunlight relative to its strength at 1 AU. */
   sunStrength: 1,
-  /** How much sunlit Earth fills the view below, 0 to 1. */
+  /** How much sunlit planet fills the view below, 0 to 1. */
   earthshine: 0,
+  /** Colour of the planet below, for the light it reflects up. */
+  shineColor: new Color(0.32, 0.42, 0.58),
+  /** Main engine firing outside the launch, for the plume. */
+  engineBurn: false,
   sunDirUniform: { value: new Vector3(0, 1, 0) },
 };
 
@@ -30,6 +35,9 @@ const SCALE_HEIGHT_KM = 7.5;
 const inverse = new Quaternion();
 const noon = new Color(1, 0.97, 0.93);
 const dusk = new Color(1, 0.55, 0.25);
+// Sunlit Earth reflects about 30% of light, mostly blue and white; Mars about 25%, ochre.
+const earthShine = new Color(0.32, 0.42, 0.58);
+const marsShine = new Color(0.5, 0.3, 0.18);
 
 export function updateLocal(): void {
   inverse.copy(frame.rotation).invert();
@@ -51,12 +59,14 @@ export function updateLocal(): void {
     local.sunColor.copy(dusk).lerp(noon, smoothstep(0.0, 0.35, elevation));
   } else {
     const nearEarth = phase === "orbit" || phase === "tmi" || onAscent;
-    local.daylight.value = nearEarth && inEarthShadow() ? 0 : 1;
+    const nearMars = phase === "capture" || phase === "marsOrbit";
+    local.daylight.value = (nearEarth && inEarthShadow()) || (nearMars && inMarsShadow()) ? 0 : 1;
     local.sunColor.copy(noon);
   }
   // Sunlight thins with the square of distance from the Sun.
   local.sunStrength = 1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu);
   local.earthshine = phase === "transit" ? 0 : smoothstep(-0.35, 0.5, local.sunDir.y);
+  local.shineColor.copy(phase === "capture" || phase === "marsOrbit" ? marsShine : earthShine);
 }
 
 export function smoothstep(a: number, b: number, x: number): number {

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { LandingSite } from "@/content/landingSites";
 import type { PlanetId } from "@/space/elements";
 import { resetToNow, setWarp as setClockWarp } from "./simClock";
 
@@ -6,7 +7,7 @@ import { resetToNow, setWarp as setClockWarp } from "./simClock";
  * Mission phases on the one timeline. Later milestones add transit, Mars
  * approach and surface.
  */
-export type Phase = "pad" | "countdown" | "ascent" | "orbit" | "tmi" | "transit";
+export type Phase = "pad" | "countdown" | "ascent" | "orbit" | "tmi" | "transit" | "capture" | "marsOrbit";
 
 /**
  * Cruise sub states. The ship coasts until it reaches a station, holds
@@ -19,7 +20,9 @@ export type TransitMode =
   | "docking"
   | "docked"
   | "undocking"
-  | "arrived";
+  | "arrived"
+  /** Between Mars's moons on a transfer orbit. */
+  | "transfer";
 
 /** Default cruise warp: a day per second, so the 200 to 300 day transfer takes a few minutes. */
 export const CRUISE_WARP = 86_400;
@@ -42,6 +45,9 @@ type State = {
   /** Simulated seconds per real second. */
   warp: number;
   selectedBody: PlanetId | null;
+  /** Where the crew means to land, picked in Mars orbit. */
+  landingSite: LandingSite | null;
+  setLandingSite: (site: LandingSite) => void;
   transitMode: TransitMode;
   /** Index into the visit list: the station or stop being visited, or the next one. */
   visitIndex: number;
@@ -69,6 +75,8 @@ export const useStore = create<State>((set, get) => ({
   liftoffMs: null,
   warp: 1,
   selectedBody: null,
+  landingSite: null,
+  setLandingSite: (landingSite) => set({ landingSite }),
   transitMode: "cruise",
   visitIndex: 0,
   modeSince: 0,

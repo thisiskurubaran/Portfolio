@@ -10,8 +10,6 @@ import { local } from "./localRuntime";
 const padSky = new Color(0.55, 0.66, 0.82);
 const padGround = new Color(0.45, 0.4, 0.32);
 const space = new Color(0.01, 0.01, 0.015);
-// Sunlit Earth below, reflecting about 30% of the light that hits it.
-const earthshine = new Color(0.32, 0.42, 0.58);
 
 /**
  * Lights for the local layer. The Sun is the one real light; the hemisphere
@@ -38,7 +36,7 @@ export function LocalLights() {
       } else {
         // Near Earth, it fills most of the lower sky and is bright only on its day side.
         fill.current.color.copy(space);
-        fill.current.groundColor.copy(earthshine);
+        fill.current.groundColor.copy(local.shineColor);
         fill.current.intensity = 0.04 + 0.9 * local.earthshine;
       }
     }
