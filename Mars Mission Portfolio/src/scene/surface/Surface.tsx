@@ -24,6 +24,7 @@ import regolithFrag from "@/shaders/regolith.frag";
 import { debris } from "@/content/debris";
 import { base, deepDives, OPEN_RANGE_M } from "@/content/surface";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { effective, useConditions } from "@/state/conditions";
 import { useStore } from "@/state/store";
 import { materials } from "../craft/materials";
 import { SM_HEIGHT } from "../craft/Spacecraft";
@@ -44,6 +45,8 @@ const MARS_SKY = {
   uSunset: { value: new Color(0.35, 0.5, 0.9) },
   uHalo: { value: new Color(0.75, 0.85, 1.0) },
 };
+const CLEAR_SKY = { zenith: new Color(0.42, 0.3, 0.2), horizon: new Color(0.78, 0.58, 0.4) };
+const STORM_SKY = { zenith: new Color(0.3, 0.14, 0.07), horizon: new Color(0.5, 0.26, 0.12) };
 const groundUniforms = {
   uSunColor: { value: new Color() },
   uHaze: { value: new Color(0.7, 0.5, 0.34) },
@@ -300,6 +303,16 @@ export function Surface() {
     const r = root.current;
     if (!r) return;
     groundUniforms.uSunColor.value.copy(local.sunColor);
+    // F03: a dust storm thickens the haze; ease toward it over a few seconds.
+    const c = useConditions.getState();
+    const dusty = effective(c.mode, c.spaceWeather, false, c.dramatic).dust;
+    local.dustTau += ((dusty ? (c.dramatic ? 6 : 4) : 0.5) - local.dustTau) * Math.min(delta * 0.5, 1);
+    const k = Math.min((local.dustTau - 0.5) / 3.5, 1);
+    MARS_SKY.uZenith.value.copy(CLEAR_SKY.zenith).lerp(STORM_SKY.zenith, k);
+    MARS_SKY.uHorizon.value.copy(CLEAR_SKY.horizon).lerp(STORM_SKY.horizon, k);
+    groundUniforms.uHaze.value.copy(CLEAR_SKY.horizon).multiplyScalar(0.9).lerp(STORM_SKY.horizon, k);
+    const direct = Math.exp(-(local.dustTau - 0.5) / Math.max(local.sunDir.y, 0.15));
+    groundUniforms.uSunColor.value.multiplyScalar(Math.max(direct, 0.08));
     r.position.set(0, GROUND_Y - surface.altitudeKm * 1000, 0);
     if (dome.current) dome.current.position.copy(camera.position);
 

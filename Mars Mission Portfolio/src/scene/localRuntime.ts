@@ -33,6 +33,8 @@ export const local = {
   groundColor: new Color(0.45, 0.4, 0.32),
   /** On the ground at Mars, or coming down to it. */
   onMars: false,
+  /** Dust optical depth at Mars: about 0.5 on a clear day, 4 or more in a big storm. */
+  dustTau: 0.5,
   sunDirUniform: { value: new Vector3(0, 1, 0) },
 };
 
@@ -102,7 +104,13 @@ function updateMarsGround(): void {
   local.daylight.value = smoothstep(-0.12, 0.05, el);
   // Dust reddens sunlight slightly even at midday.
   local.sunColor.copy(marsLow).lerp(marsNoon, smoothstep(0.0, 0.4, el));
-  local.sunStrength = 1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu);
+  // Beer-Lambert: direct sunlight falls with the dust above clear-day levels,
+  // more so for a low Sun, which shines through a longer path of it.
+  const extra = Math.max(local.dustTau - 0.5, 0);
+  const direct = Math.exp(-extra / Math.max(el, 0.15));
+  local.sunStrength = (1 / (sky.view.sunDistanceAu * sky.view.sunDistanceAu)) * Math.max(direct, 0.08);
+  // Scattered light keeps the day from going black: a storm sky is dim, not dark.
+  local.daylight.value *= 1 - 0.55 * Math.min(extra / 3.5, 1);
   local.earthshine = 0;
   local.skyColor.copy(marsSky);
   local.groundColor.copy(marsGround);

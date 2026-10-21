@@ -19,6 +19,7 @@ import cloudsFrag from "@/shaders/clouds.frag";
 import atmosphereFrag from "@/shaders/atmosphere.frag";
 import { ATMOSPHERE_RADIUS, CLOUD_RADIUS } from "./scale";
 import { sky } from "./skyRuntime";
+import { Aurora } from "./weather/Aurora";
 
 const TEXTURES = [
   "/textures/earth/day.jpg",
@@ -102,6 +103,7 @@ export function Earth() {
         <mesh material={materials.clouds}>
           <sphereGeometry args={[CLOUD_RADIUS, 96, 48]} />
         </mesh>
+        <Aurora />
       </group>
       {/* The atmosphere is symmetric, so it does not need to rotate with the ground. */}
       <mesh material={materials.atmosphere}>

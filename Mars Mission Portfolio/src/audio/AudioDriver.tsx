@@ -9,6 +9,7 @@ import { ascent } from "@/scene/missionRuntime";
 import { GROUND_Y } from "@/scene/surface/Surface";
 import { driveInput, roverState, TILT_WARN_DEG } from "@/scene/surface/roverState";
 import { surface } from "@/scene/surfaceRuntime";
+import { effective, useConditions } from "@/state/conditions";
 import { useStore } from "@/state/store";
 import { breathe, click, glide, heartbeat, ping } from "./engine";
 import { captions, sound } from "./sound";
@@ -118,6 +119,13 @@ export function AudioDriver() {
     p.positionY.value = surface.rover.y + GROUND_Y;
     p.positionZ.value = surface.rover.z;
     caption("motor", driving);
+
+    // F03: a radio blackout from a flare puts a bed of static under everything.
+    const c = useConditions.getState();
+    const blackout = effective(c.mode, c.spaceWeather, false, c.dramatic).blackout > 0;
+    if (blackout && !captions.has("radio")) glide(g.radio.gain.gain, 0.012, ctx, 1);
+    else if (!blackout && !captions.has("radio")) glide(g.radio.gain.gain, 0, ctx, 1);
+    caption("static", blackout);
 
     const near = roverState.nearest;
     timers.ping -= delta;
