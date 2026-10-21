@@ -1,5 +1,9 @@
 import { ascent, skipToOrbit } from "@/scene/missionRuntime";
+import type { LandingSite } from "@/content/landingSites";
+import { canAfford, hohmannToMoon, mars, planCapture, startTransfer } from "@/scene/marsRuntime";
 import { planTransfer, transit } from "@/scene/transitRuntime";
+import { marsVisits } from "@/scene/visits";
+import type { MarsMoon } from "@/space/mars";
 import { jumpTo, simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 
@@ -46,4 +50,30 @@ export function undock(): void {
 /** Runs time fast until the ship reaches the next station, where it stops on its own. */
 export function toNextStation(): void {
   useStore.getState().setWarp(NEXT_STATION_WARP);
+}
+
+/** Hands the flight from the Sun to Mars: plans the approach and capture from the transfer. */
+export function beginMarsApproach(): void {
+  const plan = transit.plan;
+  if (!plan) return;
+  planCapture(plan);
+  const store = useStore.getState();
+  store.setTransitMode("cruise");
+  store.setPhase("capture");
+}
+
+/** Hohmann transfer to the other moon, if the propellant allows it. */
+export function transferTo(to: MarsMoon): void {
+  const { dv1, dv2 } = hohmannToMoon(to);
+  if (!canAfford(dv1 + dv2)) return;
+  startTransfer(to, simNow());
+  marsVisits.push({ id: to, kind: "stop", stop: to, tMs: mars.transfer!.endMs });
+  const store = useStore.getState();
+  store.setVisitIndex(marsVisits.length - 1);
+  store.setTransitMode("transfer");
+}
+
+export function chooseLandingSite(site: LandingSite): void {
+  mars.landingSite = site;
+  useStore.getState().setLandingSite(site);
 }

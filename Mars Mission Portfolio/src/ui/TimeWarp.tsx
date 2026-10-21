@@ -8,11 +8,14 @@ export function TimeWarp() {
   const setWarp = useStore((s) => s.setWarp);
   const resetTime = useStore((s) => s.resetTime);
   // After departure the flight is committed; jumping back to today would undo it.
-  const canReset = useStore((s) => s.phase !== "transit");
+  const phase = useStore((s) => s.phase);
+  const canReset = phase !== "transit" && phase !== "marsOrbit";
+  // Around Mars, Phobos laps the planet every 7.7 hours; faster warp would just strobe it.
+  const maxWarp = phase === "marsOrbit" ? 3600 : Infinity;
 
   return (
     <div className="hud-warp" role="group" aria-label={ui.warp.label}>
-      {ui.warp.options.map((o) => (
+      {ui.warp.options.filter((o) => o.value <= maxWarp).map((o) => (
         <button
           key={o.value}
           type="button"

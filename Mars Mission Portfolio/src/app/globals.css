@@ -739,3 +739,36 @@ a.hud-button {
     animation-duration: 0.01ms !important;
   }
 }
+
+.sites-heading {
+  margin-top: 12px;
+}
+
+.site-list {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.site-list li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.site-list p {
+  margin: 2px 0 0;
+}
+
+.hud-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.timeline {
+  max-height: calc(100vh - 340px);
+  overflow-y: auto;
+}

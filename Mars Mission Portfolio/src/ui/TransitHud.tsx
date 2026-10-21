@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { type StopId, stops } from "@/content/stops";
 import { ui } from "@/content/ui";
 import { AU_KM } from "@/physics/constants";
@@ -10,8 +10,8 @@ import { sky } from "@/scene/skyRuntime";
 import { distanceToStop, forceStop, transit, visitLabel } from "@/scene/transitRuntime";
 import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
-import { dock, toNextStation, undock } from "./missionActions";
-import { StationPanel } from "./StationPanel";
+import { toNextStation } from "./missionActions";
+import { DockBar } from "./DockBar";
 
 const DAY = 86_400_000;
 
@@ -118,64 +118,6 @@ function Timeline() {
         </button>
       )}
     </section>
-  );
-}
-
-function DockBar() {
-  const mode = useStore((s) => s.transitMode);
-  const index = useStore((s) => s.visitIndex);
-  const visit = transit.visits[index];
-  const panel = useRef<HTMLElement>(null);
-
-  // Move focus into the panel when it opens, so keyboard users land on the content.
-  useEffect(() => {
-    if (mode === "docked") panel.current?.focus();
-  }, [mode]);
-
-  if (mode === "arrived") {
-    return (
-      <p className="panel dock-bar" role="status">
-        {ui.transit.arrived}
-      </p>
-    );
-  }
-  if (!visit || mode === "cruise") return null;
-  const { name, action } = visitLabel(visit);
-  if (mode === "docked") {
-    return (
-      <section className="panel station-panel" aria-labelledby="station-heading" tabIndex={-1} ref={panel}>
-        <div className="body-head">
-          <h2 id="station-heading">{name}</h2>
-          <button type="button" className="hud-button" onClick={undock}>
-            {ui.dock.undock}
-          </button>
-        </div>
-        <StationPanel visit={visit} />
-      </section>
-    );
-  }
-  const text =
-    mode === "approach"
-      ? ui.dock.approaching(name)
-      : mode === "holding"
-        ? ui.dock.holding(name)
-        : mode === "docking"
-          ? ui.dock.docking
-          : "";
-  return (
-    <div className="panel dock-bar" role="status">
-      <p>{text}</p>
-      {mode === "holding" && (
-        <div className="brief-actions">
-          <button type="button" className="hud-button primary" onClick={dock}>
-            {action ?? ui.dock.dock}
-          </button>
-          <button type="button" className="hud-button" onClick={undock}>
-            {ui.dock.skip}
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 

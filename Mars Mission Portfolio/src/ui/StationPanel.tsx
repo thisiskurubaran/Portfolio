@@ -168,6 +168,16 @@ function StopContent({ stop }: { stop: Stop }) {
           </div>
         )}
       </dl>
+      {stop.facts && (
+        <>
+          <p className="panel-kicker">{ui.stops.facts}</p>
+          <ul className="role-highlights">
+            {stop.facts.map((f) => (
+              <li key={f}>{f}</li>
+            ))}
+          </ul>
+        </>
+      )}
       {fly && (
         <>
           <p className="panel-kicker">{ui.stops.flyby}</p>

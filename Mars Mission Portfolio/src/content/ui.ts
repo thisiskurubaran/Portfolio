@@ -158,6 +158,38 @@ export const ui = {
       `At ${vinf.toFixed(2)} km/s relative to the Moon, a pass ${alt} km above the surface bends the path by ${turn.toFixed(1)}° and changes the ship's velocity by ${dv.toFixed(2)} km/s. Planned into a real departure, that trims the burn from Earth orbit.`,
     distance: "Distance from Earth",
     highlights: "Technical highlights",
+    facts: "About it",
+  },
+  mars: {
+    begin: "Begin Mars approach",
+    steps: {
+      approach: "Approach",
+      aerocapture: "Aerocapture",
+      coast: "Coast to apoapsis",
+      burn: "Orbit insertion burn",
+    },
+    approachNote: (vinf: number, alt: number) =>
+      `Falling toward Mars at ${vinf.toFixed(2)} km/s more than escape speed. Aiming for a pass ${alt} km above the surface, through the top of the atmosphere.`,
+    aeroNote: (dv: number) =>
+      `Drag in the thin upper air slows the ship by ${dv.toFixed(2)} km/s in a few minutes, with no propellant. The capture orbit reaches out to Phobos.`,
+    coastNote: "Climbing back out of the atmosphere on the capture orbit, toward its high point at Phobos's distance.",
+    burnNote: (dv: number) =>
+      `${dv.toFixed(2)} km/s at apoapsis: raises the low point out of the atmosphere and turns the orbit into Mars's equator, where Phobos is.`,
+    alt: "ALT",
+    dvLeft: "ΔV",
+    moons: "Mars orbit",
+    deimosGo: "Transfer to Deimos",
+    phobosGo: "Transfer back to Phobos",
+    transferNote: (dv: number, hours: number) => `Hohmann transfer: ${dv.toFixed(2)} km/s in two burns, ${hours.toFixed(1)} hours.`,
+    transferring: (name: string) => `On a transfer orbit to ${name}.`,
+    cannotAfford: "Not enough propellant left for this.",
+    sites: "Landing site",
+    sitesNote: (dv: number) =>
+      `Leaving this orbit for an entry at 125 km takes a ${dv.toFixed(2)} km/s deorbit burn. Choose where to come down.`,
+    select: "Select",
+    selected: "Selected",
+    elevation: (km: number) => `${km.toFixed(1)} km below the Mars datum`,
+    siteLocked: (name: string) => `Landing site: ${name}. The surface leg starts from here.`,
   },
   comms: {
     open: "Comms",
