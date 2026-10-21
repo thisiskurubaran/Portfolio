@@ -26,8 +26,15 @@ export const CRUISE_WARP = 86_400;
 
 export const COUNTDOWN_S = 10;
 
+export type PlainOfferReason = "no-webgl" | "slow";
+
 type State = {
   phase: Phase;
+  plainOffer: PlainOfferReason | null;
+  /** Set once the visitor waves the offer away, so it does not come back. */
+  plainOfferDismissed: boolean;
+  offerPlain: (reason: PlainOfferReason) => void;
+  dismissPlainOffer: () => void;
   /** Wall clock time the countdown reaches zero, ms. */
   countdownEndsAt: number;
   /** Simulated time of liftoff, ms, or null before launch. */
@@ -50,8 +57,14 @@ type State = {
   selectBody: (id: PlanetId | null) => void;
 };
 
-export const useStore = create<State>((set) => ({
+export const useStore = create<State>((set, get) => ({
   phase: "pad",
+  plainOffer: null,
+  plainOfferDismissed: false,
+  offerPlain: (reason) => {
+    if (!get().plainOfferDismissed) set({ plainOffer: reason });
+  },
+  dismissPlainOffer: () => set({ plainOffer: null, plainOfferDismissed: true }),
   countdownEndsAt: 0,
   liftoffMs: null,
   warp: 1,

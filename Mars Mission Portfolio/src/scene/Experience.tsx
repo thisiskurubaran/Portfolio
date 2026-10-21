@@ -6,6 +6,7 @@ import { NoToneMapping } from "three";
 import { CameraDirector } from "./CameraDirector";
 import { Rocket } from "./craft/Rocket";
 import { Earth } from "./Earth";
+import { FpsProbe } from "./FpsProbe";
 import { EarthPlacement } from "./EarthPlacement";
 import { LaunchSite } from "./launch/LaunchSite";
 import { LocalEnvironment } from "./LocalEnvironment";
@@ -55,6 +56,7 @@ export default function Experience() {
       <Rocket />
       <Station />
       <CameraDirector />
+      <FpsProbe />
       <Renderer />
     </Canvas>
   );
