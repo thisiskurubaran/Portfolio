@@ -6,7 +6,20 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.7.0`, Mars approach and orbit:
+`v0.8.0`, landing and the Mars surface:
+
+- With a site picked, "Begin descent" spends the deorbit burn and waits in orbit for the site's morning (the Sun about 30 degrees up, found from Mars's real rotation and the Sun's direction), as real landers time their entry for daylight.
+- Entry, parachute and powered descent follow the shape of a real Mars landing with the altitude and speed shown. This is the one compressed part of the flight: about 25 seconds instead of seven minutes.
+- The surface is a 600 m patch around the landing point with craters, rims and about 260 rocks on a power law size spread, under a butterscotch Mars sky that turns blue around a low Sun.
+- The rover is a six wheel, 3 t pressurised crew rover in Rapier: raycast suspension on each wheel, Mars gravity (3.72 m/s²), friction on loose regolith, large rocks as solid obstacles, a 4 m/s governor (2 m/s in reverse), and real rollover risk on crater rims. The HUD warns past 25 degrees of tilt and offers to right the rover once it is on its side.
+- Drive with W A S D or the arrow keys, or the on-screen pad on touch screens. The camera follows the rover and can still be turned.
+- Beacons on the ground hold deep dives that cut across roles (spatial computing, AI and ML in production, location without GPS, mobile at scale). Each lists every role and highlight where those skills were used, straight from the experience record. The base next to the lander keeps the contact links.
+- The debris archive (F17) is wired up, both as derelict landers on the surface and as a section of `/plain`, and is empty: only the owner can say which projects failed and why, so `src/content/debris.ts` waits for real entries.
+- `/plain` gains the surface section. The Content Security Policy now allows `wasm-unsafe-eval` so Rapier's WebAssembly can compile; it allows no JavaScript eval.
+
+Simplified, and said so: the terrain is generated per site, not real MOLA elevation, which needs a data download this build has not made yet. Rapier's raycast vehicle stands in for rocker-bogie linkages, so the chassis can rest on four of its six wheels.
+
+From `v0.7.0`, Mars approach and orbit:
 
 - Arrival is planned from the transfer's own arrival velocity. The approach is an exact hyperbola, turned about the incoming direction so that apoapsis of the capture orbit falls on Mars's equator at Phobos's orbital radius.
 - Aerocapture: a pass 45 km above the datum sheds about 1.3 km/s in the upper atmosphere with no propellant, shown as a glowing shock layer. A 0.9 km/s burn at apoapsis then puts the ship on Phobos's orbit, changing plane at the same time.
@@ -15,7 +28,7 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 - Landing site pick from real sites (Jezero, Gale, Utopia Planitia, Arcadia Planitia) with the deorbit burn each needs; the chosen site is marked on the globe.
 - Mars is drawn with a real colour map and its IAU rotation model (pole and prime meridian), so the right face turns toward the Sun.
 
-Simplified, and said so: Phobos and Deimos sit on circular orbits in Mars's equator at their real radii and periods, but their position along the orbit is set so each rendezvous lines up. There is no MOLA elevation yet; the surface terrain comes with the landing.
+Simplified, and said so: Phobos and Deimos sit on circular orbits in Mars's equator at their real radii and periods, but their position along the orbit is set so each rendezvous lines up. There is no MOLA elevation yet.
 
 From `v0.6.0`, access, security and privacy:
 

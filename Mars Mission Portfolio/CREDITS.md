@@ -23,6 +23,10 @@ The `three-globe` package (MIT, Vasco Asturiano) redistributes these images; the
 
 Planet positions use JPL's approximate Keplerian elements (Standish, Table 1, valid 1800 to 2050), https://ssd.jpl.nasa.gov/planets/approx_pos.html. Planet GM values are from JPL DE440. Planet facts are from the NASA planetary fact sheets. Sidereal time uses the IAU 1982 expression. The Astronomical Almanac low precision Sun formula is used as an independent check in the tests. Mars orientation (pole and prime meridian) is from the IAU WGCCRE 2009 report. Landing site coordinates are the published landing points of Perseverance, Curiosity and Zhurong. The Moon's position uses the main terms of J. Meeus, Astronomical Algorithms, chapter 47, tested against the 8 April 2024 total solar eclipse. The Lambert solver follows the universal variable algorithm in H. D. Curtis, Orbital Mechanics for Engineering Students (algorithm 5.2), and is tested against that book's example 5.2.
 
+## Libraries with physics data
+
+Rover physics uses Rapier (`@dimforge/rapier3d-compat`, Apache 2.0, Dimforge). Mars surface gravity (3.72 m/s²) and the rover's size class follow NASA's crewed Mars surface studies. The surface terrain is generated in code; no elevation data is used yet.
+
 ## Audio
 
 None yet.
