@@ -21,3 +21,20 @@ export function kelvinToRgb(kelvin: number): [number, number, number] {
   const max = Math.max(...linear);
   return [linear[0]! / max, linear[1]! / max, linear[2]! / max];
 }
+
+// Flux scale: magnitude 0 maps to this linear brightness. Sirius (-1.46)
+// lands near 4, enough to bloom slightly; magnitude 6 stars stay faint.
+const FLUX_AT_MAG0 = 1.1;
+const FAINT_FLOOR = 0.12;
+// Venus at -4.6 would otherwise reach about 75 and bloom over half the sky.
+const MAX_FLUX = 8;
+
+/** Linear HDR brightness for a point of light of the given visual magnitude. */
+export function magToFlux(mag: number): number {
+  return Math.min(FAINT_FLOOR + FLUX_AT_MAG0 * Math.pow(10, -0.4 * mag), MAX_FLUX);
+}
+
+/** Point size in CSS pixels; brighter points spread wider, as on a real sensor. */
+export function magToSize(mag: number): number {
+  return Math.min(Math.max(1.5 + (6 - mag) * 0.55, 1.5), 7);
+}

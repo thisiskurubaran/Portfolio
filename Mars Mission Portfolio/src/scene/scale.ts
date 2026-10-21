@@ -11,6 +11,12 @@ export const SUN_RADIUS_KM = 695_700;
 export const AU_KM = 149_597_870.7;
 
 export const SUN_SCENE_DISTANCE = 2000;
+/**
+ * Planets are points of light at their real directions. They sit in front
+ * of the Sun's shell so a transit of Mercury or Venus draws on top of the
+ * disc, as it does in the real sky.
+ */
+export const PLANET_SCENE_DISTANCE = 1500;
 export const STAR_SPHERE_RADIUS = 4000;
 
 /** Sun radius in scene units for a given Earth to Sun distance in AU. */

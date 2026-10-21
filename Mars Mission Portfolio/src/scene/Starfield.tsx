@@ -8,17 +8,12 @@ import starsFrag from "@/shaders/stars.frag";
 import { equatorialToScene, fromRaDec } from "@/space/frames";
 import { toRad } from "@/space/time";
 import { STAR_SPHERE_RADIUS } from "./scale";
-import { bvToKelvin, kelvinToRgb } from "./starColor";
+import { bvToKelvin, kelvinToRgb, magToFlux, magToSize } from "./starColor";
 
 /** Rows of [ra deg, dec deg, visual magnitude, B-V], Hipparcos stars to magnitude 6. */
 type StarRow = [number, number, number, number];
 
-// Flux scale: magnitude 0 maps to this linear brightness. Sirius (-1.46)
-// lands near 4, enough to bloom slightly; magnitude 6 stars stay faint.
-const FLUX_AT_MAG0 = 1.1;
-const FAINT_FLOOR = 0.12;
-
-const pixelRatio = { value: 1 };
+export const pixelRatio = { value: 1 };
 
 function buildGeometry(rows: StarRow[]): BufferGeometry {
   const positions = new Float32Array(rows.length * 3);
@@ -30,13 +25,13 @@ function buildGeometry(rows: StarRow[]): BufferGeometry {
       p.map((c) => c * STAR_SPHERE_RADIUS),
       i * 3,
     );
-    const flux = FAINT_FLOOR + FLUX_AT_MAG0 * Math.pow(10, -0.4 * mag);
+    const flux = magToFlux(mag);
     const rgb = kelvinToRgb(bvToKelvin(bv));
     colors.set(
       rgb.map((c) => c * flux),
       i * 3,
     );
-    sizes[i] = Math.min(Math.max(1.5 + (6 - mag) * 0.55, 1.5), 6);
+    sizes[i] = magToSize(mag);
   });
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(positions, 3));

@@ -7,6 +7,7 @@ import { BlendFunction, ToneMappingMode } from "postprocessing";
 import { NoToneMapping } from "three";
 import { CameraRig } from "./CameraRig";
 import { Earth } from "./Earth";
+import { Planets } from "./Planets";
 import { SkyClock } from "./SkyClock";
 import { Starfield } from "./Starfield";
 import { Sun } from "./Sun";
@@ -24,6 +25,7 @@ export default function Experience() {
       <SkyClock />
       <CameraRig />
       <Starfield />
+      <Planets />
       <Sun />
       <Suspense fallback={null}>
         <Earth />
