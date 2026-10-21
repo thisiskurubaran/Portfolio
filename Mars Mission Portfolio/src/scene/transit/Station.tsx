@@ -14,7 +14,7 @@ import { APPROACH_S, DOCKING_S, UNDOCKING_S } from "../PhaseDriver";
 import { currentVisits } from "../visits";
 
 /** Where the ship's docking ring sits on the local x axis (nose forward). */
-const SHIP_PORT_X = CAPSULE_TOP + 0.1;
+export const SHIP_PORT_X = CAPSULE_TOP + 0.1;
 const MODULE_LENGTH = 8;
 const MODULE_RADIUS = 2.1;
 const RING_RADIUS = 12;
@@ -24,7 +24,7 @@ const RING_RADIUS = 12;
  * crew can get used to Mars before arriving.
  */
 const RING_SPIN = Math.sqrt(3.72 / RING_RADIUS);
-const HOLD_M = 40;
+export const HOLD_M = 40;
 const START_M = 600;
 
 function ease(t: number): number {
