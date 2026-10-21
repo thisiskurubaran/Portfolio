@@ -6,7 +6,17 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.2.0`, orbital physics core:
+`v0.3.0`, launch and Earth orbit:
+
+- Phase 1, the pad: a launch complex at Satish Dhawan Space Centre under the real local sky (day, dusk or a floodlit night), with the mission brief (about) and a launch button
+- Countdown, liftoff with exhaust and smoke, max Q, staging, abort tower jettison, second stage burn, orbit insertion, spacecraft separation and solar array deployment
+- Phase 2, Earth orbit: a 200 km circular orbit, propagated as an exact two-body orbit from the state at engine cutoff, with free look around the spacecraft and skills shown as instrument panels
+- Ship lighting from the Sun only, with earthshine from below and darkness in Earth's shadow
+- A skip button for visitors who have seen the launch before
+
+The ascent is the one scripted part of the flight: altitude, speed and pitch follow curves shaped like a real two stage crewed launch, kept in `src/scene/launch/` apart from the physics. It hands its state at engine cutoff to the Kepler propagator, so the orbit after that is pure physics. Mission time runs at 20x during the long burns and at 1x for liftoff, staging and orbit insertion.
+
+From `v0.2.0`, orbital physics core:
 
 - Earth with day and night textures, city lights, sun glint on water, a drifting cloud layer and an atmosphere rim
 - The Sun as the single light, with limb darkening and bloom
@@ -49,7 +59,9 @@ git config core.hooksPath "Mars Mission Portfolio/.githooks"
 ```
 src/
   app/       routes and layout
-  scene/     three.js scene: Earth, Sun, Starfield, camera
+  scene/     three.js scene: sky layer (Earth, Sun, stars, planets) and local layer (pad, rocket, ship)
+    craft/   rocket and spacecraft models
+    launch/  launch site and the scripted ascent profile
   physics/   kepler propagation, verlet integrator, fixed stepper, light time
   space/     astronomy: planet elements, time, reference frames
   shaders/   GLSL for planets, atmosphere, Sun and stars
@@ -60,6 +72,10 @@ public/
   textures/  planet maps
   data/      star catalogue
 ```
+
+## Two layers
+
+The scene is drawn in two layers composited into one HDR buffer. The sky layer is Earth centred and measured in Earth radii. The local layer is measured in metres around the spacecraft, which always sits at the local origin. A shared frame (rotation and position, in `src/scene/missionRuntime.ts`) ties them together, so a 10 m ship and a planet 6,000 km away each get a usable depth range.
 
 ## Scale
 
