@@ -10,6 +10,7 @@ export const ui = {
     mars: "MARS",
     signal: "SIG",
     signalNote: "One way radio delay to Mars at light speed",
+    signalNoteShip: "One way radio delay between the ship and mission control on Earth",
     scale: "Scale",
     scaleNote:
       "Earth and the Sun are drawn at their real relative sizes. The Sun is placed about 12 times closer than it really is so it fits in view, and shrunk to keep its real apparent size. Planets are points of light in their real directions. The rocket, ship and pad are drawn at true size in metres, in a separate layer around the camera. Positions use the real current time, or simulated time under warp.",
@@ -89,6 +90,11 @@ export const ui = {
     visited: "visited",
     here: "here",
     days: (d: number) => `${Math.max(0, Math.round(d))} d`,
+    stop: "stop",
+    offPath: "not on this path",
+    override: "Visit anyway",
+    overrideNote: "Mission console override: the ship detours to the stop and returns to the transfer.",
+    km: (km: number) => (km >= 1e6 ? `${(km / 1e6).toFixed(2)}M km` : `${Math.round(km / 1000).toLocaleString("en")}k km`),
     arrived: "Mars arrival. The ship is entering Mars's sphere of influence; capture and landing are the next legs of the flight.",
   },
   dock: {
@@ -106,6 +112,17 @@ export const ui = {
     tech: "Built with",
     parts: "Apps",
     noLink: "No public link.",
+  },
+  stops: {
+    reference: "Where",
+    geometry: "Escape path",
+    onPath: (deg: number) => `passes within ${deg.toFixed(0)}° of it, seen from Earth`,
+    forced: "visited by override",
+    flyby: "Lunar flyby",
+    flybyNote: (vinf: number, alt: number, turn: number, dv: number) =>
+      `At ${vinf.toFixed(2)} km/s relative to the Moon, a pass ${alt} km above the surface bends the path by ${turn.toFixed(1)}° and changes the ship's velocity by ${dv.toFixed(2)} km/s. Planned into a real departure, that trims the burn from Earth orbit.`,
+    distance: "Distance from Earth",
+    highlights: "Technical highlights",
   },
   comms: {
     open: "Comms",

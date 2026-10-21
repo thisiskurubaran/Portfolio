@@ -654,3 +654,19 @@ body {
     z-index: 4;
   }
 }
+
+.timeline-tag {
+  margin-left: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--panel-edge);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-dim);
+}
+
+.timeline li.off-path {
+  align-items: center;
+  color: var(--ink-dim);
+  border-left-style: dashed;
+}

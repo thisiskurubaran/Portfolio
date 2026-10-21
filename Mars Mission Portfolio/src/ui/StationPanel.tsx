@@ -4,8 +4,10 @@ import { certifications } from "@/content/certifications";
 import { education } from "@/content/education";
 import { experience, type Role } from "@/content/experience";
 import { projects } from "@/content/projects";
-import { EARLY_CAREER, type Station } from "@/content/stations";
+import { EARLY_CAREER, type Station, stations } from "@/content/stations";
+import { type Stop, stops } from "@/content/stops";
 import { ui } from "@/content/ui";
+import { moonFlyby, transit, type Visit } from "@/scene/transitRuntime";
 
 function RoleCard({ role }: { role: Role }) {
   return (
@@ -130,14 +132,76 @@ function Project({ id }: { id: string }) {
   );
 }
 
-/** What opens when the ship docks: one part of the portfolio per station. */
-export function StationPanel({ station }: { station: Station }) {
+function StationContent({ station }: { station: Station }) {
   return (
-    <div className="station-body">
+    <>
       {station.kind === "experience" && <Experience station={station} />}
       {station.kind === "education" && <Education />}
       {station.kind === "certifications" && <Certifications />}
       {station.kind === "project" && station.project && <Project id={station.project} />}
+    </>
+  );
+}
+
+const FLYBY_ALTITUDE_KM = 100;
+
+function StopContent({ stop }: { stop: Stop }) {
+  const status = transit.stopStatus[stop.id];
+  const fly = stop.id === "moon" ? moonFlyby(FLYBY_ALTITUDE_KM) : null;
+  const highlights = (stop.highlights ?? []).flatMap((h) => {
+    const role = experience.find((r) => r.company === h.company && r.title === h.title);
+    const text = role?.highlights?.[h.highlight];
+    return role && text ? [{ role, text }] : [];
+  });
+  return (
+    <>
+      <p>{stop.what}</p>
+      <dl className="planner-rows">
+        <div>
+          <dt>{ui.stops.reference}</dt>
+          <dd>{stop.reference}</dd>
+        </div>
+        {status?.angleDeg != null && (
+          <div>
+            <dt>{ui.stops.geometry}</dt>
+            <dd>{status.forced ? ui.stops.forced : ui.stops.onPath(status.angleDeg)}</dd>
+          </div>
+        )}
+      </dl>
+      {fly && (
+        <>
+          <p className="panel-kicker">{ui.stops.flyby}</p>
+          <p>{ui.stops.flybyNote(fly.vInf, FLYBY_ALTITUDE_KM, (fly.turn * 180) / Math.PI, fly.deltaV)}</p>
+        </>
+      )}
+      {highlights.length > 0 && (
+        <>
+          <p className="panel-kicker">{ui.stops.highlights}</p>
+          <ul className="role-highlights">
+            {highlights.map(({ role, text }) => (
+              <li key={text}>
+                {text} <span className="role-meta">({role.title}, {role.company})</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {stop.absorbs.map((id) => {
+        const station = stations.find((s) => s.id === id);
+        return station ? <StationContent key={id} station={station} /> : null;
+      })}
+    </>
+  );
+}
+
+/** What opens when the ship docks: one part of the portfolio per station or stop. */
+export function StationPanel({ visit }: { visit: Visit }) {
+  const station = visit.kind === "station" ? stations[visit.station] : undefined;
+  const stop = visit.kind === "stop" ? stops.find((s) => s.id === visit.stop) : undefined;
+  return (
+    <div className="station-body">
+      {station && <StationContent station={station} />}
+      {stop && <StopContent stop={stop} />}
     </div>
   );
 }

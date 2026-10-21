@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { stations } from "@/content/stations";
+import { type StopId, stops } from "@/content/stops";
 import { ui } from "@/content/ui";
 import { AU_KM } from "@/physics/constants";
 import { SHIP } from "@/physics/ship";
 import { frame } from "@/scene/missionRuntime";
 import { sky } from "@/scene/skyRuntime";
-import { transit } from "@/scene/transitRuntime";
+import { distanceToStop, forceStop, transit, visitLabel } from "@/scene/transitRuntime";
 import { simNow } from "@/state/simClock";
 import { useStore } from "@/state/store";
 import { dock, toNextStation, undock } from "./missionActions";
@@ -58,37 +58,61 @@ function Telemetry() {
 }
 
 function Timeline() {
-  const index = useStore((s) => s.stationIndex);
+  const index = useStore((s) => s.visitIndex);
   const mode = useStore((s) => s.transitMode);
   const [now, setNow] = useState(() => simNow());
+  const [, setRevision] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => setNow(simNow()), 250);
     return () => window.clearInterval(id);
   }, []);
 
+  const offPath = stops.filter((s) => {
+    const st = transit.stopStatus[s.id];
+    return st && !st.available && !st.forced && st.tMs !== null && st.tMs > now;
+  });
+  const override = (id: StopId) => {
+    forceStop(id);
+    setRevision((r) => r + 1);
+  };
+
   return (
     <section className="panel timeline" aria-label={ui.transit.stations}>
       <p className="panel-kicker">{ui.transit.stations}</p>
       <ol>
-        {stations.map((s, i) => {
-          const stop = transit.stops[i];
+        {transit.visits.map((v, i) => {
+          const here = i === index && mode !== "cruise";
           const status =
             i < index
               ? ui.transit.visited
-              : i === index && mode !== "cruise"
+              : here
                 ? ui.transit.here
-                : stop
-                  ? ui.transit.days((stop.tMs - now) / DAY)
-                  : "";
+                : v.kind === "stop"
+                  ? ui.transit.km(distanceToStop(v.stop, now))
+                  : ui.transit.days((v.tMs - now) / DAY);
           return (
-            <li key={s.id} className={i === index && mode !== "cruise" ? "current" : i < index ? "done" : ""}>
-              <span>{s.name}</span>
+            <li key={v.id} className={here ? "current" : i < index ? "done" : ""}>
+              <span>
+                {visitLabel(v).name}
+                {v.kind === "stop" && <span className="timeline-tag">{ui.transit.stop}</span>}
+              </span>
               <span className="timeline-status">{status}</span>
             </li>
           );
         })}
+        {offPath.map((s) => (
+          <li key={s.id} className="off-path">
+            <span>
+              {s.name}
+              <span className="timeline-tag">{ui.transit.offPath}</span>
+            </span>
+            <button type="button" className="hud-button small" title={ui.transit.overrideNote} onClick={() => override(s.id)}>
+              {ui.transit.override}
+            </button>
+          </li>
+        ))}
       </ol>
-      {mode === "cruise" && index < stations.length && (
+      {mode === "cruise" && index < transit.visits.length && (
         <button type="button" className="hud-button" onClick={toNextStation}>
           {ui.transit.next}
         </button>
@@ -99,11 +123,11 @@ function Timeline() {
 
 function DockBar() {
   const mode = useStore((s) => s.transitMode);
-  const index = useStore((s) => s.stationIndex);
-  const station = stations[index];
+  const index = useStore((s) => s.visitIndex);
+  const visit = transit.visits[index];
   const panel = useRef<HTMLElement>(null);
 
-  // Move focus into the station panel when it opens, so keyboard users land on the content.
+  // Move focus into the panel when it opens, so keyboard users land on the content.
   useEffect(() => {
     if (mode === "docked") panel.current?.focus();
   }, [mode]);
@@ -115,25 +139,26 @@ function DockBar() {
       </p>
     );
   }
-  if (!station || mode === "cruise") return null;
+  if (!visit || mode === "cruise") return null;
+  const { name, action } = visitLabel(visit);
   if (mode === "docked") {
     return (
       <section className="panel station-panel" aria-labelledby="station-heading" tabIndex={-1} ref={panel}>
         <div className="body-head">
-          <h2 id="station-heading">{station.name}</h2>
+          <h2 id="station-heading">{name}</h2>
           <button type="button" className="hud-button" onClick={undock}>
             {ui.dock.undock}
           </button>
         </div>
-        <StationPanel station={station} />
+        <StationPanel visit={visit} />
       </section>
     );
   }
   const text =
     mode === "approach"
-      ? ui.dock.approaching(station.name)
+      ? ui.dock.approaching(name)
       : mode === "holding"
-        ? ui.dock.holding(station.name)
+        ? ui.dock.holding(name)
         : mode === "docking"
           ? ui.dock.docking
           : "";
@@ -143,7 +168,7 @@ function DockBar() {
       {mode === "holding" && (
         <div className="brief-actions">
           <button type="button" className="hud-button primary" onClick={dock}>
-            {ui.dock.dock}
+            {action ?? ui.dock.dock}
           </button>
           <button type="button" className="hud-button" onClick={undock}>
             {ui.dock.skip}
