@@ -6,7 +6,16 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.4.0`, transit to Mars:
+`v0.5.0`, waypoint stops:
+
+- Two real stops on the way out, defined in `src/content/stops.ts`: the Moon (a small station in low lunar orbit, holding education and early career roles) and Sun-Earth L2 (a deep space observatory, holding the technical highlights from the roles).
+- Stops are gated by real geometry. At the burn, the escape path is searched for the moment it reaches each stop's distance from Earth, and the angle between path and stop decides whether it is on the way. The late 2026 departure passes within about 14 degrees of the Moon a day and a half out, so the Moon is a stop and takes over the education and early career stations. L2 lies away from the Sun, about 84 degrees off that path, so it is listed as off the path with a "visit anyway" override.
+- The Moon stop computes the lunar flyby (patched conics): speed relative to the Moon, turn angle and velocity change for a 100 km pass.
+- At a stop the ship eases from the transfer to a parking point and back, the short cinematic framing on arrival. The transfer itself is untouched, so leaving resumes it with the right velocity.
+- The Moon is drawn at its real position (Meeus, chapter 47) from launch onward, and the station list shows each stop with its live distance.
+- The clock's Mars distance and signal delay are measured from the ship once it has left Earth.
+
+From `v0.4.0`, transit to Mars:
 
 - A transfer planner in Earth orbit finds the next real launch window from today's planet positions: a porkchop search over departure date and flight time, solving Lambert's problem for each pair. From October 2026 it finds the late 2026 window (311 days, C3 about 9 km²/s²). Run from April 2020 it picks a departure of 1 August 2020 and arrival in late February 2021, close to what Perseverance flew.
 - Departure jumps mission time to the window and fires the trans-Mars injection burn. Propellant comes from the rocket equation (70 t ship, 45 t propellant, 450 s engine).
