@@ -3,6 +3,41 @@ export const ui = {
   siteDescription:
     "Kurubaran Anandhan's developer portfolio, flown as a crewed mission from Earth to Mars.",
   srHeading: "Mars mission portfolio of Kurubaran Anandhan",
+  plainLink: {
+    full: "Skip to mission file: the whole portfolio as a plain page",
+    short: "Mission file",
+  },
+  plainOffer: {
+    noWebgl: "This browser cannot draw the 3D scene. The mission file has everything in plain text.",
+    slow: "The scene is running slowly on this device. The mission file has everything in plain text and loads instantly.",
+    open: "Open the mission file",
+    keep: "Keep flying",
+  },
+  keys: {
+    hint: "Arrow keys turn the view, + and - zoom. Tab moves through the controls.",
+  },
+  plain: {
+    title: "Mission file",
+    intro: "The whole portfolio as plain text: no 3D, no physics, no sound.",
+    back: "Back to the mission",
+    privacy: "Privacy",
+    about: "About",
+    titles: "Roles",
+    experience: "Experience",
+    present: "Present",
+    education: "Education",
+    coursework: "Coursework",
+    projects: "Projects",
+    noLink: "No public link.",
+    skills: "Skills",
+    certifications: "Certifications",
+    credential: "Credential",
+    verify: "Verify",
+    route: "Stations and stops on the route",
+    routeIntro:
+      "In the 3D mission these parts of the portfolio sit at stations along the transfer to Mars, and at stops the ship can visit when the real departure geometry allows.",
+    contact: "Contact",
+  },
   clock: {
     label: "Mission clock",
     utc: "UTC",
