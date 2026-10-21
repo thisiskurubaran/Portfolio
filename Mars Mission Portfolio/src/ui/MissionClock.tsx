@@ -20,7 +20,7 @@ function formatMet(t: number): string {
   return days > 0 ? `${days}d ${rest}` : rest;
 }
 
-type Reading = { utc: string; met: string; mars: string; signal: string; signalNote: string };
+type Reading = { utc: string; local: string; met: string; mars: string; signal: string; signalNote: string };
 
 function read(): Reading {
   const t = simNow();
@@ -34,6 +34,8 @@ function read(): Reading {
   const signalAu = ship ? Math.hypot(...sub(ship, earth)) : marsAu;
   return {
     utc: formatUtc(t),
+    // F04: the same instant on the visitor's own clock, from the browser's time zone.
+    local: new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hour12: false }).format(t),
     met: formatMet(t),
     mars: formatDistance(marsAu),
     signal: formatDuration(lightTimeSeconds(signalAu)),
@@ -59,6 +61,10 @@ export function MissionClock() {
       <div>
         <span className="hud-key">{ui.clock.utc}</span>
         <time className="hud-value">{reading?.utc ?? "...."}</time>
+      </div>
+      <div title={ui.clock.localNote}>
+        <span className="hud-key">{ui.clock.local}</span>
+        <span className="hud-value">{reading?.local ?? "--:--"}</span>
       </div>
       <div>
         <span className="hud-key">{ui.clock.met}</span>
