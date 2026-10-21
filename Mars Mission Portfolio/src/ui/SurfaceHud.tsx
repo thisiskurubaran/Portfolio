@@ -228,7 +228,9 @@ function PlacePanel({ id, onClose }: { id: string; onClose: () => void }) {
 
 export function SurfaceHud() {
   const target = useStore((s) => s.surfaceTarget);
-  const [open, setOpen] = useState<string | null>(null);
+  const open = useStore((s) => s.surfaceOpen);
+  const setOpen = useStore((s) => s.setSurfaceOpen);
+  const inRover = useStore((s) => s.astroMode) === "aboard";
   // Leaving range closes the panel, so driving on is all it takes to move along.
   const shown = open && open === target ? open : null;
   return (
@@ -242,10 +244,10 @@ export function SurfaceHud() {
             </button>
           </div>
         ) : (
-          <p className="planner-note">{shown ? ui.surface.keys : `${ui.surface.keys} ${ui.surface.driveTo}`}</p>
+          <p className="planner-note">{shown ? (inRover ? ui.surface.keys : "") : inRover ? `${ui.surface.keys} ${ui.surface.driveTo}` : ui.surface.driveTo}</p>
         )}
       </div>
-      <DrivePad />
+      {inRover && <DrivePad />}
       {shown && <PlacePanel id={shown} onClose={() => setOpen(null)} />}
     </>
   );

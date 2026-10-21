@@ -5,6 +5,7 @@ import { BodyPanel } from "./BodyPanel";
 import { Comms } from "./Comms";
 import { CommsFeed } from "./CommsFeed";
 import { ConditionsLoader } from "./ConditionsLoader";
+import { GuideHud } from "./GuideHud";
 import { HazardBanner } from "./HazardBanner";
 import { LaunchHud } from "./LaunchHud";
 import { CaptureHud, MarsOrbitHud } from "./MarsHud";
@@ -24,12 +25,14 @@ import { TmiHud, TransitHud } from "./TransitHud";
 export default function Hud() {
   const phase = useStore((s) => s.phase);
   const mode = useStore((s) => s.transitMode);
+  const briefOpen = useStore((s) => s.briefOpen);
   // Warp makes no sense while docking choreography plays in real time.
   const warpAllowed =
     phase === "orbit" || ((phase === "transit" || phase === "marsOrbit") && mode === "cruise");
   return (
     <>
-      {phase === "pad" && <MissionBrief />}
+      {phase === "pad" && briefOpen && <MissionBrief />}
+      <GuideHud />
       <LaunchHud />
       {phase === "orbit" && <OrbitHud />}
       {phase === "tmi" && <TmiHud />}

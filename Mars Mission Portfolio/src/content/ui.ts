@@ -70,6 +70,7 @@ export const ui = {
     resetDescription: "Back to real time and the current date",
   },
   brief: {
+    close: "Close",
     label: "Mission brief",
     commander: "Commander",
     launch: "Launch",
@@ -245,7 +246,7 @@ export const ui = {
     brake: "Brake",
     open: "Open",
     close: "Close",
-    driveTo: "Drive within 14 m of a beacon to open it.",
+    driveTo: "Get within 14 m of a beacon, on foot or by rover, to open it.",
     deepDiveIntro: "Every role where this was part of the work, from the experience record.",
     baseIntro: "The base keeps the contact links. These are real and open in a new tab.",
     wreckWrong: "What went wrong",

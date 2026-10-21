@@ -8,6 +8,7 @@ import { orbitalPeriod } from "@/physics/kepler";
 import { frame, MU_EARTH_KM, orbit } from "@/scene/missionRuntime";
 import { EARTH_RADIUS_KM } from "@/scene/scale";
 import { sky } from "@/scene/skyRuntime";
+import { useStore } from "@/state/store";
 import { TransferPlanner } from "./TransferPlanner";
 
 type Reading = { alt: string; vel: string; per: string; inc: string };
@@ -58,7 +59,9 @@ function Telemetry() {
 
 /** Phase 2: skills as instrument panels, one system per group. */
 function Instruments() {
-  const [open, setOpen] = useState(skillGroups[0]!.id);
+  // Opened from a pod outside, or from the tabs here.
+  const open = useStore((s) => s.openSkill) ?? skillGroups[0]!.id;
+  const setOpen = useStore((s) => s.setOpenSkill);
   const group = skillGroups.find((g) => g.id === open) ?? skillGroups[0]!;
   // Starts open on wide screens; on phones it would cover the ship, so it starts closed.
   const [expanded] = useState(() => window.matchMedia("(min-width: 641px)").matches);
@@ -90,11 +93,14 @@ function Instruments() {
 }
 
 export function OrbitHud() {
+  const mode = useStore((s) => s.astroMode);
+  const pod = useStore((s) => s.openSkill);
   return (
     <>
       <Telemetry />
-      <Instruments />
-      <TransferPlanner />
+      {/* Outside, a system shows once its pod is reached; inside, all of them are on the panel. */}
+      {(mode === "aboard" || pod) && <Instruments />}
+      {mode === "aboard" && <TransferPlanner />}
     </>
   );
 }

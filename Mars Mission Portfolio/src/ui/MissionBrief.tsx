@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { profile } from "@/content/profile";
 import { ui } from "@/content/ui";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { launch, launchAt, skip } from "./missionActions";
+import { board } from "@/scene/astronaut/guideRuntime";
+import { setAstroMode } from "@/scene/astronaut/astronautRuntime";
+import { useStore } from "@/state/store";
+import { launchAt, skip } from "./missionActions";
 import { PadWeather, useLaunchCall } from "./PadWeather";
 
 const TITLE_MS = 3200;
@@ -48,16 +51,27 @@ export function MissionBrief() {
       <PadWeather call={call} />
       <div className="brief-actions">
         {call.go || call.slotMs === null ? (
-          <button type="button" className="hud-button primary" onClick={launch}>
+          // Launch from the brief: the astronaut takes the lift and boards, then the count starts.
+          <button type="button" className="hud-button primary" onClick={board}>
             {ui.brief.launch}
           </button>
         ) : (
-          <button type="button" className="hud-button primary" onClick={() => launchAt(call.slotMs!)}>
+          <button
+            type="button"
+            className="hud-button primary"
+            onClick={() => {
+              setAstroMode("aboard");
+              launchAt(call.slotMs!);
+            }}
+          >
             {ui.weather.launchAtSlot}
           </button>
         )}
         <button type="button" className="hud-button" onClick={skip}>
           {ui.brief.skip}
+        </button>
+        <button type="button" className="hud-button" onClick={() => useStore.getState().setBriefOpen(false)}>
+          {ui.brief.close}
         </button>
       </div>
     </section>
