@@ -25,6 +25,8 @@ import { Station } from "./transit/Station";
 import { DriveKeys } from "./surface/DriveKeys";
 import { Surface } from "./surface/Surface";
 import { TransitSky } from "./transit/TransitSky";
+import { Meteors } from "./weather/Meteors";
+import { RescueDrone } from "./weather/RescueDrone";
 
 function SkyLayer() {
   return (
@@ -35,6 +37,7 @@ function SkyLayer() {
       <Suspense fallback={null}>
         <EarthPlacement>
           <Earth />
+          <Meteors />
         </EarthPlacement>
       </Suspense>
       <MoonBody />
@@ -63,6 +66,7 @@ export default function Experience() {
       <LaunchSite />
       <Rocket />
       <Station />
+      <RescueDrone />
       <Surface />
       <DriveKeys />
       <AudioDriver />

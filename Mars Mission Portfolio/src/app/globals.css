@@ -856,3 +856,86 @@ a.hud-button {
 .comms-feed p {
   margin: 0 0 4px;
 }
+
+.console {
+  position: fixed;
+  right: calc(max(16px, env(safe-area-inset-right)) + 210px);
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 3;
+}
+
+.console-panel {
+  width: min(340px, calc(100vw - 32px));
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.console-panel fieldset {
+  border: 0;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+.console-option {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 6px 0;
+  font-size: 13px;
+}
+
+.space-weather {
+  position: fixed;
+  left: 50%;
+  top: 168px;
+  transform: translateX(-50%);
+  width: min(360px, calc(100vw - 32px));
+  font-size: 13px;
+}
+
+.space-weather summary {
+  cursor: pointer;
+  margin: 0;
+}
+
+.space-weather[open] summary {
+  margin-bottom: 6px;
+}
+
+.space-weather p {
+  margin: 0 0 4px;
+}
+
+.rescue {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  top: 120px;
+  width: min(300px, calc(100vw - 32px));
+  font-size: 13px;
+}
+
+.rescue progress {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.pad-weather {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.pad-weather p {
+  margin: 0 0 4px;
+}
+
+.pad-weather .go {
+  color: #9be3b0;
+}
+
+.pad-weather .hold {
+  color: #ffcf9e;
+}

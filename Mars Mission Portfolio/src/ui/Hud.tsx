@@ -4,12 +4,16 @@ import { useStore } from "@/state/store";
 import { BodyPanel } from "./BodyPanel";
 import { Comms } from "./Comms";
 import { CommsFeed } from "./CommsFeed";
+import { ConditionsLoader } from "./ConditionsLoader";
 import { LaunchHud } from "./LaunchHud";
 import { CaptureHud, MarsOrbitHud } from "./MarsHud";
 import { MissionBrief } from "./MissionBrief";
+import { MissionConsole } from "./MissionConsole";
 import { OrbitHud } from "./OrbitHud";
+import { RescueHud } from "./RescueHud";
 import { DescentHud, SurfaceHud } from "./SurfaceHud";
 import { SoundControls } from "./SoundControls";
+import { SpaceWeatherHud } from "./SpaceWeatherHud";
 import { TimeWarp } from "./TimeWarp";
 import { TmiHud, TransitHud } from "./TransitHud";
 
@@ -36,6 +40,10 @@ export default function Hud() {
       {warpAllowed && <TimeWarp />}
       {phase !== "countdown" && phase !== "ascent" && phase !== "descent" && <Comms />}
       <CommsFeed />
+      <ConditionsLoader />
+      <SpaceWeatherHud />
+      {(phase === "orbit" || phase === "transit") && <RescueHud />}
+      {phase !== "countdown" && phase !== "ascent" && <MissionConsole />}
       <SoundControls />
     </>
   );
