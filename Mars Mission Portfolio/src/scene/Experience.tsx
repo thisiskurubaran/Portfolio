@@ -1,16 +1,33 @@
 "use client";
 
 import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Bloom, EffectComposer, Noise, ToneMapping } from "@react-three/postprocessing";
-import { BlendFunction, ToneMappingMode } from "postprocessing";
+import { Canvas, createPortal } from "@react-three/fiber";
 import { NoToneMapping } from "three";
-import { CameraRig } from "./CameraRig";
+import { CameraDirector } from "./CameraDirector";
+import { Rocket } from "./craft/Rocket";
 import { Earth } from "./Earth";
+import { LaunchSite } from "./launch/LaunchSite";
+import { LocalEnvironment } from "./LocalEnvironment";
+import { LocalLights } from "./LocalLights";
+import { PhaseDriver } from "./PhaseDriver";
 import { Planets } from "./Planets";
-import { SkyClock } from "./SkyClock";
+import { Renderer } from "./Renderer";
+import { skyCamera, skyScene } from "./skyLayer";
 import { Starfield } from "./Starfield";
 import { Sun } from "./Sun";
+
+function SkyLayer() {
+  return (
+    <>
+      <Starfield />
+      <Planets />
+      <Sun />
+      <Suspense fallback={null}>
+        <Earth />
+      </Suspense>
+    </>
+  );
+}
 
 export default function Experience() {
   return (
@@ -19,22 +36,17 @@ export default function Experience() {
       // Tone mapping runs once, at the end of the post chain, so the
       // renderer itself must output linear HDR.
       gl={{ antialias: false, toneMapping: NoToneMapping, powerPreference: "high-performance" }}
-      camera={{ fov: 45, near: 0.05, far: 10_000 }}
+      camera={{ fov: 45, near: 0.5, far: 60_000 }}
     >
-      <color attach="background" args={["#000000"]} />
-      <SkyClock />
-      <CameraRig />
-      <Starfield />
-      <Planets />
-      <Sun />
-      <Suspense fallback={null}>
-        <Earth />
-      </Suspense>
-      <EffectComposer multisampling={4}>
-        <Bloom luminanceThreshold={1} luminanceSmoothing={0.2} intensity={0.9} mipmapBlur />
-        <ToneMapping mode={ToneMappingMode.AGX} />
-        <Noise opacity={0.025} blendFunction={BlendFunction.SOFT_LIGHT} />
-      </EffectComposer>
+      <PhaseDriver />
+      {/* Pointer events in the sky layer raycast with the sky camera. */}
+      {createPortal(<SkyLayer />, skyScene, { camera: skyCamera })}
+      <LocalLights />
+      <LocalEnvironment />
+      <LaunchSite />
+      <Rocket />
+      <CameraDirector />
+      <Renderer />
     </Canvas>
   );
 }
