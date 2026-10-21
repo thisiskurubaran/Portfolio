@@ -48,6 +48,18 @@ type State = {
   /** Deep dive, base or wreck the rover is parked next to, by id. */
   surfaceTarget: string | null;
   setSurfaceTarget: (id: string | null) => void;
+  /** Mirror of the astronaut's mode, for components that render from it. */
+  astroMode: "walk" | "eva" | "aboard";
+  setAstroModeState: (m: "walk" | "eva" | "aboard") => void;
+  /** Surface place whose panel is open (a beacon, the base or a wreck). */
+  surfaceOpen: string | null;
+  setSurfaceOpen: (id: string | null) => void;
+  /** Skill group the visitor opened at an instrument pod, by id. */
+  openSkill: string | null;
+  setOpenSkill: (id: string | null) => void;
+  /** The mission brief on the pad's board, opened by walking up to it. */
+  briefOpen: boolean;
+  setBriefOpen: (open: boolean) => void;
   /** Where the crew means to land, picked in Mars orbit. */
   landingSite: LandingSite | null;
   setLandingSite: (site: LandingSite) => void;
@@ -79,6 +91,14 @@ export const useStore = create<State>((set, get) => ({
   warp: 1,
   selectedBody: null,
   landingSite: null,
+  astroMode: "aboard",
+  setAstroModeState: (astroMode) => set({ astroMode }),
+  surfaceOpen: null,
+  setSurfaceOpen: (surfaceOpen) => set({ surfaceOpen }),
+  openSkill: null,
+  setOpenSkill: (openSkill) => set({ openSkill }),
+  briefOpen: false,
+  setBriefOpen: (briefOpen) => set({ briefOpen }),
   surfaceTarget: null,
   setSurfaceTarget: (surfaceTarget) => set({ surfaceTarget }),
   setLandingSite: (landingSite) => set({ landingSite }),
