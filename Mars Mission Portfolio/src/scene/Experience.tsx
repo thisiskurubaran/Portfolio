@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import { Canvas, createPortal } from "@react-three/fiber";
 import { NoToneMapping } from "three";
+import { AudioDriver } from "@/audio/AudioDriver";
 import { CameraDirector } from "./CameraDirector";
 import { AeroGlow } from "./craft/AeroGlow";
 import { Rocket } from "./craft/Rocket";
@@ -64,6 +65,7 @@ export default function Experience() {
       <Station />
       <Surface />
       <DriveKeys />
+      <AudioDriver />
       <AeroGlow />
       <CameraDirector />
       <FpsProbe />
