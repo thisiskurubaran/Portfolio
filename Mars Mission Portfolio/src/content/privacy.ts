@@ -30,6 +30,8 @@ export const privacy = {
       items: [
         "Planet, Moon and Sun positions are computed in your browser from published orbital elements and the current time. Nothing about you goes into them.",
         "Space weather comes from NOAA's Space Weather Prediction Center and NASA's DONKI, fetched by the server and cached. The local time on the mission clock comes from your browser's own time zone setting and never leaves it.",
+        "Satellite positions (CelesTrak) and hazard feeds (GDACS, NOAA) are worldwide lists fetched by the server. Your browser compares them with the city from the weather lookup to decide whether an advisory applies; nothing about that is sent back.",
+        "Time on the page, for the rare sightings, is counted in your browser only while the tab is visible, and is forgotten when you close it.",
       ],
     },
     {

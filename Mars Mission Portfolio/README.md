@@ -6,7 +6,18 @@ The sky is the real one: the Sun, Earth's rotation and the stars are placed from
 
 ## Status
 
-`v0.10.0`, live conditions and the mission console:
+`v0.11.0`, rare sightings, the night pass and hazard advisories:
+
+- F12, earned by staying (time counts only while the tab is visible):
+  - After two minutes, comet 2P/Encke appears where it really is, propagated from JPL's elements, with its distance from the Sun and the ship and an estimate of its magnitude. When it is too faint for the eye, the note says it is drawn brighter than it is.
+  - In the cruise, after a little longer, the two Voyagers are marked in their real directions with a plaque: distance, launch date, their crossing into interstellar space and the Golden Record.
+  - In Earth orbit, the ISS and the newest Starlink train (satellites from the latest launch still bunched in a line at insertion altitude) come from CelesTrak element sets, propagated with two-body motion plus J2 drift of node and perigee. A note shows when one passes within a couple of thousand km.
+- F26: between midnight and 5 am on the visitor's own clock, a night pass in Earth orbit carries the first role in the record (Android Developer at Mocero Health Solutions, 2018). There is no archived project, so the first job stands in for it.
+- F34: a calm advisory for a strong recent earthquake within 1,000 km of the visitor's city, a tropical cyclone within 800 km (GDACS, NOAA NHC), or severe real space weather (G4, S3 or R3 and up, NOAA SWPC), with a link to the official report. It never shows for events staged on the console.
+
+Simplified, and said so: the satellite propagator is not SGP4, so positions drift by tens of km a day from the element set's epoch. Fine for a pass in the sky, not for pointing a telescope.
+
+From `v0.10.0`, live conditions and the mission console:
 
 - F02: the pad shows Sriharikota's real weather from Open-Meteo. Launch rules hold for thunderstorms, gusts over 30 knots and heavy rain, and the next clear hour in the forecast becomes "launch when it clears", which moves mission time there (often into the night). Cloud cover greys the pad sky and softens the Sun until the rocket climbs through it. The visitor's own city weather is shown beside it, from the request's geo headers, rounded to about 11 km and never stored. The pad stays at Sriharikota rather than moving to the visitor, since the mission flies from India's crewed launch site.
 - F04: the mission clock adds the visitor's local time, from the browser's time zone.

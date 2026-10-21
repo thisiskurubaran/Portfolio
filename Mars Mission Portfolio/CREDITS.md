@@ -30,8 +30,11 @@ Planet positions use JPL's approximate Keplerian elements (Standish, Table 1, va
 | Open-Meteo forecast API | Weather at the pad and the visitor's city (F02) | Free for non-commercial use, CC BY 4.0, https://open-meteo.com/ |
 | NOAA Space Weather Prediction Center JSON feeds | Kp index, GOES X-ray flares, proton flux (F05) | US Government work, public domain |
 | NASA DONKI (CCMC) | Coronal mass ejections (F05) | NASA open data |
+| CelesTrak general perturbations element sets (OMM JSON) | ISS and Starlink positions (F12) | Free public data, T. S. Kelso, https://celestrak.org/ |
+| GDACS event lists | Earthquakes and tropical cyclones (F34) | European Commission JRC and UN OCHA, free use with attribution |
+| NOAA National Hurricane Center current storms | Atlantic and East Pacific cyclones (F34) | US Government work, public domain |
 
-Meteor shower dates, rates, radiants and speeds are from the International Meteor Organization's annual shower calendar. Mars's solar longitude follows Allison and McEwen (2000), the algorithm behind NASA's Mars24. Launch weather rules are a short version of the lightning and ground wind launch commit criteria used at US ranges.
+Comet 2P/Encke's orbital elements are from JPL's Small-Body Database (2023 apparition). Voyager directions and distances are rounded from NASA JPL's Voyager mission status. Meteor shower dates, rates, radiants and speeds are from the International Meteor Organization's annual shower calendar. Mars's solar longitude follows Allison and McEwen (2000), the algorithm behind NASA's Mars24. Launch weather rules are a short version of the lightning and ground wind launch commit criteria used at US ranges.
 
 ## Libraries with physics data
 
