@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import pkg from "./package.json" with { type: "json" };
 
 // Headers that do not change per request. The CSP needs a fresh nonce each
 // time, so it is set in src/proxy.ts instead.
@@ -19,6 +20,8 @@ const securityHeaders = [
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // Shown in About folioOS; only the version number reaches the client.
+  env: { NEXT_PUBLIC_FOLIOOS_VERSION: pkg.version },
   poweredByHeader: false,
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
