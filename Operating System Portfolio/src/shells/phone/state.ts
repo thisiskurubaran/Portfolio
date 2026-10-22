@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { AppId } from "@/os/apps/registry";
 import { firstVisit } from "@/os/system/session";
 
-export type PhoneOverlay = "control" | "shade" | "search" | "switcher" | null;
+export type PhoneOverlay = "control" | "shade" | "search" | "switcher" | "launcher" | null;
 
 interface PhoneStore {
   locked: boolean;

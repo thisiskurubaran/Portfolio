@@ -10,6 +10,7 @@ import { LockScreen } from "@/shells/shared/LockScreen";
 import { NotificationList } from "@/shells/shared/NotificationList";
 import { QuickSettings } from "@/shells/shared/QuickSettings";
 import { Sheet } from "@/shells/shared/Sheet";
+import { Launchpad } from "@/shells/shared/Launchpad";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { useSwipe } from "@/shells/shared/useSwipe";
 import { StatusIcons } from "@/shells/shared/widgets";
@@ -119,19 +120,17 @@ export default function FolioPad() {
       {overlay === "picker" && <AppPicker />}
       {overlay === "switcher" && <Switcher />}
       {overlay === "search" && <Spotlight onClose={closeOverlay} />}
+      {overlay === "launcher" && <Launchpad onClose={closeOverlay} columns={6} />}
       {overlay === "control" && (
         <Sheet label="Control center" onClose={closeOverlay}>
           <div className="mx-auto max-w-md">
             <QuickSettings
+              onLock={() => setLocked(true)}
+              onDone={closeOverlay}
               actions={
-                <>
-                  <button onClick={() => setOverlay("switcher")} className="rounded-2xl bg-glass p-3 text-sm">
-                    Recent apps
-                  </button>
-                  <button onClick={() => setLocked(true)} className="rounded-2xl bg-glass p-3 text-sm">
-                    Lock
-                  </button>
-                </>
+                <button onClick={() => setOverlay("switcher")} className="col-span-2 rounded-2xl bg-glass p-3 text-sm">
+                  Recent apps
+                </button>
               }
             />
           </div>

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useWindows } from "@/os/state/windows";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
+import { Launchpad } from "@/shells/shared/Launchpad";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { DeskWindow } from "./DeskWindow";
 import { Dock } from "./Dock";
@@ -59,6 +60,9 @@ export default function FolioDesk() {
       } else if ((e.ctrlKey && e.key === "ArrowUp") || e.key === "F3") {
         e.preventDefault();
         useDesk.getState().toggle("overview");
+      } else if (e.key === "F4" || (mod && e.shiftKey && e.key.toLowerCase() === "a")) {
+        e.preventDefault();
+        useDesk.getState().toggle("launcher");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -75,6 +79,7 @@ export default function FolioDesk() {
       <Dock />
       {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "overview" && <MissionControl />}
+      {overlay === "launcher" && <Launchpad onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "center" && <NotificationCenter />}
       {overlay === "control" && <QuickPanel />}
       {overlay === "sticky" && <StickyComposer />}

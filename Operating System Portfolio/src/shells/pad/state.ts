@@ -5,7 +5,7 @@ import { safeStorage } from "@/os/state/storage";
 import { firstVisit } from "@/os/system/session";
 
 export type PadPane = "primary" | "secondary" | "slide";
-export type PadOverlay = "control" | "shade" | "search" | "switcher" | "picker" | null;
+export type PadOverlay = "control" | "shade" | "search" | "switcher" | "picker" | "launcher" | null;
 
 interface PadStore {
   locked: boolean;

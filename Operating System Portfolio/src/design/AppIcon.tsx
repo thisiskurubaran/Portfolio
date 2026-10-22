@@ -24,6 +24,7 @@ export const appTiles: Record<string, { from: string; to: string; glyph?: string
   editor: { from: "#e8edf3", to: "#b9c3cf", glyph: "#2a3340" },
   activity: { from: "#6fe0a1", to: "#1e9a5a" },
   sysinfo: { from: "#5fd6bb", to: "#186e5d" },
+  launcher: { from: "#e9edf2", to: "#aab4c1", glyph: "#28303b" },
 };
 
 const fallback = { from: "#8a94a3", to: "#4f5864" };

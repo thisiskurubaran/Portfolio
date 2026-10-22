@@ -209,3 +209,13 @@ h3 {
     opacity: 0.25;
   }
 }
+
+.folio-fade-in {
+  animation: folio-fade-in 0.2s ease-out;
+}
+@keyframes folio-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}

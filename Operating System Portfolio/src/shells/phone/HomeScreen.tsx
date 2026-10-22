@@ -6,6 +6,7 @@ import { Icon } from "@/design/icons";
 import { launchable, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
+import { useSwipe } from "@/shells/shared/useSwipe";
 import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
 import { usePhone } from "./state";
 
@@ -49,8 +50,10 @@ export function HomeScreen() {
   const dockApps = launchable.filter((a) => DOCK.includes(a.id));
   const gridApps = launchable.filter((a) => !DOCK.includes(a.id));
   const setOverlay = usePhone((s) => s.setOverlay);
+  // Swiping left from the home screen opens the App Library, as a second page would.
+  const swipe = useSwipe((dir) => dir === "left" && setOverlay("launcher"));
   return (
-    <div className="flex min-h-0 flex-1 flex-col px-5 pb-4">
+    <div {...swipe} className="flex min-h-0 flex-1 touch-pan-y flex-col px-5 pb-4">
       <button
         onClick={() => setOverlay("search")}
         className="mb-3 flex h-10 items-center gap-2 rounded-2xl bg-glass px-4 text-left text-sm opacity-90 backdrop-blur-xl"
@@ -71,6 +74,10 @@ export function HomeScreen() {
         {gridApps.map((app) => (
           <AppButton key={app.id} id={app.id} label={app.name} icon={app.icon} />
         ))}
+        <button onClick={() => setOverlay("launcher")} className="flex flex-col items-center gap-1.5 rounded-xl p-1">
+          <AppIcon id="launcher" icon="launcher" size={58} />
+          <span className="text-[11px] font-medium drop-shadow">All apps</span>
+        </button>
       </nav>
       <nav aria-label="Dock" onKeyDown={gridKeys} className="mt-auto grid grid-cols-4 gap-2 rounded-3xl bg-glass p-3 backdrop-blur-xl">
         {dockApps.map((app) => (

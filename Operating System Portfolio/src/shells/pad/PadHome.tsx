@@ -62,6 +62,10 @@ export function PadHome() {
         ))}
       </nav>
       <nav aria-label="Dock" onKeyDown={useGridKeys(99)} className="mx-auto mt-auto flex gap-3 rounded-3xl bg-glass p-3 backdrop-blur-xl">
+        <button onClick={() => usePad.getState().setOverlay("launcher")} aria-label="All apps" className="flex flex-col items-center gap-1.5 rounded-xl p-1">
+          <AppIcon id="launcher" icon="launcher" size={52} />
+          <span className="text-xs">All apps</span>
+        </button>
         {dockApps.map((app) => (
           <AppTile key={app.id} id={app.id} icon={app.icon} label={app.name} size={52} />
         ))}
