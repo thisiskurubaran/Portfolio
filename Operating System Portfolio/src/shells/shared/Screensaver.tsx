@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { LogoMark } from "@/design/Logo";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
+import { useSystem } from "@/os/system/systemState";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
 
 const IDLE_MS = 3 * 60_000;
@@ -26,13 +27,16 @@ function Saver() {
   );
 }
 
-// F34: after a few idle minutes, a calm clock. Any input brings folioOS back.
+// F34: after a few idle minutes, or when the power menu says Sleep, a calm
+// clock. Any input brings folioOS back.
 export function Screensaver() {
   const [idle, setIdle] = useState(false);
+  const sleeping = useSystem((s) => s.phase === "sleeping");
   useEffect(() => {
     let timer = window.setTimeout(() => setIdle(true), IDLE_MS);
     const wake = () => {
       setIdle(false);
+      useSystem.getState().wake();
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setIdle(true), IDLE_MS);
     };
@@ -42,5 +46,5 @@ export function Screensaver() {
       EVENTS.forEach((e) => window.removeEventListener(e, wake, { capture: true }));
     };
   }, []);
-  return idle ? <Saver /> : null;
+  return idle || sleeping ? <Saver /> : null;
 }

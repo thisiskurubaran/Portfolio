@@ -10,15 +10,12 @@ export function ControlCenter() {
   return (
     <Sheet label="Control center" onClose={() => setOverlay(null)}>
       <QuickSettings
+        onLock={lock}
+        onDone={() => setOverlay(null)}
         actions={
-          <>
-            <button onClick={() => setOverlay("switcher")} className="rounded-2xl bg-glass p-3 text-sm">
-              Recent apps
-            </button>
-            <button onClick={lock} className="rounded-2xl bg-glass p-3 text-sm">
-              Lock
-            </button>
-          </>
+          <button onClick={() => setOverlay("switcher")} className="col-span-2 rounded-2xl bg-glass p-3 text-sm">
+            Recent apps
+          </button>
         }
       />
     </Sheet>

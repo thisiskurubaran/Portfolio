@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { ContinuityStrip } from "./ContinuityStrip";
+import { PowerRow } from "./PowerRow";
 
 const THEMES: { id: ThemeMode; label: string }[] = [
   { id: "system", label: "System" },
@@ -27,11 +28,11 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
 
 // The control center body shared by the touch shells: theme, motion, sound,
 // the device switcher and the plain view. Each shell adds its own actions.
-export function QuickSettings({ actions }: { actions?: ReactNode }) {
+export function QuickSettings({ actions, onLock, onDone }: { actions?: ReactNode; onLock?: () => void; onDone?: () => void }) {
   const prefs = usePreferences();
   return (
     <>
-      <h2 className="mb-3 text-sm font-medium opacity-70">Control center</h2>
+      <h2 className="mb-3 text-sm font-semibold text-muted">Control center</h2>
       <div role="radiogroup" aria-label="Theme" className="grid grid-cols-4 gap-2">
         {THEMES.map((t) => (
           <button
@@ -49,7 +50,7 @@ export function QuickSettings({ actions }: { actions?: ReactNode }) {
         <Toggle label="Sound" on={prefs.sound} onChange={prefs.setSound} />
         <Toggle label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
       </div>
-      <h3 className="mb-2 mt-4 text-xs uppercase tracking-wide opacity-60">Open as</h3>
+      <h3 className="mb-2 mt-4 text-xs font-medium uppercase tracking-wide text-muted">Open as</h3>
       <ContinuityStrip compact />
       <div className="mt-4 grid grid-cols-3 gap-2">
         {actions}
@@ -57,6 +58,11 @@ export function QuickSettings({ actions }: { actions?: ReactNode }) {
           Plain view
         </a>
       </div>
+      {onLock && (
+        <div className="mt-4">
+          <PowerRow onLock={onLock} onDone={onDone} />
+        </div>
+      )}
     </>
   );
 }

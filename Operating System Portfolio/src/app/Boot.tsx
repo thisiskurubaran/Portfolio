@@ -1,17 +1,17 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from "react";
+import { useEffect, useMemo, type ComponentType } from "react";
 import { canRunVision } from "@/os/device/capabilities";
 import type { Shell } from "@/os/device/resolve";
 import { builtShells, shells } from "@/os/device/shells";
 import { useDevice } from "@/os/device/useDevice";
-import { firstVisit, markBooted } from "@/os/system/session";
 import { useSystemAttributes } from "@/os/system/useSystemAttributes";
 import { useNotifications } from "@/os/state/notifications";
 import { useConsoleGreeting } from "@/os/system/greeting";
 import { usePresenceConnection } from "@/os/system/presence";
 import { useKonami, useLanguageHello, useLowPowerProbe, useRecruiterShortcut } from "@/os/system/reactions";
+import { useSystem } from "@/os/system/systemState";
 import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
 import { BootScreen } from "@/shells/shared/BootScreen";
@@ -20,6 +20,7 @@ import { HandoffOverlay } from "@/shells/shared/HandoffOverlay";
 import { PlainOffer } from "@/shells/shared/PlainOffer";
 import { ShellLoader } from "@/shells/shared/ShellLoader";
 import { Screensaver } from "@/shells/shared/Screensaver";
+import { ShutDownScreen } from "@/shells/shared/ShutDownScreen";
 import { Toasts } from "@/shells/shared/Toasts";
 
 // Code-split per shell so a device never downloads another shell's code.
@@ -35,11 +36,9 @@ export function Boot() {
   const { shell, setOverride } = useDevice();
   useSystemAttributes();
   useConsoleGreeting();
-  const [booting, setBooting] = useState(firstVisit);
-  const doneBooting = useCallback(() => {
-    markBooted();
-    setBooting(false);
-  }, []);
+  const phase = useSystem((s) => s.phase);
+  const finishBoot = useSystem((s) => s.finishBoot);
+  const booting = phase === "booting";
   // folioVision falls back to folioDesk when WebGL is missing or the device is weak.
   const visionCheck = useMemo(() => (shell === "vision" ? canRunVision() : null), [shell]);
   const active: Shell | null = !shell ? null : visionCheck && !visionCheck.ok ? "desk" : builtShells.includes(shell) ? shell : "desk";
@@ -61,7 +60,8 @@ export function Boot() {
   const Shell = shellComponents[active]!;
   return (
     <>
-      {booting && <BootScreen shellName={shells.find((s) => s.id === active)!.name} onDone={doneBooting} />}
+      {booting && <BootScreen shellName={shells.find((s) => s.id === active)!.name} onDone={finishBoot} />}
+      {phase === "off" && <ShutDownScreen />}
       <DeviceFrame shell={active}>
         <Shell />
         <Toasts />

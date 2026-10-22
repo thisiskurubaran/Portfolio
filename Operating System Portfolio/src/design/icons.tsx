@@ -27,6 +27,8 @@ const paths = {
   info: "M12 4a8 8 0 1 1 0 16a8 8 0 0 1 0-16zM12 11v5M12 8h.01",
   launcher: "M5 5h4v4H5zM10 5h4v4h-4zM15 5h4v4h-4zM5 10h4v4H5zM10 10h4v4h-4zM15 10h4v4h-4zM5 15h4v4H5zM10 15h4v4h-4zM15 15h4v4h-4z",
   power: "M12 4v7M7.5 6.5a7 7 0 1 0 9 0",
+  lock: "M6.5 11h11v9h-11zM9 11V8a3 3 0 0 1 6 0v3",
+  restart: "M5 12a7 7 0 1 0 2.2-5.1M5 4.5v3.5h3.5",
   keyboard: "M3 7h18v10H3zM6.5 10h.01M9.5 10h.01M12.5 10h.01M15.5 10h.01M8 14h8",
   share: "M12 4v11M8 8l4-4l4 4M5 13v6h14v-6",
   search: "M11 4.5a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13zM16 16l4.5 4.5",

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { launch } from "@/os/system/launcher";
 import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
+import { PowerRow } from "@/shells/shared/PowerRow";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useDesk } from "./state";
 
@@ -37,15 +38,8 @@ export function SystemMenu({ onLogout }: { onLogout: () => void }) {
         <a className={item} href="/privacy">
           Privacy
         </a>
-        <button
-          className={item}
-          onClick={() => {
-            setOverlay(null);
-            onLogout();
-          }}
-        >
-          Log out
-        </button>
+        <hr className="my-3 border-line" />
+        <PowerRow onLock={onLogout} onDone={() => setOverlay(null)} />
       </div>
     </>
   );

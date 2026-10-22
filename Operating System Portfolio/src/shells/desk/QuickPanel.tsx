@@ -24,7 +24,7 @@ export function QuickPanel() {
         onKeyDown={(e) => (e.key === "Escape" ? setOverlay(null) : trap(e))}
         className="fixed right-2 top-9 z-[14001] w-[340px] rounded-sheet border border-line bg-surface/90 p-4 shadow-3 outline-none backdrop-blur-2xl"
       >
-        <QuickSettings />
+        <QuickSettings onLock={() => useDesk.getState().setLoggedIn(false)} onDone={() => setOverlay(null)} />
       </div>
     </>
   );
