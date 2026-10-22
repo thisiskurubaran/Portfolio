@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Icon } from "@/design/icons";
+import { LogoMark } from "@/design/Logo";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
 
 const BOOT_MS = 1400;
@@ -28,8 +28,13 @@ export function BootScreen({ shellName, onDone }: { shellName: string; onDone: (
       onClick={onDone}
       className="fixed inset-0 z-[40000] flex flex-col items-center justify-center gap-6 bg-[#07090c] text-[#f6f4ef]"
     >
-      <Icon name="logo" size={64} />
-      <p className="text-sm tracking-[0.3em] opacity-70">{shellName.toUpperCase()}</p>
+      <LogoMark variant="tile" size={76} />
+      <div className="text-center">
+        <p className="font-display text-2xl font-semibold tracking-tight">
+          folio<span className="font-normal text-[#a3acb7]">OS</span>
+        </p>
+        <p className="mt-1 text-xs tracking-[0.25em] text-[#a3acb7]">{shellName.replace("folio", "").toUpperCase()}</p>
+      </div>
       <div className="h-1 w-48 overflow-hidden rounded-full bg-white/10">
         <div className="folio-boot-bar h-full rounded-full bg-[#4cc2a8]" style={{ animationDuration: `${duration}ms` }} />
       </div>

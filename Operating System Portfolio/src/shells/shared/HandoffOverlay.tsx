@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Icon } from "@/design/icons";
+import { LogoMark } from "@/design/Logo";
 import type { Shell } from "@/os/device/resolve";
 import { shells } from "@/os/device/shells";
 import { useDevice } from "@/os/device/useDevice";
@@ -72,7 +72,7 @@ export function HandoffOverlay() {
             }
             transition={{ duration: phase === "in" ? 0.55 : 0.5, ease: [0.3, 0.7, 0.2, 1] }}
           >
-            <Icon name="logo" size={40} />
+            <LogoMark variant="tile" size={52} />
             <p className="text-sm tracking-[0.25em]">{info?.name.toUpperCase()}</p>
           </motion.div>
         </motion.div>

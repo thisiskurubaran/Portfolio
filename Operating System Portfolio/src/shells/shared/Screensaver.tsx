@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Icon } from "@/design/icons";
+import { LogoMark } from "@/design/Logo";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
 
@@ -14,7 +14,7 @@ function Saver() {
   return (
     <div aria-label="Screensaver. Move or press any key to return." role="dialog" className="fixed inset-0 z-[50000] cursor-none overflow-hidden bg-[#05070a] text-[#f6f4ef]">
       <div className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3 ${reduced ? "" : "folio-drift"}`}>
-        <Icon name="logo" size={40} className="opacity-60" />
+        <LogoMark size={40} className="opacity-80" />
         <p className="text-7xl font-extralight tabular-nums" suppressHydrationWarning>
           {now ? formatTime(now) : ""}
         </p>
