@@ -72,7 +72,7 @@ export default function Files() {
                 <thead>
                   <tr className="text-left text-xs text-subtle">
                     <th className="px-2 py-1.5 font-medium">Name</th>
-                    <th className="hidden w-24 px-2 py-1.5 font-medium sm:table-cell">Kind</th>
+                    <th className="hidden w-28 px-2 py-1.5 font-medium sm:table-cell">Kind</th>
                     <th className="hidden w-20 px-2 py-1.5 font-medium md:table-cell">Date</th>
                   </tr>
                 </thead>
@@ -93,7 +93,7 @@ export default function Files() {
                           <span className="truncate">{f.name}</span>
                         </span>
                       </td>
-                      <td className="hidden px-2 py-1.5 text-muted sm:table-cell">{f.kind}</td>
+                      <td className="hidden truncate px-2 py-1.5 text-muted sm:table-cell">{f.kind}</td>
                       <td className="hidden whitespace-nowrap rounded-r-lg px-2 py-1.5 text-muted md:table-cell">{f.modified ?? "-"}</td>
                     </tr>
                   ))}

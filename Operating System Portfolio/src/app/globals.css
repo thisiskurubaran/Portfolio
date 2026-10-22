@@ -56,6 +56,24 @@
   color-scheme: dark;
 }
 
+/* folioVision always sits on dark glass, so it keeps the dark tokens in
+   either theme. */
+.folio-dark {
+  color-scheme: dark;
+  --color-ink: #0b0e12;
+  --color-surface: #12161c;
+  --color-raised: rgb(255 255 255 / 0.06);
+  --color-paper: #eef1f4;
+  --color-muted: #b4bcc6;
+  --color-subtle: #8a94a0;
+  --color-glass: rgb(255 255 255 / 0.08);
+  --color-glass-strong: rgb(255 255 255 / 0.14);
+  --color-line: rgb(255 255 255 / 0.14);
+  --color-line-strong: rgb(255 255 255 / 0.22);
+  --color-accent-fg: var(--color-accent);
+  color: var(--color-paper);
+}
+
 :root[data-theme="light"] {
   color-scheme: light;
   --color-ink: #eceef1;
@@ -237,7 +255,7 @@ h3 {
   }
 }
 
-/* Phone: a gentle nudge on the unlock hint, and a wiggle while editing widgets. */
+/* Phone: a gentle nudge on the "swipe up to open" hint, and a wiggle while editing widgets. */
 .folio-nudge {
   animation: folio-nudge 2.4s ease-in-out infinite;
 }

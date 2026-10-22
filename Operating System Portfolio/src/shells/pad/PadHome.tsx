@@ -26,9 +26,12 @@ export function PadHome() {
   const dockApps = DOCK.map((id) => launchable.find((a) => a.id === id)!).filter(Boolean);
   return (
     <div className="flex h-full flex-col px-10 pb-5 pt-4">
-      <section aria-label="Widgets" className="grid grid-cols-4 gap-4">
+      <section aria-label="Widgets" className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <div className="rounded-[22px] border border-line bg-surface/55 p-5 shadow-2 backdrop-blur-2xl">
-          <p className="font-display text-4xl font-bold tabular-nums" suppressHydrationWarning>{now ? formatTime(now) : ""}</p>
+          <p className="font-display text-4xl font-bold tabular-nums" suppressHydrationWarning>
+            {now ? formatTime(now).replace(/\s?([AP]M)$/i, "") : ""}
+            <span className="ml-1 text-base font-semibold text-muted">{now ? (formatTime(now).match(/[AP]M$/i)?.[0] ?? "") : ""}</span>
+          </p>
           <p className="mt-1 text-sm text-muted" suppressHydrationWarning>{now ? formatDate(now) : ""}</p>
         </div>
         <WeatherWidget className="!rounded-[22px] !border !border-line !bg-surface/55 !p-5 !shadow-2" />
@@ -38,7 +41,7 @@ export function PadHome() {
           <p className="text-xs text-muted">{current.company}</p>
         </div>
         <WorldClockWidget className="!rounded-[22px] !border !border-line !bg-surface/55 !p-5 !shadow-2" zones={3} />
-        <div className="col-span-4 flex items-center gap-4 rounded-3xl bg-glass px-5 py-3 backdrop-blur-xl">
+        <div className="col-span-full flex items-center gap-4 rounded-3xl bg-glass px-5 py-3 backdrop-blur-xl">
           <p className="text-sm font-medium">{profile.name}</p>
           <p className="text-xs text-muted">{profile.location}</p>
           <div className="ml-auto flex gap-2 text-xs">

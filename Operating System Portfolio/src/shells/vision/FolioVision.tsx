@@ -122,7 +122,7 @@ export default function FolioVision() {
 
   return (
     <main
-      className="relative h-full w-full overflow-hidden"
+      className="folio-dark relative h-full w-full overflow-hidden"
       style={{ background: "radial-gradient(ellipse at 50% 30%, #2a3a4a 0%, #141a24 45%, #07090c 100%)" }}
     >
       {/* A soft floor of light under the panels, for a sense of standing in a room. */}
