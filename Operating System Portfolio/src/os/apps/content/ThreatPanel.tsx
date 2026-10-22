@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ThreatSummary } from "@/lib/threats";
+import { Skeleton } from "@/os/apps/ui";
 
 const TYPE_LABELS: Record<string, string> = {
   probe: "Probed a hidden path",
@@ -46,7 +47,7 @@ export function ThreatPanel() {
       .then(setData)
       .catch(() => setData("error"));
   }, []);
-  if (data === null) return <p className="text-sm text-muted">Loading</p>;
+  if (data === null) return <Skeleton lines={3} />;
   if (data === "error") return <p className="text-sm text-muted">The firewall log could not be loaded.</p>;
   return (
     <div className="space-y-4 rounded-control bg-glass p-4">
