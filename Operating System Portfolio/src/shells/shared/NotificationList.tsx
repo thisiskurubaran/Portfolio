@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { Icon } from "@/design/icons";
 import { useNotifications, type Notification } from "@/os/state/notifications";
+import { usePreferences } from "@/os/state/preferences";
 import { useHandoff } from "@/os/system/handoff";
 import { haptic } from "@/os/system/haptics";
 import { launch } from "@/os/system/launcher";
@@ -53,6 +55,7 @@ export function NotificationList({ onAction }: { onAction?: () => void }) {
   const items = useNotifications((s) => s.items);
   const clear = useNotifications((s) => s.clear);
   const markAllRead = useNotifications((s) => s.markAllRead);
+  const focus = usePreferences((s) => s.focus);
 
   // Opening the list counts as reading everything in it.
   useEffect(() => {
@@ -69,6 +72,11 @@ export function NotificationList({ onAction }: { onAction?: () => void }) {
           </button>
         )}
       </div>
+      {focus && (
+        <p className="mb-2 flex items-center gap-2 rounded-xl bg-accent/10 px-3 py-2 text-xs text-accent-fg ring-1 ring-accent/25">
+          <Icon name="moon" size={14} /> Focus is on. New notifications wait here quietly.
+        </p>
+      )}
       {items.length === 0 ? (
         <p className="py-6 text-center text-sm opacity-60">No notifications</p>
       ) : (
