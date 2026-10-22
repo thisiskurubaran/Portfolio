@@ -3,6 +3,7 @@ import { usePreferences } from "@/os/state/preferences";
 import { useWindows } from "@/os/state/windows";
 import { launch } from "@/os/system/launcher";
 import { leaveTo } from "@/os/system/navigate";
+import { useShortcutsSheet } from "@/os/system/shortcuts";
 import type { MenuItem } from "@/shells/shared/Menu";
 import { snapRect, type SnapKind } from "./snap";
 import { useDesk } from "./state";
@@ -95,6 +96,9 @@ export function menuBarMenus(): { label: string; items: () => MenuItem[] }[] {
     {
       label: "Help",
       items: () => [
+        { label: "Keyboard shortcuts", icon: "keyboard", shortcut: "Ctrl /", onSelect: () => useShortcutsSheet.getState().setOpen(true) },
+        { label: "About folioOS", icon: "info", onSelect: () => launch("sysinfo") },
+        { separator: true },
         { label: "Plain view", icon: "notes", onSelect: () => leaveTo("/plain") },
         { label: "Privacy", icon: "lock", onSelect: () => leaveTo("/privacy") },
         { label: "Source code", icon: "browser", onSelect: () => window.open(REPO, "_blank", "noopener,noreferrer") },
