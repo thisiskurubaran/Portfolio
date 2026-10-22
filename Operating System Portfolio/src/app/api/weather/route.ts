@@ -2,8 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { type Weather } from "@/os/system/weatherTypes";
 
-export const runtime = "edge";
-
 const CACHE_SECONDS = 15 * 60;
 
 const openMeteo = z.object({
