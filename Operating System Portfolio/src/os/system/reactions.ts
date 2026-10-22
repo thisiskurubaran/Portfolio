@@ -28,7 +28,7 @@ export function useKonami(active: boolean) {
       if (i === KONAMI.length) {
         i = 0;
         launch("nets");
-        useNotifications.getState().push("Secret unlocked", { body: "You found the nets. Mind the bouncers.", toast: true });
+        useNotifications.getState().push("Secret found", { body: "You found the nets. Mind the bouncers.", toast: true });
       }
     };
     window.addEventListener("keydown", onKey);
