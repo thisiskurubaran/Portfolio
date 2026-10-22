@@ -6,6 +6,7 @@ import { Icon, type IconName } from "@/design/icons";
 import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp } from "@/os/apps/registry";
 import { desktopOf, DESKTOPS, useWindows, type WindowState } from "@/os/state/windows";
+import { useReducedMotion } from "@/os/system/useSystemAttributes";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { DOCK_SPACE as DOCK, MENU_BAR, snapRect, type SnapKind } from "./snap";
 import { SnapPicker } from "./SnapPicker";
@@ -40,7 +41,22 @@ function WindowButton({ label, icon, onClick, danger = false }: { label: string;
 }
 
 export function DeskWindow({ win, focused }: { win: WindowState; focused: boolean }) {
-  const { close, focus, minimize, toggleMaximize, setRect } = useWindows();
+  const { close: closeNow, focus, minimize: minimizeNow, toggleMaximize, setRect } = useWindows();
+  const reduced = useReducedMotion();
+  // F12: minimise shrinks toward the dock and close fades, then the store
+  // updates. Reduced motion skips straight to the end.
+  const [leaving, setLeaving] = useState<"minimize" | "close" | null>(null);
+  const leave = (kind: "minimize" | "close", id: string) => {
+    if (reduced) return kind === "minimize" ? minimizeNow(id) : closeNow(id);
+    setLeaving(kind);
+    window.setTimeout(() => {
+      setLeaving(null);
+      if (kind === "minimize") minimizeNow(id);
+      else closeNow(id);
+    }, kind === "minimize" ? 260 : 150);
+  };
+  const minimize = (id: string) => leave("minimize", id);
+  const close = (id: string) => leave("close", id);
   const app = getApp(win.appId);
   const ref = useRef<HTMLDivElement>(null);
   const schedule = useRaf();
@@ -147,7 +163,7 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         if (e.key === "Escape") close(win.id);
         else trap(e);
       }}
-      className={`folio-window absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border bg-surface outline-none transition-shadow ${
+      className={`folio-window ${leaving === "minimize" ? "folio-minimizing" : leaving === "close" ? "folio-closing" : ""} absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border bg-surface outline-none transition-shadow ${
         focused ? "border-line-strong shadow-3" : "border-line shadow-2"
       }`}
       style={{ ...style, zIndex: win.z }}

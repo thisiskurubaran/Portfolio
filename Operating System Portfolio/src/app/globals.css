@@ -262,3 +262,32 @@ h3 {
     transform: rotate(0.8deg);
   }
 }
+
+/* F12: one motion spec. Durations and easing shared by every transition. */
+:root {
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+}
+.folio-minimizing {
+  transform-origin: 50% 100%;
+  animation: folio-minimize 260ms var(--ease-out-soft) forwards;
+  pointer-events: none;
+}
+@keyframes folio-minimize {
+  to {
+    translate: 0 55vh;
+    scale: 0.2;
+    opacity: 0;
+  }
+}
+.folio-closing {
+  animation: folio-close 150ms ease-in forwards;
+  pointer-events: none;
+}
+@keyframes folio-close {
+  to {
+    scale: 0.95;
+    opacity: 0;
+  }
+}
