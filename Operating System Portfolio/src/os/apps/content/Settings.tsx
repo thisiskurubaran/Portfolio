@@ -1,13 +1,15 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { privacy } from "@/content/privacy";
 import { accents, wallpaperBackground, wallpapers } from "@/design/wallpapers";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { useDaypart } from "@/os/system/daypart";
 import { usePower } from "@/os/system/power";
-import { anchorId } from "@/os/system/launcher";
+import { installApp, useInstall } from "@/os/system/install";
+import { anchorId, launch } from "@/os/system/launcher";
 import { slug } from "@/os/system/search";
+import { useShortcutsSheet } from "@/os/system/shortcuts";
 import { useResolvedTheme } from "@/os/system/useSystemAttributes";
 import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
 import { ThreatPanel } from "./ThreatPanel";
@@ -21,16 +23,77 @@ const THEMES: { id: ThemeMode; label: string; hint: string }[] = [
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section aria-label={title} id={anchorId(`settings-${slug(title)}`)} className="scroll-mt-4 space-y-3 rounded-card border border-line bg-raised p-5 shadow-1">
+    <section
+      aria-label={title}
+      id={anchorId(`settings-${slug(title)}`)}
+      className="scroll-mt-4 space-y-3 rounded-card border border-line bg-raised p-5 shadow-1"
+    >
       <h2 className="text-[15px] font-semibold">{title}</h2>
       {children}
     </section>
   );
 }
 
+const action = "rounded-control border border-line bg-glass px-3 py-1.5 text-sm font-medium hover:bg-glass-strong";
+
+function Range({
+  label,
+  min,
+  max,
+  step,
+  value,
+  format,
+  onChange,
+}: {
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  format: (v: number) => string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <label className="flex items-center gap-3 rounded-control bg-glass px-4 py-3 text-sm">
+      <span className="w-24 shrink-0">{label}</span>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-valuetext={format(value)}
+        className="flex-1 accent-[var(--color-accent)]"
+      />
+      <span className="w-11 text-right text-xs tabular-nums text-muted">{format(value)}</span>
+    </label>
+  );
+}
+
+// F33: Chromium offers an install prompt; elsewhere the browser menu does it.
+function InstallButton() {
+  const { prompt, installed } = useInstall();
+  const [hint, setHint] = useState(false);
+  if (installed) return <span className="self-center text-sm text-muted">Installed as an app</span>;
+  return (
+    <>
+      <button onClick={async () => (await installApp()) || setHint(true)} className={action}>
+        Install folioOS
+      </button>
+      {hint && !prompt && <p className="w-full text-xs text-muted">Use your browser&apos;s Install or Add to Home Screen option to add folioOS as an app.</p>}
+    </>
+  );
+}
+
 function Switch({ label, on, onChange }: { label: string; on: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button role="switch" aria-checked={on} onClick={() => onChange(!on)} className="flex w-full items-center justify-between rounded-control bg-glass px-4 py-3 text-sm">
+    <button
+      role="switch"
+      aria-checked={on}
+      onClick={() => onChange(!on)}
+      className="flex w-full items-center justify-between rounded-control bg-glass px-4 py-3 text-sm"
+    >
       {label}
       <span aria-hidden className={`relative h-6 w-10 rounded-full transition-colors ${on ? "bg-accent" : "bg-glass-strong"}`}>
         <span className={`absolute top-1 h-4 w-4 rounded-full bg-paper transition-all ${on ? "left-5" : "left-1"}`} />
@@ -58,7 +121,7 @@ export default function Settings() {
               className={`rounded-control p-3 text-left text-sm ${prefs.theme === t.id ? "bg-accent text-on-accent" : "bg-glass"}`}
             >
               {t.label}
-              <span className="block text-xs text-muted">{t.hint}</span>
+              <span className={`block text-xs ${prefs.theme === t.id ? "text-on-accent/75" : "text-muted"}`}>{t.hint}</span>
             </button>
           ))}
         </div>
@@ -94,11 +157,61 @@ export default function Settings() {
         </div>
       </Section>
 
-      <Section title="Accessibility and sound">
+      <Section title="Display">
+        <Range
+          label="Brightness"
+          min={0.4}
+          max={1}
+          step={0.05}
+          value={prefs.brightness}
+          format={(v) => `${Math.round(v * 100)}%`}
+          onChange={(brightness) => prefs.update({ brightness })}
+        />
+        <Switch label="Night light" on={prefs.nightLight} onChange={(nightLight) => prefs.update({ nightLight })} />
+      </Section>
+
+      <Section title="Accessibility">
+        <Range
+          label="Text size"
+          min={0.9}
+          max={1.3}
+          step={0.05}
+          value={prefs.textScale}
+          format={(v) => `${Math.round(v * 100)}%`}
+          onChange={(textScale) => prefs.update({ textScale })}
+        />
+        <Switch label="High contrast" on={prefs.highContrast} onChange={(highContrast) => prefs.update({ highContrast })} />
+        <Switch label="Bigger pointer" on={prefs.bigPointer} onChange={(bigPointer) => prefs.update({ bigPointer })} />
         <Switch label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
+        <p className="text-xs text-muted">Screen readers hear when windows open and close, and when the desktop changes.</p>
+      </Section>
+
+      <Section title="Sound and notifications">
         <Switch label="Sound" on={prefs.sound} onChange={prefs.setSound} />
+        <Range
+          label="Volume"
+          min={0}
+          max={1}
+          step={0.05}
+          value={prefs.volume}
+          format={(v) => `${Math.round(v * 100)}%`}
+          onChange={(volume) => prefs.update({ volume })}
+        />
+        <Switch label="Focus (no banners or sounds)" on={prefs.focus} onChange={(focus) => prefs.update({ focus })} />
+      </Section>
+
+      <Section title="System">
         <Switch label="Low-power mode" on={power.lowPower} onChange={(v) => power.setLowPower(v, v ? "Turned on in Settings." : null)} />
         {power.reason && <p className="text-xs text-muted">{power.reason}</p>}
+        <div className="flex flex-wrap gap-2 pt-1">
+          <button onClick={() => useShortcutsSheet.getState().setOpen(true)} className={action}>
+            Keyboard shortcuts
+          </button>
+          <InstallButton />
+          <button onClick={() => launch("sysinfo")} className={action}>
+            About folioOS
+          </button>
+        </div>
       </Section>
 
       <Section title="Device">

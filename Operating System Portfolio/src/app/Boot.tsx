@@ -11,6 +11,9 @@ import { useNotifications } from "@/os/state/notifications";
 import { useConsoleGreeting } from "@/os/system/greeting";
 import { usePresenceConnection } from "@/os/system/presence";
 import { useKonami, useLanguageHello, useLowPowerProbe, useRecruiterShortcut } from "@/os/system/reactions";
+import { listenForInstall } from "@/os/system/install";
+import { openDeepLink } from "@/os/system/share";
+import { useShortcutsSheet } from "@/os/system/shortcuts";
 import { useSystem } from "@/os/system/systemState";
 import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
@@ -20,6 +23,8 @@ import { HandoffOverlay } from "@/shells/shared/HandoffOverlay";
 import { PlainOffer } from "@/shells/shared/PlainOffer";
 import { ShellLoader } from "@/shells/shared/ShellLoader";
 import { Screensaver } from "@/shells/shared/Screensaver";
+import { Announcer, ScreenFilters } from "@/shells/shared/ScreenLayers";
+import { ShortcutsSheet } from "@/shells/shared/ShortcutsSheet";
 import { ShutDownScreen } from "@/shells/shared/ShutDownScreen";
 import { Toasts } from "@/shells/shared/Toasts";
 
@@ -56,6 +61,23 @@ export function Boot() {
   useRecruiterShortcut(ready);
   useLanguageHello(ready);
   useLowPowerProbe(ready);
+  const shortcutsOpen = useShortcutsSheet((s) => s.open);
+  useEffect(() => {
+    if (!ready) return;
+    listenForInstall();
+    openDeepLink();
+  }, [ready]);
+  useEffect(() => {
+    // F21: Ctrl / shows the shortcuts sheet in every shell.
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+        e.preventDefault();
+        useShortcutsSheet.getState().setOpen(!useShortcutsSheet.getState().open);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   if (!active) return null;
   const Shell = shellComponents[active]!;
   return (
@@ -68,6 +90,9 @@ export function Boot() {
       </DeviceFrame>
       <HandoffOverlay />
       <Screensaver />
+      {shortcutsOpen && <ShortcutsSheet />}
+      <ScreenFilters />
+      <Announcer />
       <PlainOffer />
     </>
   );
