@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import type { AppId } from "@/os/apps/registry";
 
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface WindowState {
   id: string;
   appId: AppId;
@@ -24,6 +31,7 @@ interface WindowsStore {
   toggleMaximize: (id: string) => void;
   move: (id: string, x: number, y: number) => void;
   resize: (id: string, width: number, height: number) => void;
+  setRect: (id: string, rect: Rect) => void;
 }
 
 const patch = (list: WindowState[], id: string, change: Partial<WindowState>) =>
@@ -84,6 +92,8 @@ export const useWindows = create<WindowsStore>((set, get) => ({
       windows: s.windows.map((w) => (w.id === id ? { ...w, maximized: !w.maximized } : w)),
     })),
 
+  setRect: (id, rect) =>
+    set((s) => ({ windows: patch(s.windows, id, { ...rect, maximized: false }) })),
   move: (id, x, y) => set((s) => ({ windows: patch(s.windows, id, { x, y }) })),
   resize: (id, width, height) =>
     set((s) => ({

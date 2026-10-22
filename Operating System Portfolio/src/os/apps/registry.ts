@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { lazy, type ComponentType } from "react";
 import type { IconName } from "@/design/icons";
 
 export type AppId =
@@ -10,12 +10,11 @@ export interface AppDefinition {
   name: string;
   icon: IconName;
   // Headless content component, loaded when the app opens. Shells frame it.
-  // Apps get their component in v0.3.0.
   load?: () => Promise<{ default: ComponentType }>;
 }
 
 export const apps: AppDefinition[] = [
-  { id: "about", name: "About", icon: "about" },
+  { id: "about", name: "About", icon: "about", load: () => import("./content/About") },
   { id: "experience", name: "Experience", icon: "experience" },
   { id: "projects", name: "Projects", icon: "projects" },
   { id: "skills", name: "Skills", icon: "skills" },
@@ -29,4 +28,13 @@ export const apps: AppDefinition[] = [
   { id: "notes", name: "Notes", icon: "notes" },
 ];
 
+// Apps without a component yet (terminal, settings) stay out of the dock.
+export const launchable = apps.filter((app) => app.load);
+
 export const getApp = (id: AppId) => apps.find((app) => app.id === id);
+
+// Lazy components are created once at module load. Creating them during
+// render would remount the app on every state change.
+export const appComponents: Partial<Record<AppId, ComponentType>> = Object.fromEntries(
+  launchable.map((app) => [app.id, lazy(app.load!)]),
+);
