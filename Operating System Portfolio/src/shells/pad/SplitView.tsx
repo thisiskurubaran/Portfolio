@@ -61,9 +61,9 @@ export function SplitView() {
         tabIndex={0}
         onPointerDown={drag}
         onKeyDown={nudge}
-        className="flex cursor-col-resize touch-none items-center justify-center"
+        className="group flex cursor-col-resize touch-none items-center justify-center"
       >
-        <span aria-hidden className="h-12 w-1.5 rounded-full bg-paper/50" />
+        <span aria-hidden className="h-16 w-1.5 rounded-full bg-paper/40 transition-colors group-hover:bg-accent group-focus-visible:bg-accent group-active:bg-accent" />
       </div>
       <PadPane id={secondary} pane="secondary" />
     </div>

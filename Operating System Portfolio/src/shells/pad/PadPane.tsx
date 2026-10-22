@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/design/AppIcon";
+import { Icon, type IconName } from "@/design/icons";
 import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
@@ -36,45 +37,42 @@ export function PadPane({ id, pane, compact = false }: { id: AppId; pane: Pane; 
         if (e.key === "Escape" && menu) setMenu(false);
         else trap(e);
       }}
-      className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-window border border-line bg-ink outline-none"
+      className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-window border border-line bg-surface shadow-2 outline-none"
     >
-      <header className="relative flex h-10 shrink-0 items-center justify-center border-b border-line px-3 text-sm">
+      <header className="relative flex h-11 shrink-0 items-center justify-center border-b border-line bg-raised px-3 text-sm">
         <button
           onClick={() => setMenu((m) => !m)}
           aria-expanded={menu}
           aria-haspopup="menu"
           aria-label={`${app.name} multitasking options`}
-          className="absolute left-2 rounded-full px-2 py-0.5 tracking-widest opacity-70 hover:bg-glass hover:opacity-100"
+          className={`absolute left-2 flex h-7 items-center gap-1 rounded-full px-2.5 ${menu ? "bg-accent text-on-accent" : "bg-glass hover:bg-glass-strong"}`}
         >
-          •••
+          <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
         </button>
-        <span className="flex items-center gap-1.5 font-medium">
-          <AppIcon id={app.id} icon={app.icon} size={18} />
+        <span className="flex items-center gap-2 font-semibold">
+          <AppIcon id={app.id} icon={app.icon} size={20} />
           {app.name}
         </span>
-        <button onClick={() => close(pane)} aria-label={`Close ${app.name}`} className="absolute right-2 rounded-full px-2 opacity-70 hover:bg-glass hover:opacity-100">
-          ×
+        <button onClick={() => close(pane)} aria-label={`Close ${app.name}`} className="absolute right-2 flex h-7 w-7 items-center justify-center rounded-full text-muted hover:bg-glass-strong hover:text-paper">
+          <Icon name="close" size={14} />
         </button>
         {menu && (
-          <div role="menu" className="absolute left-2 top-9 z-20 w-52 rounded-control border border-line bg-ink p-1 shadow-2xl">
-            {(pane !== "primary" || secondary) && (
-              <button role="menuitem" onClick={run(() => fullScreen(pane))} className="block w-full rounded px-3 py-2 text-left hover:bg-glass">
-                Full screen
+          <div role="menu" aria-label="Multitasking" className="absolute left-2 top-10 z-20 flex gap-1 rounded-2xl border border-line bg-surface/95 p-1.5 shadow-3 backdrop-blur-2xl">
+            {(
+              [
+                (pane !== "primary" || secondary) && { label: "Full screen", icon: "maximize", run: () => fullScreen(pane) },
+                pane !== "slide" && !compact && { label: "Split view", icon: "windows", run: () => pick("split") },
+                pane !== "slide" && { label: "Slide-over", icon: "sidebar", run: () => moveToSlide(pane) },
+                { label: "Close", icon: "close", run: () => close(pane) },
+              ].filter(Boolean) as { label: string; icon: IconName; run: () => void }[]
+            ).map((a) => (
+              <button key={a.label} role="menuitem" onClick={run(a.run)} className="flex w-20 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium hover:bg-glass-strong">
+                <Icon name={a.icon} size={18} />
+                {a.label}
               </button>
-            )}
-            {pane !== "slide" && !compact && (
-              <button role="menuitem" onClick={run(() => pick("split"))} className="block w-full rounded px-3 py-2 text-left hover:bg-glass">
-                Split view with…
-              </button>
-            )}
-            {pane !== "slide" && (
-              <button role="menuitem" onClick={run(() => moveToSlide(pane))} className="block w-full rounded px-3 py-2 text-left hover:bg-glass">
-                Move to slide-over
-              </button>
-            )}
-            <button role="menuitem" onClick={run(() => close(pane))} className="block w-full rounded px-3 py-2 text-left hover:bg-glass">
-              Close
-            </button>
+            ))}
           </div>
         )}
       </header>
