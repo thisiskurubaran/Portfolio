@@ -20,12 +20,20 @@ export interface WindowState {
   z: number;
   minimized: boolean;
   maximized: boolean;
+  // F19: which virtual desktop the window lives on. Older saved layouts lack it.
+  desktop?: number;
 }
+
+export const DESKTOPS = 3;
+export const desktopOf = (w: WindowState) => w.desktop ?? 1;
 
 interface WindowsStore {
   windows: WindowState[];
   focusedId: string | null;
   nextZ: number;
+  currentDesktop: number;
+  setDesktop: (n: number) => void;
+  moveToDesktop: (id: string, n: number) => void;
   open: (appId: AppId) => string;
   close: (id: string) => void;
   focus: (id: string) => void;
@@ -45,15 +53,31 @@ export const useWindows = create<WindowsStore>()(
       windows: [],
       focusedId: null,
       nextZ: 1,
+      currentDesktop: 1,
+
+      setDesktop: (n) =>
+        set((s) => {
+          const top = s.windows.filter((w) => desktopOf(w) === n && !w.minimized).sort((a, b) => b.z - a.z)[0];
+          return { currentDesktop: Math.min(DESKTOPS, Math.max(1, n)), focusedId: top?.id ?? null };
+        }),
+
+      moveToDesktop: (id, n) =>
+        set((s) => {
+          const windows = patch(s.windows, id, { desktop: n });
+          const top = windows.filter((w) => desktopOf(w) === s.currentDesktop && !w.minimized).sort((a, b) => b.z - a.z)[0];
+          return { windows, focusedId: s.focusedId === id ? (top?.id ?? null) : s.focusedId };
+        }),
 
       // One window per app: opening an open app focuses it instead.
       open: (appId) => {
         const existing = get().windows.find((w) => w.appId === appId);
         if (existing) {
+          // Opening an app that lives on another desktop takes you there.
+          if (desktopOf(existing) !== get().currentDesktop) set({ currentDesktop: desktopOf(existing) });
           get().focus(existing.id);
           return existing.id;
         }
-        const { windows, nextZ } = get();
+        const { windows, nextZ, currentDesktop } = get();
         const offset = (windows.length % 8) * 28;
         const win: WindowState = {
           id: `${appId}-${nextZ}`,
@@ -65,6 +89,7 @@ export const useWindows = create<WindowsStore>()(
           z: nextZ,
           minimized: false,
           maximized: false,
+          desktop: currentDesktop,
         };
         set({ windows: [...windows, win], focusedId: win.id, nextZ: nextZ + 1 });
         return win.id;
@@ -73,7 +98,7 @@ export const useWindows = create<WindowsStore>()(
       close: (id) =>
         set((s) => {
           const windows = s.windows.filter((w) => w.id !== id);
-          const top = [...windows].filter((w) => !w.minimized).sort((a, b) => b.z - a.z)[0];
+          const top = [...windows].filter((w) => !w.minimized && desktopOf(w) === s.currentDesktop).sort((a, b) => b.z - a.z)[0];
           return { windows, focusedId: s.focusedId === id ? (top?.id ?? null) : s.focusedId };
         }),
 
@@ -87,7 +112,7 @@ export const useWindows = create<WindowsStore>()(
       minimize: (id) =>
         set((s) => {
           const windows = patch(s.windows, id, { minimized: true });
-          const top = windows.filter((w) => !w.minimized).sort((a, b) => b.z - a.z)[0];
+          const top = windows.filter((w) => !w.minimized && desktopOf(w) === s.currentDesktop).sort((a, b) => b.z - a.z)[0];
           return { windows, focusedId: s.focusedId === id ? (top?.id ?? null) : s.focusedId };
         }),
 
@@ -107,7 +132,7 @@ export const useWindows = create<WindowsStore>()(
       name: "folioos.windows",
       version: 1,
       storage: createJSONStorage(() => safeStorage),
-      partialize: (s) => ({ windows: s.windows, focusedId: s.focusedId, nextZ: s.nextZ }),
+      partialize: (s) => ({ windows: s.windows, focusedId: s.focusedId, nextZ: s.nextZ, currentDesktop: s.currentDesktop }),
     },
   ),
 );

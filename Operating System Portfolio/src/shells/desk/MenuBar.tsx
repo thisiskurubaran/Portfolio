@@ -6,7 +6,7 @@ import { LogoMark } from "@/design/Logo";
 import { getApp } from "@/os/apps/registry";
 import { useClock } from "@/os/system/clock";
 import { useNotifications } from "@/os/state/notifications";
-import { useWindows } from "@/os/state/windows";
+import { DESKTOPS, useWindows } from "@/os/state/windows";
 import { StatusIcons, WeatherText } from "@/shells/shared/widgets";
 import { OnlineCount } from "./Cursors";
 import { menuBarMenus } from "./menus";
@@ -32,6 +32,8 @@ export function MenuBar() {
   const toggle = useDesk((s) => s.toggle);
   const unread = useNotifications((s) => s.items.filter((n) => !n.read).length);
   const now = useClock();
+  const currentDesktop = useWindows((s) => s.currentDesktop);
+  const setDesktop = useWindows((s) => s.setDesktop);
   const label = appId ? getApp(appId)?.name : "Desktop";
   const is = (o: DeskOverlay) => overlay === o;
   return (
@@ -56,6 +58,20 @@ export function MenuBar() {
       </nav>
 
       <div className="ml-auto flex items-center gap-0.5">
+        <div role="group" aria-label="Desktops" className="mr-1 flex items-center gap-0.5 rounded-md bg-glass p-0.5">
+          {Array.from({ length: DESKTOPS }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              onClick={() => setDesktop(n)}
+              aria-label={`Desktop ${n} (Alt+${n})`}
+              aria-pressed={currentDesktop === n}
+              title={`Desktop ${n} (Alt+${n})`}
+              className={`h-5 min-w-5 rounded px-1 text-[11px] font-semibold tabular-nums ${currentDesktop === n ? "bg-accent text-on-accent" : "text-muted hover:text-paper"}`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
         <OnlineCount />
         <BarButton label="Leave a sticky note" onClick={() => toggle("sticky")} active={is("sticky")}>
           <Icon name="sticky" size={15} />

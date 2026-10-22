@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useWindows } from "@/os/state/windows";
+import { desktopOf, DESKTOPS, useWindows } from "@/os/state/windows";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
 import { Launchpad } from "@/shells/shared/Launchpad";
@@ -18,7 +18,7 @@ import { SystemMenu } from "./SystemMenu";
 import { Cursors } from "./Cursors";
 import { DesktopIcons } from "./DesktopIcons";
 import { desktopMenu } from "./menus";
-import { MENU_BAR } from "./snap";
+import { MENU_BAR, snapRect } from "./snap";
 import { useDesk } from "./state";
 import { StickyComposer, StickyLayer } from "./Stickies";
 
@@ -40,7 +40,9 @@ function clampRestoredWindows() {
 }
 
 export default function FolioDesk() {
-  const windows = useWindows((s) => s.windows);
+  const allWindows = useWindows((s) => s.windows);
+  const currentDesktop = useWindows((s) => s.currentDesktop);
+  const windows = allWindows.filter((w) => desktopOf(w) === currentDesktop);
   const focusedId = useWindows((s) => s.focusedId);
   const overlay = useDesk((s) => s.overlay);
   const loggedIn = useDesk((s) => s.loggedIn);
@@ -71,6 +73,24 @@ export default function FolioDesk() {
       } else if (e.key === "F4" || (mod && e.shiftKey && e.key.toLowerCase() === "a")) {
         e.preventDefault();
         useDesk.getState().toggle("launcher");
+      } else if (e.ctrlKey && e.altKey && e.key.startsWith("Arrow")) {
+        // F18: keyboard snapping for the focused window.
+        const { windows: all, focusedId, setRect, toggleMaximize } = useWindows.getState();
+        const win = all.find((w) => w.id === focusedId);
+        if (!win) return;
+        e.preventDefault();
+        if (e.key === "ArrowLeft") setRect(win.id, snapRect("left"));
+        else if (e.key === "ArrowRight") setRect(win.id, snapRect("right"));
+        else if (e.key === "ArrowUp") setRect(win.id, snapRect("fill"));
+        else if (win.maximized) toggleMaximize(win.id);
+        else setRect(win.id, { x: Math.round((window.innerWidth - 720) / 2), y: 80, width: 720, height: 480 });
+      } else if (e.altKey && !e.ctrlKey && !e.metaKey && /^Digit[1-9]$/.test(e.code)) {
+        // F19: Alt+1, Alt+2, Alt+3 switch desktops, unless the visitor is typing.
+        const n = Number(e.code.slice(5));
+        const typing = (e.target as HTMLElement).closest("input, textarea, [contenteditable]");
+        if (typing || n > DESKTOPS) return;
+        e.preventDefault();
+        useWindows.getState().setDesktop(n);
       }
     };
     window.addEventListener("keydown", onKey);
