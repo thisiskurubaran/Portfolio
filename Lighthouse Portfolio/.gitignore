@@ -1,7 +1,8 @@
-# local AI tooling, never committed
+# local AI tooling and git hooks, never committed
 .claude/
 CLAUDE.md
 CLAUDE.local.md
+.githooks/
 
 # dependencies
 node_modules/
