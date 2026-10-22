@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import { connection } from "next/server";
 import "./globals.css";
+
+// Self-hosted at build time, so the font comes from our own origin.
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Kurubaran Anandhan",
@@ -20,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // scripts would be blocked.
   await connection();
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>
         <a href="/plain" className="skip-link">
           Skip to plain view

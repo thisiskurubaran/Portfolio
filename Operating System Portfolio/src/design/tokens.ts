@@ -6,7 +6,7 @@ export const tokens = {
     glass: "rgb(255 255 255 / 0.08)",
   },
   font: {
-    sans: "Inter, ui-sans-serif, system-ui, sans-serif",
+    sans: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
     mono: 'ui-monospace, "JetBrains Mono", monospace',
   },
   space: [0, 4, 8, 12, 16, 24, 32, 48, 64] as const,

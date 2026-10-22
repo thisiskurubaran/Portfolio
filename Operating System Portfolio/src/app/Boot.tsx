@@ -18,16 +18,17 @@ import { BootScreen } from "@/shells/shared/BootScreen";
 import { DeviceFrame } from "@/shells/shared/DeviceFrame";
 import { HandoffOverlay } from "@/shells/shared/HandoffOverlay";
 import { PlainOffer } from "@/shells/shared/PlainOffer";
+import { ShellLoader } from "@/shells/shared/ShellLoader";
 import { Screensaver } from "@/shells/shared/Screensaver";
 import { Toasts } from "@/shells/shared/Toasts";
 
 // Code-split per shell so a device never downloads another shell's code.
 const shellComponents: Partial<Record<Shell, ComponentType>> = {
-  desk: dynamic(() => import("@/shells/desk/KbDesk"), { ssr: false }),
-  phone: dynamic(() => import("@/shells/phone/KbPhone"), { ssr: false }),
-  pad: dynamic(() => import("@/shells/pad/KbPad"), { ssr: false }),
+  desk: dynamic(() => import("@/shells/desk/KbDesk"), { ssr: false, loading: ShellLoader }),
+  phone: dynamic(() => import("@/shells/phone/KbPhone"), { ssr: false, loading: ShellLoader }),
+  pad: dynamic(() => import("@/shells/pad/KbPad"), { ssr: false, loading: ShellLoader }),
   // Three.js and React Three Fiber only load when kbVision is entered.
-  vision: dynamic(() => import("@/shells/vision/KbVision"), { ssr: false }),
+  vision: dynamic(() => import("@/shells/vision/KbVision"), { ssr: false, loading: ShellLoader }),
 };
 
 export function Boot() {

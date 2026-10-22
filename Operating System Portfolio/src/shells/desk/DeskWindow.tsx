@@ -112,7 +112,7 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         if (e.key === "Escape") close(win.id);
         else trap(e);
       }}
-      className={`absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border border-line bg-ink/95 shadow-2xl backdrop-blur-xl outline-none ${focused ? "ring-1 ring-accent/50" : "opacity-95"}`}
+      className={`kb-window absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border border-line bg-ink/95 shadow-2xl backdrop-blur-xl outline-none ${focused ? "ring-1 ring-accent/50" : "opacity-95"}`}
       style={{ ...style, zIndex: win.z }}
     >
       <div
