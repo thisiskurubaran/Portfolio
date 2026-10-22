@@ -1,13 +1,14 @@
 "use client";
 
-import { Suspense, useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { Suspense, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { AppIcon } from "@/design/AppIcon";
 import { Icon, type IconName } from "@/design/icons";
 import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp } from "@/os/apps/registry";
-import { useWindows, type WindowState } from "@/os/state/windows";
+import { desktopOf, DESKTOPS, useWindows, type WindowState } from "@/os/state/windows";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { DOCK_SPACE as DOCK, MENU_BAR, snapRect, type SnapKind } from "./snap";
+import { SnapPicker } from "./SnapPicker";
 import { useDesk } from "./state";
 
 const SNAP_EDGE = 8;
@@ -45,6 +46,17 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
   const schedule = useRaf();
   const Content = appComponents[win.appId];
   const trap = useFocusTrap(ref);
+  // The snap picker appears after a short hover, so passing over the button does not flash it.
+  const [snapOpen, setSnapOpen] = useState(false);
+  const snapTimer = useRef(0);
+  const openSnap = () => {
+    window.clearTimeout(snapTimer.current);
+    snapTimer.current = window.setTimeout(() => setSnapOpen(true), 450);
+  };
+  const closeSnap = () => {
+    window.clearTimeout(snapTimer.current);
+    snapTimer.current = window.setTimeout(() => setSnapOpen(false), 200);
+  };
 
   useEffect(() => {
     // Content such as the terminal may already have focused its own input.
@@ -158,6 +170,10 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
               { label: "Snap right", onSelect: () => setRect(win.id, snapRect("right")) },
               { label: "Centre third", onSelect: () => setRect(win.id, snapRect("center-third")) },
               { separator: true },
+              ...Array.from({ length: DESKTOPS }, (_, i) => i + 1)
+                .filter((n) => n !== desktopOf(win))
+                .map((n) => ({ label: `Move to desktop ${n}`, onSelect: () => useWindows.getState().moveToDesktop(win.id, n) })),
+              { separator: true },
               { label: "Close", icon: "close", danger: true, onSelect: () => close(win.id) },
             ],
           });
@@ -168,7 +184,19 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         <span className={`truncate text-[13px] font-semibold ${focused ? "" : "text-muted"}`}>{app.name}</span>
         <div className="ml-auto flex items-center gap-0.5">
           <WindowButton label={`Minimise ${app.name}`} icon="minimize" onClick={() => minimize(win.id)} />
-          <WindowButton label={win.maximized ? `Restore ${app.name}` : `Maximise ${app.name}`} icon={win.maximized ? "restore" : "maximize"} onClick={() => toggleMaximize(win.id)} />
+          <div className="relative" onPointerEnter={openSnap} onPointerLeave={closeSnap}>
+            <WindowButton label={win.maximized ? `Restore ${app.name}` : `Maximise ${app.name}`} icon={win.maximized ? "restore" : "maximize"} onClick={() => toggleMaximize(win.id)} />
+            {snapOpen && (
+              <div className="absolute right-0 top-8 z-10">
+                <SnapPicker
+                  onPick={(kind) => {
+                    setSnapOpen(false);
+                    setRect(win.id, snapRect(kind));
+                  }}
+                />
+              </div>
+            )}
+          </div>
           <WindowButton label={`Close ${app.name}`} icon="close" danger onClick={() => close(win.id)} />
         </div>
       </div>

@@ -49,7 +49,14 @@ export default function Files() {
           <span className="text-xs text-muted">{folder.files.length} items</span>
           <div role="tablist" aria-label="View" className="ml-auto flex rounded-control border border-line bg-glass p-0.5">
             {(["list", "grid"] as const).map((v) => (
-              <button key={v} role="tab" aria-selected={view === v} aria-label={`${v} view`} onClick={() => setView(v)} className={`rounded-[8px] px-2 py-1 ${view === v ? "bg-surface shadow-1" : "text-muted"}`}>
+              <button
+                key={v}
+                role="tab"
+                aria-selected={view === v}
+                aria-label={`${v} view`}
+                onClick={() => setView(v)}
+                className={`rounded-[8px] px-2 py-1 ${view === v ? "bg-surface shadow-1" : "text-muted"}`}
+              >
                 <Icon name={v === "list" ? "notes" : "launcher"} size={14} />
               </button>
             ))}
@@ -61,12 +68,12 @@ export default function Files() {
             {folder.files.length === 0 ? (
               <EmptyState icon={folder.icon} title={`${folder.name} is empty`} body="Files appear here as they are added to the portfolio." />
             ) : view === "list" ? (
-              <table className="w-full text-sm">
+              <table className="w-full table-fixed text-sm">
                 <thead>
                   <tr className="text-left text-xs text-subtle">
                     <th className="px-2 py-1.5 font-medium">Name</th>
-                    <th className="hidden px-2 py-1.5 font-medium sm:table-cell">Kind</th>
-                    <th className="hidden px-2 py-1.5 font-medium md:table-cell">Date</th>
+                    <th className="hidden w-24 px-2 py-1.5 font-medium sm:table-cell">Kind</th>
+                    <th className="hidden w-20 px-2 py-1.5 font-medium md:table-cell">Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -80,12 +87,14 @@ export default function Files() {
                       onKeyDown={(e) => (e.key === "Enter" ? openFile(f) : e.key === " " && setSelected(f.name))}
                       className={`cursor-default ${selected === f.name ? "bg-accent/15" : "hover:bg-glass"}`}
                     >
-                      <td className="flex items-center gap-2 rounded-l-lg px-2 py-1.5">
-                        <AppIcon id={f.tile} icon={f.icon} size={20} />
-                        <span className="truncate">{f.name}</span>
+                      <td className="rounded-l-lg px-2 py-1.5">
+                        <span className="flex min-w-0 items-center gap-2">
+                          <AppIcon id={f.tile} icon={f.icon} size={20} />
+                          <span className="truncate">{f.name}</span>
+                        </span>
                       </td>
                       <td className="hidden px-2 py-1.5 text-muted sm:table-cell">{f.kind}</td>
-                      <td className="hidden rounded-r-lg px-2 py-1.5 text-muted md:table-cell">{f.modified ?? "-"}</td>
+                      <td className="hidden whitespace-nowrap rounded-r-lg px-2 py-1.5 text-muted md:table-cell">{f.modified ?? "-"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -114,7 +123,9 @@ export default function Files() {
               <AppIcon id={file.tile} icon={file.icon} size={48} />
               <p className="mt-3 break-words text-sm font-semibold">{file.name}</p>
               <p className="text-xs text-muted">{file.kind}</p>
-              <pre className="mt-3 min-h-0 flex-1 overflow-auto whitespace-pre-wrap rounded-lg bg-glass p-2.5 font-sans text-xs leading-relaxed text-muted">{file.preview}</pre>
+              <pre className="mt-3 min-h-0 flex-1 overflow-auto whitespace-pre-wrap rounded-lg bg-glass p-2.5 font-sans text-xs leading-relaxed text-muted">
+                {file.preview}
+              </pre>
               <button onClick={() => openFile(file)} className="mt-3 rounded-control bg-accent px-3 py-1.5 text-sm font-medium text-on-accent">
                 {"href" in file.open ? "Open link" : "Open"}
               </button>
