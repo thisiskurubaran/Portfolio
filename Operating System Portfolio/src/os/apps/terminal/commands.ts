@@ -27,12 +27,12 @@ const files: Record<string, () => string[]> = {
   "contact.txt": () => contact.links.map((l) => `${l.label.padEnd(10)} ${l.url}`),
 };
 
-const appIds = apps.map((a) => a.id);
+const appIds = apps.filter((a) => !a.hidden).map((a) => a.id);
 
 function resolveApp(name: string | undefined): AppId | null {
   if (!name) return null;
   const n = name.toLowerCase();
-  const byId = appIds.find((id) => id === n);
+  const byId = apps.find((a) => a.id === n)?.id;
   if (byId) return byId;
   const byName = apps.find((a) => a.name.toLowerCase() === n);
   if (byName) return byName.id;
@@ -105,6 +105,48 @@ export const commands: Record<string, Command> = {
   history: {
     summary: "show previous commands",
     run: ({ history }) => history.map((h, i) => `${String(i + 1).padStart(3)}  ${h}`),
+  },
+  // F29: easter eggs. Hidden from help, findable by the curious.
+  sudo: {
+    summary: "",
+    hidden: true,
+    run: () => ["guest is not in the sudoers file. This incident will be reported to nobody."],
+  },
+  rm: {
+    summary: "",
+    hidden: true,
+    run: () => ["Nice try. kbOS is read-only for guests."],
+  },
+  exit: {
+    summary: "",
+    hidden: true,
+    run: () => ["There is no exit. There is a plain view, though: /plain"],
+  },
+  coffee: {
+    summary: "",
+    hidden: true,
+    run: () => ["    ( (", "     ) )", "  ........", "  |      |]", "  \\      /", "   `----'", "Brewing. Errors in this code are probably from before the coffee."],
+  },
+  neofetch: {
+    summary: "",
+    hidden: true,
+    run: () => [
+      "   _    _     guest@kbos",
+      "  | |__| |__  ----------",
+      "  | / /| '_ \\ OS: kbOS (browser)",
+      "  |   < | |_) Shells: kbPhone, kbPad, kbDesk, kbVision",
+      "  |_|\\_\\_.__/ Kernel: Next.js + React + Zustand",
+      `               Owner: ${profile.name}`,
+      `               Uptime: ${Math.round(performance.now() / 60000)} min`,
+    ],
+  },
+  bowl: {
+    summary: "",
+    hidden: true,
+    run: () => {
+      launch("nets");
+      return ["Run-up... released. Opening the nets."];
+    },
   },
   clear: {
     summary: "clear the screen",

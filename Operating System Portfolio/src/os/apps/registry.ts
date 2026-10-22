@@ -3,7 +3,7 @@ import type { IconName } from "@/design/icons";
 
 export type AppId =
   | "about" | "experience" | "projects" | "skills" | "certifications" | "contact"
-  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes" | "guestbook";
+  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes" | "guestbook" | "nets";
 
 export interface AppDefinition {
   id: AppId;
@@ -11,6 +11,8 @@ export interface AppDefinition {
   icon: IconName;
   // Headless content component, loaded when the app opens. Shells frame it.
   load?: () => Promise<{ default: ComponentType }>;
+  // Secret apps stay out of the dock, grids and search until found.
+  hidden?: boolean;
 }
 
 export const apps: AppDefinition[] = [
@@ -27,14 +29,15 @@ export const apps: AppDefinition[] = [
   { id: "browser", name: "Browser", icon: "browser", load: () => import("./content/Browser") },
   { id: "notes", name: "Notes", icon: "notes", load: () => import("./content/Notes") },
   { id: "guestbook", name: "Guestbook", icon: "guestbook", load: () => import("./content/Guestbook") },
+  { id: "nets", name: "Nets", icon: "nets", load: () => import("./content/Nets"), hidden: true },
 ];
 
-export const launchable = apps.filter((app) => app.load);
+export const launchable = apps.filter((app) => app.load && !app.hidden);
 
 export const getApp = (id: AppId) => apps.find((app) => app.id === id);
 
 // Lazy components are created once at module load. Creating them during
 // render would remount the app on every state change.
 export const appComponents: Partial<Record<AppId, ComponentType>> = Object.fromEntries(
-  launchable.map((app) => [app.id, lazy(app.load!)]),
+  apps.filter((app) => app.load).map((app) => [app.id, lazy(app.load!)]),
 );

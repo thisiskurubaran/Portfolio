@@ -17,6 +17,7 @@ const paths = {
   notes: "M6 4h12v16H6zM9 9h6M9 13h6M9 17h3",
   guestbook: "M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11M9 8h6",
   sticky: "M5 5h14v9l-5 5H5zM14 19v-5h5",
+  nets: "M12 4a8 8 0 1 1 0 16a8 8 0 0 1 0-16zM7 7.5c2.5 2 2.5 7 0 9M17 7.5c-2.5 2-2.5 7 0 9",
   logo: "M5 4v16M5 12l7-8M5 12l7 8M15 7.5a4.5 4.5 0 1 1 0 9a4.5 4.5 0 0 1 0-9z",
 } as const;
 
