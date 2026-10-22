@@ -15,7 +15,7 @@ export function Sheet({ label, onClose, children }: { label: string; onClose: ()
   }, []);
 
   return (
-    <div className="absolute inset-0 z-40" onKeyDown={(e) => (e.key === "Escape" ? onClose() : trap(e))}>
+    <div className="absolute inset-0 z-[12000]" onKeyDown={(e) => (e.key === "Escape" ? onClose() : trap(e))}>
       <button aria-label="Close" tabIndex={-1} onClick={onClose} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
         ref={ref}
