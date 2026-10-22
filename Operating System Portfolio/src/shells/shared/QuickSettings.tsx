@@ -1,9 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { availableShells } from "@/os/device/shells";
-import { useDevice } from "@/os/device/useDevice";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
+import { ContinuityStrip } from "./ContinuityStrip";
 
 const THEMES: { id: ThemeMode; label: string }[] = [
   { id: "system", label: "System" },
@@ -30,7 +29,6 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
 // the device switcher and the plain view. Each shell adds its own actions.
 export function QuickSettings({ actions }: { actions?: ReactNode }) {
   const prefs = usePreferences();
-  const { shell, setOverride } = useDevice();
   return (
     <>
       <h2 className="mb-3 text-sm font-medium opacity-70">Control center</h2>
@@ -52,19 +50,7 @@ export function QuickSettings({ actions }: { actions?: ReactNode }) {
         <Toggle label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
       </div>
       <h3 className="mb-2 mt-4 text-xs uppercase tracking-wide opacity-60">Open as</h3>
-      <div className="grid grid-cols-2 gap-2">
-        {availableShells.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => setOverride(s.id)}
-            aria-pressed={shell === s.id}
-            className={`rounded-2xl bg-glass p-3 text-left text-sm ${shell === s.id ? "ring-2 ring-accent" : ""}`}
-          >
-            {s.name}
-            <span className="block text-xs opacity-70">{s.device}</span>
-          </button>
-        ))}
-      </div>
+      <ContinuityStrip compact />
       <div className="mt-4 grid grid-cols-3 gap-2">
         {actions}
         <a href="/plain" className="rounded-2xl bg-glass p-3 text-center text-sm">

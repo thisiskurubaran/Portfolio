@@ -3,11 +3,10 @@
 import type { ReactNode } from "react";
 import { privacy } from "@/content/privacy";
 import { accents, wallpaperBackground, wallpapers } from "@/design/wallpapers";
-import { availableShells } from "@/os/device/shells";
-import { useDevice } from "@/os/device/useDevice";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { useDaypart } from "@/os/system/daypart";
 import { useResolvedTheme } from "@/os/system/useSystemAttributes";
+import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
 
 const THEMES: { id: ThemeMode; label: string; hint: string }[] = [
   { id: "system", label: "System", hint: "Follow this device" },
@@ -39,7 +38,6 @@ function Switch({ label, on, onChange }: { label: string; on: boolean; onChange:
 // F08: appearance, motion, sound, device and privacy, all saved locally (F09).
 export default function Settings() {
   const prefs = usePreferences();
-  const { shell, override, setOverride } = useDevice();
   const theme = useResolvedTheme();
   const daypart = useDaypart();
   return (
@@ -98,24 +96,7 @@ export default function Settings() {
 
       <Section title="Device">
         <p className="text-sm opacity-75">Open the same portfolio as another kbOS device.</p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {availableShells.map((s) => (
-            <button
-              key={s.id}
-              aria-pressed={shell === s.id}
-              onClick={() => setOverride(s.id)}
-              className={`rounded-control bg-glass p-3 text-left text-sm ${shell === s.id ? "ring-2 ring-accent" : ""}`}
-            >
-              {s.name}
-              <span className="block text-xs opacity-70">{s.device}</span>
-            </button>
-          ))}
-        </div>
-        {override && (
-          <button onClick={() => setOverride(null)} className="text-sm text-accent-fg underline">
-            Pick automatically for this device
-          </button>
-        )}
+        <ContinuityStrip />
       </Section>
 
       <Section title="Privacy">
