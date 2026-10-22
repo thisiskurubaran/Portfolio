@@ -135,14 +135,6 @@ npm test
 
 The tests check the integrator against closed circular orbits, energy over 100 orbits and analytic Kepler motion, and check the ephemeris against known events: the January 2025 Mars opposition, the 2026 equinox and solstice, and the equation of time.
 
-## Git hooks
-
-This project lives in a subfolder of a repo that holds several portfolios. To run its commit checks, point git at its hooks from the repo root:
-
-```bash
-git config core.hooksPath "Mars Mission Portfolio/.githooks"
-```
-
 ## Layout
 
 ```
