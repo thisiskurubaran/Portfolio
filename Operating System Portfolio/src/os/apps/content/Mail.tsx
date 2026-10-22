@@ -42,7 +42,7 @@ export default function Mail() {
       {state === "sent" ? (
         <div role="status" className="rounded-control bg-accent/15 p-4">
           <p className="font-medium">Message sent.</p>
-          <p className="mt-1 text-sm opacity-80">Thanks for writing. The reply will come to the address you gave.</p>
+          <p className="mt-1 text-sm text-muted">Thanks for writing. The reply will come to the address you gave.</p>
           <button onClick={() => setState("idle")} className="mt-3 text-sm text-accent-fg underline">
             Write another
           </button>
@@ -50,7 +50,7 @@ export default function Mail() {
       ) : (
         <form onSubmit={submit} aria-describedby="mail-note" className="space-y-3">
           <label className="block text-sm">
-            Your name <span className="opacity-60">(optional)</span>
+            Your name <span className="text-muted">(optional)</span>
             <input disabled={disabled} value={form.name} onChange={set("name")} maxLength={80} className="mt-1 w-full rounded-control bg-glass p-2 disabled:opacity-50" />
           </label>
           <label className="block text-sm">
@@ -71,7 +71,7 @@ export default function Mail() {
               {error}
             </p>
           )}
-          <p id="mail-note" className="text-sm opacity-70">
+          <p id="mail-note" className="text-sm text-muted">
             {state === "off"
               ? "Sending is not connected yet, so nothing leaves this form. Reach me through one of these:"
               : state === "checking"

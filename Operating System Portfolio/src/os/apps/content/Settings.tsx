@@ -21,8 +21,8 @@ const THEMES: { id: ThemeMode; label: string; hint: string }[] = [
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section aria-label={title} id={anchorId(`settings-${slug(title)}`)} className="scroll-mt-4 space-y-3 rounded-card">
-      <h2 className="text-xs font-medium uppercase tracking-wide opacity-60">{title}</h2>
+    <section aria-label={title} id={anchorId(`settings-${slug(title)}`)} className="scroll-mt-4 space-y-3 rounded-card border border-line bg-raised p-5 shadow-1">
+      <h2 className="text-[15px] font-semibold">{title}</h2>
       {children}
     </section>
   );
@@ -46,7 +46,7 @@ export default function Settings() {
   const daypart = useDaypart();
   const power = usePower();
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-6">
+    <div className="mx-auto max-w-2xl space-y-4 p-6">
       <Section title="Appearance">
         <div role="radiogroup" aria-label="Theme" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {THEMES.map((t) => (
@@ -58,7 +58,7 @@ export default function Settings() {
               className={`rounded-control p-3 text-left text-sm ${prefs.theme === t.id ? "bg-accent text-on-accent" : "bg-glass"}`}
             >
               {t.label}
-              <span className="block text-xs opacity-75">{t.hint}</span>
+              <span className="block text-xs text-muted">{t.hint}</span>
             </button>
           ))}
         </div>
@@ -87,7 +87,7 @@ export default function Settings() {
               <span aria-hidden className="block h-16" style={{ background: wallpaperBackground(w.id, theme, daypart) }} />
               <span className="block bg-glass px-2 py-1.5">
                 {w.name}
-                {w.id === "dynamic" && daypart && <span className="opacity-60">, {daypart}</span>}
+                {w.id === "dynamic" && daypart && <span className="text-muted">, {daypart}</span>}
               </span>
             </button>
           ))}
@@ -98,11 +98,11 @@ export default function Settings() {
         <Switch label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
         <Switch label="Sound" on={prefs.sound} onChange={prefs.setSound} />
         <Switch label="Low-power mode" on={power.lowPower} onChange={(v) => power.setLowPower(v, v ? "Turned on in Settings." : null)} />
-        {power.reason && <p className="text-xs opacity-70">{power.reason}</p>}
+        {power.reason && <p className="text-xs text-muted">{power.reason}</p>}
       </Section>
 
       <Section title="Device">
-        <p className="text-sm opacity-75">Open the same portfolio as another folioOS device.</p>
+        <p className="text-sm text-muted">Open the same portfolio as another folioOS device.</p>
         <ContinuityStrip />
       </Section>
 
@@ -111,12 +111,12 @@ export default function Settings() {
       </Section>
 
       <Section title="Privacy">
-        <p className="text-sm leading-relaxed opacity-85">{privacy.intro}</p>
+        <p className="text-sm leading-relaxed text-muted">{privacy.intro}</p>
         <ul className="space-y-2 text-sm">
           {privacy.stored.map((item) => (
             <li key={item.what} className="rounded-control bg-glass p-3">
               <span className="font-medium">{item.what}</span>
-              <span className="block text-xs opacity-70">{item.where}</span>
+              <span className="block text-xs text-muted">{item.where}</span>
             </li>
           ))}
         </ul>
