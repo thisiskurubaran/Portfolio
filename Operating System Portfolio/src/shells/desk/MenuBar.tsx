@@ -14,7 +14,10 @@ export function MenuBar() {
     <header className="absolute inset-x-0 top-0 z-[9999] flex h-7 items-center gap-4 bg-ink/60 px-3 text-sm backdrop-blur-md">
       <Icon name="logo" size={16} aria-label="kbOS" />
       <span className="font-medium">{label}</span>
-      <span className="ml-auto tabular-nums opacity-80" suppressHydrationWarning>
+      <a href="/plain" className="ml-auto opacity-80 hover:opacity-100">
+        Plain view
+      </a>
+      <span className="tabular-nums opacity-80" suppressHydrationWarning>
         {now?.toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}
       </span>
     </header>

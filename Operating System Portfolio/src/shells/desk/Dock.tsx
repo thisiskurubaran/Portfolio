@@ -3,13 +3,17 @@
 import { Icon } from "@/design/icons";
 import { launchable } from "@/os/apps/registry";
 import { useWindows } from "@/os/state/windows";
+import { useGridKeys } from "@/shells/shared/useGridKeys";
 
 export function Dock() {
   const windows = useWindows((s) => s.windows);
   const open = useWindows((s) => s.open);
+  // One row, so up and down never move focus.
+  const keys = useGridKeys(99);
   return (
     <nav
       aria-label="Dock"
+      onKeyDown={keys}
       className="absolute bottom-3 left-1/2 z-[9999] flex -translate-x-1/2 gap-2 rounded-2xl border border-white/10 bg-glass px-3 py-2 backdrop-blur-xl"
     >
       {launchable.map((app) => {

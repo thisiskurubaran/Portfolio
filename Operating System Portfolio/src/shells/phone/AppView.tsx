@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
+import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useSwipe } from "@/shells/shared/useSwipe";
 import { usePhone } from "./state";
 
@@ -13,6 +14,7 @@ export function AppView({ id }: { id: AppId }) {
   const Content = appComponents[id];
   const ref = useRef<HTMLElement>(null);
   const swipe = useSwipe((dir) => dir === "up" && goHome());
+  const trap = useFocusTrap(ref);
 
   useEffect(() => {
     ref.current?.focus({ preventScroll: true });
@@ -24,7 +26,7 @@ export function AppView({ id }: { id: AppId }) {
       ref={ref}
       tabIndex={-1}
       aria-label={app.name}
-      onKeyDown={(e) => e.key === "Escape" && goHome()}
+      onKeyDown={(e) => (e.key === "Escape" ? goHome() : trap(e))}
       className="absolute inset-0 z-10 flex flex-col bg-ink outline-none"
     >
       <div className="h-10 shrink-0" />

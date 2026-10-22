@@ -65,9 +65,14 @@ export function ControlCenter() {
           </button>
         ))}
       </div>
-      <button onClick={lock} className="mt-4 w-full rounded-2xl bg-glass p-3 text-sm">
-        Lock
-      </button>
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <a href="/plain" className="rounded-2xl bg-glass p-3 text-center text-sm">
+          Plain view
+        </a>
+        <button onClick={lock} className="rounded-2xl bg-glass p-3 text-sm">
+          Lock
+        </button>
+      </div>
     </Sheet>
   );
 }

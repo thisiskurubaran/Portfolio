@@ -24,3 +24,34 @@ body {
   color: var(--color-paper);
   font-family: var(--font-sans);
 }
+
+/* Hidden until focused, so keyboard and screen reader users meet it first. */
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -48px;
+  z-index: 100000;
+  padding: 8px 14px;
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Calm everything down when the OS or the visitor asks for less motion. */
+[data-reduced-motion] *,
+[data-reduced-motion] *::before,
+[data-reduced-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
