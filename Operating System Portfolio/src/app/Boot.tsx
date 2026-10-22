@@ -11,12 +11,14 @@ import { useSystemAttributes } from "@/os/system/useSystemAttributes";
 import { useNotifications } from "@/os/state/notifications";
 import { useConsoleGreeting } from "@/os/system/greeting";
 import { usePresenceConnection } from "@/os/system/presence";
+import { useKonami, useLanguageHello, useLowPowerProbe, useRecruiterShortcut } from "@/os/system/reactions";
 import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
 import { BootScreen } from "@/shells/shared/BootScreen";
 import { DeviceFrame } from "@/shells/shared/DeviceFrame";
 import { HandoffOverlay } from "@/shells/shared/HandoffOverlay";
 import { PlainOffer } from "@/shells/shared/PlainOffer";
+import { Screensaver } from "@/shells/shared/Screensaver";
 import { Toasts } from "@/shells/shared/Toasts";
 
 // Code-split per shell so a device never downloads another shell's code.
@@ -49,6 +51,11 @@ export function Boot() {
   useWelcome(booting ? null : active);
   useVisionInvite(booting ? null : active);
   usePresenceConnection(!booting && active !== null);
+  const ready = !booting && active !== null;
+  useKonami(ready);
+  useRecruiterShortcut(ready);
+  useLanguageHello(ready);
+  useLowPowerProbe(ready);
   if (!active) return null;
   const Shell = shellComponents[active]!;
   return (
@@ -59,6 +66,7 @@ export function Boot() {
         <Toasts />
       </DeviceFrame>
       <HandoffOverlay />
+      <Screensaver />
       <PlainOffer />
     </>
   );
