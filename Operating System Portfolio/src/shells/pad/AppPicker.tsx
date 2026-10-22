@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { getApp, launchable } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
@@ -48,9 +48,7 @@ export function AppPicker() {
               onClick={() => openIn(pickerFor === "split" ? "secondary" : "slide", app.id)}
               className="flex flex-col items-center gap-1.5 rounded-xl p-1 disabled:opacity-30"
             >
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-glass">
-                <Icon name={app.icon} size={30} />
-              </span>
+              <AppIcon id={app.id} icon={app.icon} size={64} />
               <span className="text-xs">{app.name}</span>
             </button>
           ) : null,

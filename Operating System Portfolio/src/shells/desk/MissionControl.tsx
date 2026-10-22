@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { getApp } from "@/os/apps/registry";
 import { useWindows } from "@/os/state/windows";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
@@ -58,12 +58,12 @@ export function MissionControl() {
                 className="flex aspect-[4/3] w-full flex-col overflow-hidden rounded-window border border-line bg-ink/90 text-left shadow-xl transition-transform hover:scale-[1.03] focus-visible:scale-[1.03]"
               >
                 <span className="flex h-8 items-center gap-2 border-b border-line px-3 text-xs">
-                  <Icon name={app.icon} size={14} />
+                  <AppIcon id={app.id} icon={app.icon} size={18} />
                   {app.name}
                   {win.minimized && <span className="ml-auto opacity-60">Minimised</span>}
                 </span>
-                <span className="flex flex-1 items-center justify-center opacity-40">
-                  <Icon name={app.icon} size={48} />
+                <span className="flex flex-1 items-center justify-center">
+                  <AppIcon id={app.id} icon={app.icon} size={64} />
                 </span>
               </button>
               <button

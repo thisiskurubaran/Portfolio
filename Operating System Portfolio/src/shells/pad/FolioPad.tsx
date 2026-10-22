@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { getApp } from "@/os/apps/registry";
 import { formatTime, useClock } from "@/os/system/clock";
 import { registerLauncher } from "@/os/system/launcher";
@@ -57,11 +57,11 @@ function Switcher() {
             <li key={id}>
               <button onClick={() => open(id)} autoFocus={id === recents[0]} className="flex aspect-[4/3] w-full flex-col overflow-hidden rounded-window border border-line bg-ink text-left shadow-xl">
                 <span className="flex items-center gap-2 border-b border-line p-2 text-xs">
-                  <Icon name={app.icon} size={14} />
+                  <AppIcon id={app.id} icon={app.icon} size={18} />
                   {app.name}
                 </span>
-                <span className="flex flex-1 items-center justify-center opacity-30">
-                  <Icon name={app.icon} size={48} />
+                <span className="flex flex-1 items-center justify-center">
+                  <AppIcon id={app.id} icon={app.icon} size={64} />
                 </span>
               </button>
             </li>

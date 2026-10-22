@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useVision } from "./state";
 
@@ -39,7 +39,7 @@ export function VisionPanel({ id, index, center }: { id: AppId; index: number; c
         }`}
       >
         <header className="flex h-11 shrink-0 items-center justify-center gap-2 border-b border-white/15 text-sm font-medium">
-          <Icon name={app.icon} size={16} />
+          <AppIcon id={app.id} icon={app.icon} size={22} />
           {app.name}
         </header>
         <div className="min-h-0 flex-1 overflow-auto">

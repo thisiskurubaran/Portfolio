@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { getApp } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { usePhone } from "./state";
@@ -40,11 +40,11 @@ export function AppSwitcher() {
                 className="flex h-full max-h-[60vh] w-full flex-col overflow-hidden rounded-3xl border border-line bg-ink text-left shadow-2xl"
               >
                 <span className="flex items-center gap-2 border-b border-line p-3 text-sm">
-                  <Icon name={app.icon} size={16} />
+                  <AppIcon id={app.id} icon={app.icon} size={20} />
                   {app.name}
                 </span>
-                <span className="flex flex-1 items-center justify-center opacity-30">
-                  <Icon name={app.icon} size={64} />
+                <span className="flex flex-1 items-center justify-center">
+                  <AppIcon id={app.id} icon={app.icon} size={72} />
                 </span>
               </button>
               <button onClick={() => closeRecent(id)} className="mt-2 w-full text-center text-xs opacity-70">

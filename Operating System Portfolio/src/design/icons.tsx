@@ -18,7 +18,30 @@ const paths = {
   guestbook: "M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11M9 8h6",
   sticky: "M5 5h14v9l-5 5H5zM14 19v-5h5",
   nets: "M12 4a8 8 0 1 1 0 16a8 8 0 0 1 0-16zM7 7.5c2.5 2 2.5 7 0 9M17 7.5c-2.5 2-2.5 7 0 9",
-  logo: "M5 4v16M5 12l7-8M5 12l7 8M15 7.5a4.5 4.5 0 1 1 0 9a4.5 4.5 0 0 1 0-9z",
+  files: "M3.5 7a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2zM3.5 10h17",
+  calendar: "M5 6h14v14H5zM5 10h14M9 4v4M15 4v4M9 14h2M13 14h2M9 17h2",
+  clock: "M12 4a8 8 0 1 1 0 16a8 8 0 0 1 0-16zM12 8v4l3 2",
+  calculator: "M6 3h12v18H6zM9 7h6M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01M9 19h.01M12 19h3",
+  editor: "M5 4h9l5 5v11H5zM14 4v5h5M8 13h8M8 16.5h5",
+  activity: "M3 12h4l2.5-6l4 12l2.5-6H21",
+  info: "M12 4a8 8 0 1 1 0 16a8 8 0 0 1 0-16zM12 11v5M12 8h.01",
+  launcher: "M5 5h4v4H5zM10 5h4v4h-4zM15 5h4v4h-4zM5 10h4v4H5zM10 10h4v4h-4zM15 10h4v4h-4zM5 15h4v4H5zM10 15h4v4h-4zM15 15h4v4h-4z",
+  power: "M12 4v7M7.5 6.5a7 7 0 1 0 9 0",
+  keyboard: "M3 7h18v10H3zM6.5 10h.01M9.5 10h.01M12.5 10h.01M15.5 10h.01M8 14h8",
+  share: "M12 4v11M8 8l4-4l4 4M5 13v6h14v-6",
+  search: "M11 4.5a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13zM16 16l4.5 4.5",
+  windows: "M3 5h8v6H3zM13 5h8v6h-8zM3 13h8v6H3zM13 13h8v6h-8z",
+  bell: "M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4",
+  moon: "M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z",
+  sun: "M12 8.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 0 1 0-7zM12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4",
+  close: "M6 6l12 12M18 6L6 18",
+  minimize: "M6 12h12",
+  maximize: "M6 6h12v12H6z",
+  restore: "M8 8h10v10H8zM6 16V6h10",
+  chevron: "M9 6l6 6l-6 6",
+  plus: "M12 5v14M5 12h14",
+  copy: "M9 9h10v10H9zM5 15V5h10",
+  download: "M12 4v11M8 11l4 4l4-4M5 19h14",
 } as const;
 
 export type IconName = keyof typeof paths;
@@ -27,9 +50,10 @@ export const iconNames = Object.keys(paths) as IconName[];
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
   name: IconName;
   size?: number;
+  weight?: number;
 }
 
-export function Icon({ name, size = 24, ...rest }: IconProps) {
+export function Icon({ name, size = 24, weight = 1.6, ...rest }: IconProps) {
   return (
     <svg
       width={size}
@@ -37,7 +61,7 @@ export function Icon({ name, size = 24, ...rest }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.6}
+      strokeWidth={weight}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden={rest["aria-label"] ? undefined : true}

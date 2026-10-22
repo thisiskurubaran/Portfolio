@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { launch } from "@/os/system/launcher";
 import { search, type SearchItem } from "@/os/system/search";
 import { useFocusTrap } from "./useFocusTrap";
@@ -89,7 +89,7 @@ export function Spotlight({ onClose, fullScreen = false }: { onClose: () => void
               onClick={() => choose(item)}
               className={`flex cursor-default items-center gap-3 rounded-control px-3 py-2 ${i === current ? "bg-accent text-on-accent" : ""}`}
             >
-              <Icon name={item.icon} size={18} />
+              <AppIcon id={item.appId ?? "browser"} icon={item.icon} size={26} />
               <span className="truncate font-medium">{item.label}</span>
               <span className="ml-auto shrink-0 truncate text-xs opacity-70">{item.detail}</span>
             </li>

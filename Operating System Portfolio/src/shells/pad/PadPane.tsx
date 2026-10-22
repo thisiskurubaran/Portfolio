@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { usePad, type PadPane as Pane } from "./state";
@@ -48,7 +48,7 @@ export function PadPane({ id, pane, compact = false }: { id: AppId; pane: Pane; 
           •••
         </button>
         <span className="flex items-center gap-1.5 font-medium">
-          <Icon name={app.icon} size={14} />
+          <AppIcon id={app.id} icon={app.icon} size={18} />
           {app.name}
         </span>
         <button onClick={() => close(pane)} aria-label={`Close ${app.name}`} className="absolute right-2 rounded-full px-2 opacity-70 hover:bg-glass hover:opacity-100">

@@ -1,6 +1,7 @@
 "use client";
 
 import { experience, profile } from "@/content";
+import { AppIcon } from "@/design/AppIcon";
 import { Icon } from "@/design/icons";
 import { launchable, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
@@ -11,13 +12,11 @@ import { usePad } from "./state";
 const DOCK: AppId[] = ["about", "experience", "projects", "contact", "terminal", "settings"];
 const COLUMNS = 6;
 
-function AppIcon({ id, label, icon, size = 60 }: { id: AppId; label?: string; icon: Parameters<typeof Icon>[0]["name"]; size?: number }) {
+function AppTile({ id, label, icon, size = 60 }: { id: AppId; label?: string; icon: Parameters<typeof Icon>[0]["name"]; size?: number }) {
   const open = usePad((s) => s.open);
   return (
     <button onClick={() => open(id)} aria-label={label ? undefined : id} className="flex flex-col items-center gap-1.5 rounded-xl p-1 focus-visible:ring-2 focus-visible:ring-accent">
-      <span className="flex items-center justify-center rounded-2xl bg-glass backdrop-blur-xl" style={{ width: size, height: size }}>
-        <Icon name={icon} size={size * 0.48} />
-      </span>
+      <AppIcon id={id} icon={icon} size={size} />
       {label && <span className="text-xs">{label}</span>}
     </button>
   );
@@ -59,12 +58,12 @@ export function PadHome() {
       </section>
       <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-8 grid grid-cols-6 content-start gap-x-4 gap-y-6">
         {gridApps.map((app) => (
-          <AppIcon key={app.id} id={app.id} label={app.name} icon={app.icon} />
+          <AppTile key={app.id} id={app.id} label={app.name} icon={app.icon} />
         ))}
       </nav>
       <nav aria-label="Dock" onKeyDown={useGridKeys(99)} className="mx-auto mt-auto flex gap-3 rounded-3xl bg-glass p-3 backdrop-blur-xl">
         {dockApps.map((app) => (
-          <AppIcon key={app.id} id={app.id} icon={app.icon} label={app.name} size={52} />
+          <AppTile key={app.id} id={app.id} icon={app.icon} label={app.name} size={52} />
         ))}
       </nav>
     </div>

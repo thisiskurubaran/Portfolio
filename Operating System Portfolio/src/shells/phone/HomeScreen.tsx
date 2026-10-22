@@ -1,6 +1,7 @@
 "use client";
 
 import { experience } from "@/content";
+import { AppIcon } from "@/design/AppIcon";
 import { Icon } from "@/design/icons";
 import { launchable, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
@@ -15,10 +16,8 @@ function AppButton({ id, label, icon }: { id: AppId; label: string; icon: Parame
   const openApp = usePhone((s) => s.openApp);
   return (
     <button onClick={() => openApp(id)} className="flex flex-col items-center gap-1.5 rounded-xl p-1 focus-visible:ring-2 focus-visible:ring-accent">
-      <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-glass backdrop-blur-xl">
-        <Icon name={icon} size={28} />
-      </span>
-      <span className="text-xs">{label}</span>
+      <AppIcon id={id} icon={icon} size={58} />
+      <span className="text-[11px] font-medium drop-shadow">{label}</span>
     </button>
   );
 }

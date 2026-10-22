@@ -3,7 +3,7 @@
 import { Sparkles } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { launchable } from "@/os/apps/registry";
 import { formatTime, useClock } from "@/os/system/clock";
 import { registerLauncher } from "@/os/system/launcher";
@@ -69,9 +69,9 @@ function Ornament({ onSearch }: { onSearch: () => void }) {
           onClick={() => openApp(app.id)}
           aria-label={app.name}
           title={app.name}
-          className={`relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/20 ${focused === app.id ? "bg-white/25" : ""}`}
+          className={`relative flex flex-col items-center rounded-xl p-0.5 transition-transform hover:-translate-y-1 ${focused === app.id ? "-translate-y-1" : ""}`}
         >
-          <Icon name={app.icon} size={20} />
+          <AppIcon id={app.id} icon={app.icon} size={38} />
           {open.includes(app.id) && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-white" />}
         </button>
       ))}
