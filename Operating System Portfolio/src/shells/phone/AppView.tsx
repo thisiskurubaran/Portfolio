@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useRef } from "react";
+import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useSwipe } from "@/shells/shared/useSwipe";
@@ -43,7 +44,7 @@ export function AppView({ id }: { id: AppId }) {
         <h1 className="absolute left-1/2 -translate-x-1/2 text-sm font-medium">{app.name}</h1>
       </header>
       <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
-        <Suspense fallback={<p className="p-6 text-sm opacity-60">Loading</p>}>{Content && <Content />}</Suspense>
+        <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>
       </div>
       <button {...swipe} onClick={goHome} aria-label="Go home" className="flex h-8 shrink-0 touch-none items-center justify-center">
         <span aria-hidden className="h-1.5 w-32 rounded-full bg-paper/70" />

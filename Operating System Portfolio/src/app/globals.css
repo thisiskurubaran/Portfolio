@@ -221,3 +221,18 @@ h3 {
     transform: scale(1.02);
   }
 }
+
+/* Skeleton loaders. */
+.folio-shimmer {
+  background: linear-gradient(90deg, var(--color-glass) 25%, var(--color-glass-strong) 50%, var(--color-glass) 75%);
+  background-size: 300% 100%;
+  animation: folio-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes folio-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}

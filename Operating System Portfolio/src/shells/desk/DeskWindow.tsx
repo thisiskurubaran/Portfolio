@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { AppIcon } from "@/design/AppIcon";
 import { Icon, type IconName } from "@/design/icons";
+import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp } from "@/os/apps/registry";
 import { useWindows, type WindowState } from "@/os/state/windows";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
@@ -172,7 +173,7 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-auto">
-        <Suspense fallback={<p className="p-6 text-sm opacity-60">Loading</p>}>{Content && <Content />}</Suspense>
+        <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>
       </div>
       {!win.maximized && (
         <div

@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { AppIcon } from "@/design/AppIcon";
+import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useVision } from "./state";
 
@@ -43,7 +44,7 @@ export function VisionPanel({ id, index, center }: { id: AppId; index: number; c
           {app.name}
         </header>
         <div className="min-h-0 flex-1 overflow-auto">
-          <Suspense fallback={<p className="p-6 text-sm opacity-60">Loading</p>}>{Content && <Content />}</Suspense>
+          <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>
         </div>
       </section>
       <div className="mt-3 flex items-center justify-center gap-3">

@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/design/AppIcon";
+import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { usePad, type PadPane as Pane } from "./state";
@@ -78,7 +79,7 @@ export function PadPane({ id, pane, compact = false }: { id: AppId; pane: Pane; 
         )}
       </header>
       <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
-        <Suspense fallback={<p className="p-6 text-sm opacity-60">Loading</p>}>{Content && <Content />}</Suspense>
+        <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>
       </div>
     </section>
   );
