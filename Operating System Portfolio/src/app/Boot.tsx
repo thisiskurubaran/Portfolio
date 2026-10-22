@@ -9,6 +9,7 @@ import { useDevice } from "@/os/device/useDevice";
 import { firstVisit, markBooted } from "@/os/system/session";
 import { useSystemAttributes } from "@/os/system/useSystemAttributes";
 import { useNotifications } from "@/os/state/notifications";
+import { useConsoleGreeting } from "@/os/system/greeting";
 import { usePresenceConnection } from "@/os/system/presence";
 import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
@@ -30,6 +31,7 @@ const shellComponents: Partial<Record<Shell, ComponentType>> = {
 export function Boot() {
   const { shell, setOverride } = useDevice();
   useSystemAttributes();
+  useConsoleGreeting();
   const [booting, setBooting] = useState(firstVisit);
   const doneBooting = useCallback(() => {
     markBooted();
