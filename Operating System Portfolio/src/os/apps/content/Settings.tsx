@@ -7,6 +7,7 @@ import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { useDaypart } from "@/os/system/daypart";
 import { useResolvedTheme } from "@/os/system/useSystemAttributes";
 import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
+import { ThreatPanel } from "./ThreatPanel";
 
 const THEMES: { id: ThemeMode; label: string; hint: string }[] = [
   { id: "system", label: "System", hint: "Follow this device" },
@@ -97,6 +98,10 @@ export default function Settings() {
       <Section title="Device">
         <p className="text-sm opacity-75">Open the same portfolio as another kbOS device.</p>
         <ContinuityStrip />
+      </Section>
+
+      <Section title="Security">
+        <ThreatPanel />
       </Section>
 
       <Section title="Privacy">
