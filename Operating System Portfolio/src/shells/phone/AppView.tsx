@@ -2,6 +2,8 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { Skeleton } from "@/os/apps/ui";
+import { AppIcon } from "@/design/AppIcon";
+import { Icon } from "@/design/icons";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useSwipe } from "@/shells/shared/useSwipe";
@@ -34,14 +36,18 @@ export function AppView({ id }: { id: AppId }) {
       tabIndex={-1}
       aria-label={app.name}
       onKeyDown={(e) => (e.key === "Escape" ? goHome() : trap(e))}
-      className="folio-app-in absolute inset-0 z-10 flex flex-col bg-ink outline-none"
+      className="folio-app-in absolute inset-0 z-10 flex flex-col bg-surface outline-none"
     >
-      <div className="h-10 shrink-0" />
-      <header className="flex h-11 shrink-0 items-center border-b border-line px-3">
-        <button onClick={goHome} className="rounded-control px-2 py-1 text-sm text-accent-fg">
+      <div className="h-10 shrink-0 bg-raised" />
+      <header className="relative flex h-12 shrink-0 items-center border-b border-line bg-raised px-2">
+        <button onClick={goHome} className="flex items-center gap-0.5 rounded-control px-2 py-1 text-sm font-medium text-accent-fg">
+          <Icon name="chevron" size={18} className="rotate-180" />
           Home
         </button>
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-sm font-medium">{app.name}</h1>
+        <h1 className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 text-[15px] font-semibold">
+          <AppIcon id={app.id} icon={app.icon} size={22} />
+          {app.name}
+        </h1>
       </header>
       <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
         <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>

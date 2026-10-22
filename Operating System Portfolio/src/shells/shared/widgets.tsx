@@ -23,18 +23,18 @@ export function WeatherWidget({ className = "" }: { className?: string }) {
   const { status, weather } = useWeather();
   return (
     <div className={`rounded-3xl bg-glass p-4 backdrop-blur-xl ${className}`}>
-      <p className="text-xs uppercase tracking-wide opacity-60">{weather?.city ?? "Weather"}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{weather?.city ?? "Weather"}</p>
       {status !== "done" ? (
-        <p className="mt-2 text-sm opacity-60">Checking</p>
+        <p className="mt-2 text-sm text-muted">Checking</p>
       ) : weather ? (
         <>
-          <p className="mt-1 text-3xl font-light tabular-nums">{weather.temperature}°</p>
-          <p className="text-xs opacity-75">
+          <p className="mt-1 font-display text-3xl font-bold tabular-nums">{weather.temperature}°</p>
+          <p className="text-xs text-muted">
             {describeWeather(weather.code)} · wind {weather.wind} km/h
           </p>
         </>
       ) : (
-        <p className="mt-2 text-sm opacity-60">Not available for this connection</p>
+        <p className="mt-2 text-sm text-muted">Not available for this connection</p>
       )}
     </div>
   );
@@ -45,12 +45,12 @@ export function WorldClockWidget({ className = "", zones = 4 }: { className?: st
   const now = useClock(30_000);
   return (
     <div className={`rounded-3xl bg-glass p-4 backdrop-blur-xl ${className}`}>
-      <p className="mb-2 text-xs uppercase tracking-wide opacity-60">World clock</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">World clock</p>
       <ul className="space-y-1 text-sm">
         {worldZones.slice(0, zones).map((z) => (
           <li key={z.zone} className="flex justify-between gap-3">
-            <span className="opacity-80">{z.city}</span>
-            <span className="tabular-nums" suppressHydrationWarning>
+            <span className="truncate text-muted">{z.city}</span>
+            <span className="whitespace-nowrap tabular-nums" suppressHydrationWarning>
               {now ? formatInZone(now, z.zone) : ""}
             </span>
           </li>

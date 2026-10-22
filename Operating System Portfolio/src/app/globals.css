@@ -236,3 +236,29 @@ h3 {
     background-position: -100% 0;
   }
 }
+
+/* Phone: a gentle nudge on the unlock hint, and a wiggle while editing widgets. */
+.folio-nudge {
+  animation: folio-nudge 2.4s ease-in-out infinite;
+}
+@keyframes folio-nudge {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateY(-4px);
+  }
+}
+.folio-wiggle {
+  animation: folio-wiggle 0.3s ease-in-out infinite alternate;
+}
+@keyframes folio-wiggle {
+  from {
+    transform: rotate(-0.8deg);
+  }
+  to {
+    transform: rotate(0.8deg);
+  }
+}

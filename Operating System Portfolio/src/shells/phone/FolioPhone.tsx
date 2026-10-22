@@ -9,6 +9,7 @@ import { Spotlight } from "@/shells/shared/Spotlight";
 import { AppSwitcher } from "./AppSwitcher";
 import { AppView } from "./AppView";
 import { ControlCenter } from "./ControlCenter";
+import { GestureHints } from "./GestureHints";
 import { HomeScreen } from "./HomeScreen";
 import { NotificationShade } from "./NotificationShade";
 import { StatusBar } from "./StatusBar";
@@ -33,6 +34,7 @@ export default function FolioPhone() {
       <StatusBar />
       {locked ? <LockScreen onUnlock={() => usePhone.getState().unlock()} /> : <HomeScreen />}
       {!locked && app && <AppView id={app} />}
+      {!locked && !app && !overlay && <GestureHints />}
       {overlay === "control" && <ControlCenter />}
       {overlay === "shade" && <NotificationShade />}
       {overlay === "switcher" && <AppSwitcher />}
