@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { Icon, type IconName } from "@/design/icons";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { ContinuityStrip } from "./ContinuityStrip";
 import { PowerRow } from "./PowerRow";
@@ -26,6 +27,26 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
   );
 }
 
+function Slider({ label, icon, min, value, onChange }: { label: string; icon: IconName; min: number; value: number; onChange: (v: number) => void }) {
+  return (
+    <label className="flex items-center gap-3 text-sm">
+      <Icon name={icon} size={16} className="shrink-0 text-muted" />
+      <span className="sr-only">{label}</span>
+      <input
+        type="range"
+        min={min}
+        max={1}
+        step={0.05}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-valuetext={`${Math.round(value * 100)}%`}
+        className="h-1.5 flex-1 cursor-pointer accent-[var(--color-accent)]"
+      />
+      <span className="w-9 text-right text-xs tabular-nums text-muted">{Math.round(value * 100)}%</span>
+    </label>
+  );
+}
+
 // The control center body shared by the touch shells: theme, motion, sound,
 // the device switcher and the plain view. Each shell adds its own actions.
 export function QuickSettings({ actions, onLock, onDone }: { actions?: ReactNode; onLock?: () => void; onDone?: () => void }) {
@@ -48,7 +69,13 @@ export function QuickSettings({ actions, onLock, onDone }: { actions?: ReactNode
       </div>
       <div className="mt-2 grid grid-cols-2 gap-2">
         <Toggle label="Sound" on={prefs.sound} onChange={prefs.setSound} />
+        <Toggle label="Focus" on={prefs.focus} onChange={(focus) => prefs.update({ focus })} />
+        <Toggle label="Night light" on={prefs.nightLight} onChange={(nightLight) => prefs.update({ nightLight })} />
         <Toggle label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
+      </div>
+      <div className="mt-3 space-y-2 rounded-2xl bg-glass p-3">
+        <Slider label="Brightness" icon="sun" min={0.4} value={prefs.brightness} onChange={(brightness) => prefs.update({ brightness })} />
+        <Slider label="Volume" icon="bell" min={0} value={prefs.volume} onChange={(volume) => prefs.update({ volume, sound: volume > 0 ? true : prefs.sound })} />
       </div>
       <h3 className="mb-2 mt-4 text-xs font-medium uppercase tracking-wide text-muted">Open as</h3>
       <ContinuityStrip compact />
