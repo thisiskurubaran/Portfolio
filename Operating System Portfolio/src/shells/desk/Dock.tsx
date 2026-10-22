@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
 import { launchable } from "@/os/apps/registry";
 import { useWindows } from "@/os/state/windows";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
@@ -14,7 +14,7 @@ export function Dock() {
     <nav
       aria-label="Dock"
       onKeyDown={keys}
-      className="absolute bottom-3 left-1/2 z-[9999] flex -translate-x-1/2 gap-2 rounded-2xl border border-line bg-glass px-3 py-2 backdrop-blur-xl"
+      className="absolute bottom-3 left-1/2 z-[9999] flex -translate-x-1/2 items-end gap-1.5 rounded-[24px] border border-line bg-surface/60 px-2.5 pb-2 pt-2.5 shadow-3 backdrop-blur-2xl"
     >
       {launchable.map((app) => {
         const isOpen = windows.some((w) => w.appId === app.id);
@@ -23,11 +23,13 @@ export function Dock() {
             key={app.id}
             onClick={() => open(app.id)}
             aria-label={app.name}
-            title={app.name}
-            className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-glass transition-transform hover:-translate-y-1 hover:bg-glass-strong focus-visible:ring-2 focus-visible:ring-accent"
+            className="group relative flex flex-col items-center rounded-2xl outline-offset-4 transition-transform duration-200 ease-[var(--ease-out-soft)] hover:-translate-y-2 hover:scale-110 focus-visible:-translate-y-2"
           >
-            <Icon name={app.icon} size={26} />
-            {isOpen && <span className="absolute -bottom-1 h-1 w-1 rounded-full bg-accent" />}
+            <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-md border border-line bg-surface px-2 py-1 text-xs font-medium opacity-0 shadow-2 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+              {app.name}
+            </span>
+            <AppIcon id={app.id} icon={app.icon} size={48} />
+            <span aria-hidden className={`mt-1 h-1 w-1 rounded-full ${isOpen ? "bg-paper/80" : "bg-transparent"}`} />
           </button>
         );
       })}

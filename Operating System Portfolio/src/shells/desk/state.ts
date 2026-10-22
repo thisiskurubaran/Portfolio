@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { firstVisit } from "@/os/system/session";
 
-export type DeskOverlay = "spotlight" | "overview" | "center" | "menu" | "sticky" | null;
+export type DeskOverlay = "spotlight" | "overview" | "center" | "menu" | "sticky" | "control" | null;
 
 interface DeskStore {
   loggedIn: boolean;

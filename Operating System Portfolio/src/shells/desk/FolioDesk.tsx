@@ -11,12 +11,13 @@ import { MenuBar } from "./MenuBar";
 import { MissionControl } from "./MissionControl";
 import { LoginScreen } from "./LoginScreen";
 import { NotificationCenter } from "./NotificationCenter";
+import { QuickPanel } from "./QuickPanel";
 import { SystemMenu } from "./SystemMenu";
 import { Cursors } from "./Cursors";
 import { useDesk } from "./state";
 import { StickyComposer, StickyLayer } from "./Stickies";
 
-const MENU_BAR = 28;
+const MENU_BAR = 30;
 
 // Restored windows may come from a bigger screen; pull them back into view.
 function clampRestoredWindows() {
@@ -75,6 +76,7 @@ export default function FolioDesk() {
       {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "overview" && <MissionControl />}
       {overlay === "center" && <NotificationCenter />}
+      {overlay === "control" && <QuickPanel />}
       {overlay === "sticky" && <StickyComposer />}
       <Cursors />
       {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
