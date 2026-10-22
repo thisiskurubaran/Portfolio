@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const message = cleanText(parsed.data.message);
   const name = parsed.data.name ? cleanText(parsed.data.name) || null : null;
   if (message.length > MAX_NOTE) return json({ error: `Keep it under ${MAX_NOTE} characters.` }, 400);
-  const refused = refuseText(`${name ?? ""} ${message}`);
+  const refused = await refuseText(`${name ?? ""} ${message}`, request);
   if (refused) return refused;
 
   const guard = await guardWrite(request, "guestbook", 1, 3600);

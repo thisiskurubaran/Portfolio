@@ -3,6 +3,9 @@ import { clientIp, hashIp } from "./hash";
 import { moderate } from "./moderation";
 import { rateLimit } from "./ratelimit";
 import { getStore } from "./store";
+import { logThreat, recordOffence } from "./threats";
+
+const country = (request: Request) => request.headers.get("x-vercel-ip-country");
 
 export const json = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
@@ -28,6 +31,7 @@ export async function guardWrite(request: Request, route: string, max: number, w
   const visitor = await hashIp(clientIp(request.headers));
   const limit = await rateLimit(route, visitor, max, windowSeconds);
   if (!limit.ok) {
+    await logThreat({ type: "ratelimit", country: country(request), path: new URL(request.url).pathname, visitor });
     const minutes = Math.max(1, Math.ceil(limit.retryAfter / 60));
     return {
       ok: false,
@@ -41,11 +45,16 @@ export async function guardWrite(request: Request, route: string, max: number, w
 }
 
 // Shared refusal for text that fails moderation. Injection attempts are
-// marked so the client can show the firewall notification.
-export function refuseText(text: string): NextResponse | null {
+// logged and marked so the client can show the firewall notification.
+export async function refuseText(text: string, request: Request): Promise<NextResponse | null> {
   const verdict = moderate(text);
   if (verdict.ok) return null;
-  if (verdict.reason === "injection") return json({ error: "kbOS Firewall blocked this message.", blocked: "injection" }, 400);
+  if (verdict.reason === "injection") {
+    const visitor = await hashIp(clientIp(request.headers));
+    await logThreat({ type: "injection", country: country(request), path: new URL(request.url).pathname, visitor });
+    await recordOffence(visitor);
+    return json({ error: "kbOS Firewall blocked this message.", blocked: "injection" }, 400);
+  }
   if (verdict.reason === "profanity") return json({ error: "Please keep it friendly." }, 400);
   return json({ error: "Write something first." }, 400);
 }

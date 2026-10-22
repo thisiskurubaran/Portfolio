@@ -1,4 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { clientIp, hashIp } from "@/lib/hash";
+import { deniedPage, honeypotPage, STATIC_PAGE_CSP, tooManyPage } from "@/lib/securityPages";
+import { isBlocked, logThreat, recordOffence } from "@/lib/threats";
 
 // The presence server lives on its own host, so it is the one outside origin
 // the page may open a socket to.
@@ -29,7 +32,33 @@ function contentSecurityPolicy(nonce: string, dev: boolean): string {
   return directives.join("; ");
 }
 
-export function proxy(request: NextRequest) {
+// F37 and F38: paths scanners try on every site. The admin-looking ones get
+// the decoy; the rest get the access denied screen.
+const HONEYPOT = /^\/(wp-admin|wp-login\.php|administrator|phpmyadmin|pma|admin\.php|user\/login|cpanel)(\/|$)/i;
+const PROBE = /^\/(\.env|\.git|\.svn|\.aws|\.ssh|\.DS_Store|\.htaccess|xmlrpc\.php|config\.php|wp-config|wp-content|wp-includes|vendor\/phpunit|cgi-bin|server-status|etc\/passwd|boaform|actuator|_profiler|debug\/default|backup|db\.sql|.*\.(php|asp|aspx|jsp|cgi|sql|bak)$)/i;
+
+function staticPage(html: string, status: number, extra: Record<string, string> = {}) {
+  return new NextResponse(html, {
+    status,
+    headers: { "Content-Type": "text/html; charset=utf-8", "Content-Security-Policy": STATIC_PAGE_CSP, "Cache-Control": "no-store", ...extra },
+  });
+}
+
+export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  const honeypot = HONEYPOT.test(path);
+  const probe = !honeypot && PROBE.test(path);
+
+  // Defend, never reach back: the response is a refusal, and the log keeps a
+  // salted hash and the country header only.
+  if (honeypot || probe) {
+    const visitor = await hashIp(clientIp(request.headers));
+    if (await isBlocked(visitor)) return staticPage(tooManyPage(), 429, { "Retry-After": "3600" });
+    await logThreat({ type: honeypot ? "honeypot" : "probe", country: request.headers.get("x-vercel-ip-country"), path, visitor });
+    await recordOffence(visitor);
+    return honeypot ? staticPage(honeypotPage(), 200) : staticPage(deniedPage(), 403);
+  }
+
   const nonce = btoa(crypto.randomUUID());
   const csp = contentSecurityPolicy(nonce, process.env.NODE_ENV === "development");
 
@@ -47,7 +76,7 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      // Pages only: static files do not need a per request nonce.
+      // Pages and probe paths. Static files do not need a per request nonce.
       source: "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|resume.pdf|certs/).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },

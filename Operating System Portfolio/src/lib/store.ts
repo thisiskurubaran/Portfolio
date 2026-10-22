@@ -87,10 +87,11 @@ function memoryStore(): Store {
   };
 }
 
-// Module scope so the memory fallback survives between requests in one process.
-let store: Store | null | undefined;
+// Kept on globalThis so the proxy and the route handlers share one memory
+// fallback in development, and it survives hot reloads.
+const holder = globalThis as typeof globalThis & { __kbosStore?: Store | null };
 
 export function getStore(): Store | null {
-  if (store === undefined) store = hasRedis() ? redisStore() : env.dev ? memoryStore() : null;
-  return store;
+  if (holder.__kbosStore === undefined) holder.__kbosStore = hasRedis() ? redisStore() : env.dev ? memoryStore() : null;
+  return holder.__kbosStore;
 }

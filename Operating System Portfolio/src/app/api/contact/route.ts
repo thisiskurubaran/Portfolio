@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
   const message = cleanText(parsed.data.message, { stripLinks: false });
   const name = parsed.data.name ? cleanText(parsed.data.name) : "";
-  const refused = refuseText(`${name} ${message}`);
+  const refused = await refuseText(`${name} ${message}`, request);
   if (refused) return refused;
 
   const guard = await guardWrite(request, "contact", 3, 3600, { needsStore: false });
