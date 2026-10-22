@@ -21,14 +21,13 @@ export const apps: AppDefinition[] = [
   { id: "certifications", name: "Certifications", icon: "certifications", load: () => import("./content/Certifications") },
   { id: "contact", name: "Mail", icon: "contact", load: () => import("./content/Mail") },
   { id: "resume", name: "Resume", icon: "resume", load: () => import("./content/Resume") },
-  { id: "terminal", name: "Terminal", icon: "terminal" },
-  { id: "settings", name: "Settings", icon: "settings" },
+  { id: "terminal", name: "Terminal", icon: "terminal", load: () => import("./content/Terminal") },
+  { id: "settings", name: "Settings", icon: "settings", load: () => import("./content/Settings") },
   { id: "photos", name: "Photos", icon: "photos", load: () => import("./content/Photos") },
   { id: "browser", name: "Browser", icon: "browser", load: () => import("./content/Browser") },
   { id: "notes", name: "Notes", icon: "notes", load: () => import("./content/Notes") },
 ];
 
-// Apps without a component yet (terminal, settings) stay out of the dock.
 export const launchable = apps.filter((app) => app.load);
 
 export const getApp = (id: AppId) => apps.find((app) => app.id === id);
