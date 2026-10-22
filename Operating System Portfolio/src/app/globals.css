@@ -1,20 +1,54 @@
 @import "tailwindcss";
 
-/* Design tokens live in src/design/tokens.ts and are mirrored here so
-   Tailwind utilities and CSS variables agree. */
+/* Design tokens. src/design/tokens.ts mirrors the scales for TypeScript.
+   Components use the semantic names (surface, raised, paper, muted, line);
+   the light theme only redefines those, so every utility follows. */
 @theme {
-  --color-ink: #0e1116;
-  --color-paper: #f6f4ef;
-  --color-glass: rgb(255 255 255 / 0.08);
-  --color-glass-strong: rgb(255 255 255 / 0.14);
-  --color-line: rgb(255 255 255 / 0.12);
+  --color-brand-50: #e8f8f3;
+  --color-brand-100: #c5eee2;
+  --color-brand-200: #9be2cf;
+  --color-brand-300: #6fd3ba;
+  --color-brand-400: #4cc2a8;
+  --color-brand-500: #2fa88e;
+  --color-brand-600: #1f8a74;
+  --color-brand-700: #186e5d;
+  --color-brand-800: #12554a;
+  --color-brand-900: #0b3b33;
+
+  /* Surfaces, from the desktop up: ink is the base, surface a window body,
+     raised a card inside it. */
+  --color-ink: #0b0e12;
+  --color-surface: #12161c;
+  --color-raised: #1a2028;
+  --color-paper: #eef1f4;
+  --color-muted: #a3acb7;
+  --color-subtle: #737d89;
+  --color-glass: rgb(255 255 255 / 0.07);
+  --color-glass-strong: rgb(255 255 255 / 0.13);
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.18);
+
   --color-accent: #4cc2a8;
   --color-accent-fg: var(--color-accent);
-  --color-on-accent: #0e1116;
+  --color-on-accent: #0b0e12;
+  --color-danger: #f0716a;
+  --color-warning: #f0b34a;
+  --color-success: #52c98e;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "JetBrains Mono", monospace;
-  --radius-window: 12px;
-  --radius-control: 8px;
+  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --radius-window: 14px;
+  --radius-sheet: 22px;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 1px rgb(0 0 0 / 0.2);
+  --shadow-2: 0 10px 28px -8px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.25);
+  --shadow-3: 0 30px 70px -16px rgb(0 0 0 / 0.65), 0 10px 24px rgb(0 0 0 / 0.3);
+
+  --ease-out-soft: cubic-bezier(0.3, 0.7, 0.2, 1);
   --blur-glass: 24px;
 }
 
@@ -22,16 +56,22 @@
   color-scheme: dark;
 }
 
-/* ink is the surface and paper the text, so the light theme swaps them and
-   every utility follows. Accent text is darkened to keep AA contrast. */
 :root[data-theme="light"] {
   color-scheme: light;
-  --color-ink: #f4f2ed;
-  --color-paper: #15181d;
-  --color-glass: rgb(20 24 29 / 0.06);
-  --color-glass-strong: rgb(20 24 29 / 0.12);
-  --color-line: rgb(20 24 29 / 0.14);
+  --color-ink: #eceef1;
+  --color-surface: #ffffff;
+  --color-raised: #f4f6f8;
+  --color-paper: #12161c;
+  --color-muted: #545e6a;
+  --color-subtle: #7a8490;
+  --color-glass: rgb(18 22 28 / 0.05);
+  --color-glass-strong: rgb(18 22 28 / 0.1);
+  --color-line: rgb(18 22 28 / 0.1);
+  --color-line-strong: rgb(18 22 28 / 0.2);
   --color-accent-fg: color-mix(in oklab, var(--color-accent) 55%, black);
+  --shadow-1: 0 1px 2px rgb(16 24 40 / 0.08), 0 1px 1px rgb(16 24 40 / 0.05);
+  --shadow-2: 0 10px 28px -8px rgb(16 24 40 / 0.18), 0 2px 6px rgb(16 24 40 / 0.08);
+  --shadow-3: 0 30px 70px -16px rgb(16 24 40 / 0.3), 0 10px 24px rgb(16 24 40 / 0.1);
 }
 
 body {
@@ -39,6 +79,14 @@ body {
   background: var(--color-ink);
   color: var(--color-paper);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 /* Hidden until focused, so keyboard and screen reader users meet it first. */

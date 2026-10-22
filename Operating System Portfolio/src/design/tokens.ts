@@ -1,17 +1,24 @@
+// Mirrors the scales in src/app/globals.css for code that needs raw values
+// (canvas drawing, inline gradients). Components should prefer the CSS tokens.
 export const tokens = {
-  color: {
-    ink: "#0e1116",
-    paper: "#f6f4ef",
-    accent: "#4cc2a8",
-    glass: "rgb(255 255 255 / 0.08)",
+  brand: {
+    50: "#e8f8f3",
+    100: "#c5eee2",
+    200: "#9be2cf",
+    300: "#6fd3ba",
+    400: "#4cc2a8",
+    500: "#2fa88e",
+    600: "#1f8a74",
+    700: "#186e5d",
+    800: "#12554a",
+    900: "#0b3b33",
   },
   font: {
     sans: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
-    mono: 'ui-monospace, "JetBrains Mono", monospace',
+    display: "var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+    mono: 'ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace',
   },
-  space: [0, 4, 8, 12, 16, 24, 32, 48, 64] as const,
-  radius: { window: 12, control: 8, pill: 999 },
-  blur: { glass: 24, low: 0 },
+  radius: { control: 10, card: 14, window: 14, sheet: 22 },
 } as const;
 
 export type Tokens = typeof tokens;
