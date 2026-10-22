@@ -17,7 +17,9 @@ export function MenuBar() {
   const label = appId ? getApp(appId)?.name : "Desktop";
   return (
     <header className="absolute inset-x-0 top-0 z-[9999] flex h-7 items-center gap-4 bg-ink/60 px-3 text-sm backdrop-blur-md">
-      <Icon name="logo" size={16} aria-label="kbOS" />
+      <button onClick={() => toggle("menu")} aria-label="kbOS menu" className="opacity-90 hover:opacity-100">
+        <Icon name="logo" size={16} />
+      </button>
       <span className="font-medium">{label}</span>
       <a href="/plain" className="ml-auto opacity-80 hover:opacity-100">
         Plain view

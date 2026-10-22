@@ -2,13 +2,12 @@
 
 import { profile } from "@/content";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
-import { useSwipe } from "@/shells/shared/useSwipe";
-import { WeatherText } from "@/shells/shared/widgets";
-import { usePhone } from "./state";
+import { useSwipe } from "./useSwipe";
+import { WeatherText } from "./widgets";
 
-export function LockScreen() {
+// F03: the lock screen for kbPhone and kbPad, with the real time and local weather.
+export function LockScreen({ onUnlock: unlock }: { onUnlock: () => void }) {
   const now = useClock();
-  const unlock = usePhone((s) => s.unlock);
   const swipe = useSwipe((dir) => dir === "up" && unlock());
   return (
     <section

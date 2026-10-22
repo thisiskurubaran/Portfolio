@@ -85,3 +85,15 @@ body {
     box-shadow: 0 0 0 2px transparent;
   }
 }
+
+.kb-boot-bar {
+  animation-name: kb-boot;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: forwards;
+  width: 0;
+}
+@keyframes kb-boot {
+  to {
+    width: 100%;
+  }
+}

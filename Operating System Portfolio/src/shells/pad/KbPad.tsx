@@ -6,6 +6,7 @@ import { getApp } from "@/os/apps/registry";
 import { formatTime, useClock } from "@/os/system/clock";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
+import { LockScreen } from "@/shells/shared/LockScreen";
 import { NotificationList } from "@/shells/shared/NotificationList";
 import { QuickSettings } from "@/shells/shared/QuickSettings";
 import { Sheet } from "@/shells/shared/Sheet";
@@ -73,7 +74,7 @@ function Switcher() {
 
 // kbPad: home screen with a dock, split view and slide-over.
 export default function KbPad() {
-  const { primary, overlay, setOverlay, goHome } = usePad();
+  const { primary, overlay, setOverlay, goHome, locked, setLocked } = usePad();
   const wallpaper = useWallpaper();
   const homeBar = useSwipe((dir, _s, distance) => {
     if (dir !== "up") return;
@@ -81,7 +82,13 @@ export default function KbPad() {
     else goHome();
   });
 
-  useEffect(() => registerLauncher((id) => usePad.getState().open(id)), []);
+  useEffect(() => {
+    usePad.getState().setOverlay(null);
+    return registerLauncher((id) => {
+      usePad.getState().setLocked(false);
+      usePad.getState().open(id);
+    });
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -96,15 +103,19 @@ export default function KbPad() {
 
   const closeOverlay = () => setOverlay(null);
   return (
-    <main className="relative flex h-dvh w-screen select-none flex-col overflow-hidden" style={{ background: wallpaper }}>
+    <main className="relative flex h-full w-full select-none flex-col overflow-hidden" style={{ background: wallpaper }}>
       <StatusBar />
-      <div className="relative min-h-0 flex-1">{primary ? <SplitView /> : <PadHome />}</div>
-      {primary && (
+      {locked ? (
+        <LockScreen onUnlock={() => setLocked(false)} />
+      ) : (
+        <div className="relative min-h-0 flex-1">{primary ? <SplitView /> : <PadHome />}</div>
+      )}
+      {primary && !locked && (
         <button {...homeBar} onClick={goHome} aria-label="Go home" className="flex h-6 shrink-0 touch-none items-center justify-center">
           <span aria-hidden className="h-1.5 w-40 rounded-full bg-paper/60" />
         </button>
       )}
-      <SlideOver />
+      {!locked && <SlideOver />}
       {overlay === "picker" && <AppPicker />}
       {overlay === "switcher" && <Switcher />}
       {overlay === "search" && <Spotlight onClose={closeOverlay} />}
@@ -113,9 +124,14 @@ export default function KbPad() {
           <div className="mx-auto max-w-md">
             <QuickSettings
               actions={
-                <button onClick={() => setOverlay("switcher")} className="col-span-2 rounded-2xl bg-glass p-3 text-sm">
-                  Recent apps
-                </button>
+                <>
+                  <button onClick={() => setOverlay("switcher")} className="rounded-2xl bg-glass p-3 text-sm">
+                    Recent apps
+                  </button>
+                  <button onClick={() => setLocked(true)} className="rounded-2xl bg-glass p-3 text-sm">
+                    Lock
+                  </button>
+                </>
               }
             />
           </div>

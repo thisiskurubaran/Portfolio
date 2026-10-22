@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
+import { LockScreen } from "@/shells/shared/LockScreen";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { AppSwitcher } from "./AppSwitcher";
 import { AppView } from "./AppView";
 import { ControlCenter } from "./ControlCenter";
 import { HomeScreen } from "./HomeScreen";
-import { LockScreen } from "./LockScreen";
 import { NotificationShade } from "./NotificationShade";
 import { StatusBar } from "./StatusBar";
 import { usePhone } from "./state";
@@ -18,19 +18,19 @@ export default function KbPhone() {
   const { locked, app, overlay } = usePhone();
   const wallpaper = useWallpaper();
 
-  useEffect(
-    () =>
-      registerLauncher((id) => {
-        usePhone.getState().unlock();
-        usePhone.getState().openApp(id);
-      }),
-    [],
-  );
+  useEffect(() => {
+    // Overlays left open before a handoff should not greet the visitor on return.
+    usePhone.getState().setOverlay(null);
+    return registerLauncher((id) => {
+      usePhone.getState().unlock();
+      usePhone.getState().openApp(id);
+    });
+  }, []);
 
   return (
-    <main className="relative flex h-dvh w-screen select-none flex-col overflow-hidden" style={{ background: wallpaper }}>
+    <main className="relative flex h-full w-full select-none flex-col overflow-hidden" style={{ background: wallpaper }}>
       <StatusBar />
-      {locked ? <LockScreen /> : <HomeScreen />}
+      {locked ? <LockScreen onUnlock={() => usePhone.getState().unlock()} /> : <HomeScreen />}
       {!locked && app && <AppView id={app} />}
       {overlay === "control" && <ControlCenter />}
       {overlay === "shade" && <NotificationShade />}

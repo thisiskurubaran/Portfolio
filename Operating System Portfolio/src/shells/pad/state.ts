@@ -2,11 +2,14 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { AppId } from "@/os/apps/registry";
 import { safeStorage } from "@/os/state/storage";
+import { firstVisit } from "@/os/system/session";
 
 export type PadPane = "primary" | "secondary" | "slide";
 export type PadOverlay = "control" | "shade" | "search" | "switcher" | "picker" | null;
 
 interface PadStore {
+  locked: boolean;
+  setLocked: (locked: boolean) => void;
   primary: AppId | null;
   secondary: AppId | null;
   // Share of the width the primary pane takes in split view.
@@ -33,6 +36,8 @@ const remember = (recents: AppId[], id: AppId) => [id, ...recents.filter((r) => 
 export const usePad = create<PadStore>()(
   persist(
     (set) => ({
+      locked: firstVisit,
+      setLocked: (locked) => set({ locked, overlay: null }),
       primary: null,
       secondary: null,
       ratio: 0.5,

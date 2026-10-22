@@ -9,7 +9,9 @@ import { DeskWindow } from "./DeskWindow";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
 import { MissionControl } from "./MissionControl";
+import { LoginScreen } from "./LoginScreen";
 import { NotificationCenter } from "./NotificationCenter";
+import { SystemMenu } from "./SystemMenu";
 import { useDesk } from "./state";
 
 const MENU_BAR = 28;
@@ -30,9 +32,12 @@ export default function KbDesk() {
   const windows = useWindows((s) => s.windows);
   const focusedId = useWindows((s) => s.focusedId);
   const overlay = useDesk((s) => s.overlay);
+  const loggedIn = useDesk((s) => s.loggedIn);
   const wallpaper = useWallpaper();
 
   useEffect(() => {
+    // Overlays left open before a handoff should not greet the visitor on return.
+    useDesk.getState().setOverlay(null);
     clampRestoredWindows();
     // About is the first thing shown after boot.
     if (useWindows.getState().windows.length === 0) useWindows.getState().open("about");
@@ -58,7 +63,7 @@ export default function KbDesk() {
   }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden" style={{ background: wallpaper }}>
+    <div className="relative h-full w-full overflow-hidden" style={{ background: wallpaper }}>
       <MenuBar />
       {windows.map((win) => (
         <DeskWindow key={win.id} win={win} focused={win.id === focusedId} />
@@ -67,6 +72,8 @@ export default function KbDesk() {
       {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "overview" && <MissionControl />}
       {overlay === "center" && <NotificationCenter />}
+      {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
+      {!loggedIn && <LoginScreen onLogin={() => useDesk.getState().setLoggedIn(true)} />}
     </div>
   );
 }

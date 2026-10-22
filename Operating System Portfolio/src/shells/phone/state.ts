@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { AppId } from "@/os/apps/registry";
+import { firstVisit } from "@/os/system/session";
 
 export type PhoneOverlay = "control" | "shade" | "search" | "switcher" | null;
 
@@ -18,7 +19,7 @@ interface PhoneStore {
 }
 
 export const usePhone = create<PhoneStore>((set) => ({
-  locked: true,
+  locked: firstVisit,
   app: null,
   recents: [],
   overlay: null,
