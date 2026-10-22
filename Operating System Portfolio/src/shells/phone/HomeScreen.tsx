@@ -3,7 +3,7 @@
 import { experience } from "@/content";
 import { AppIcon } from "@/design/AppIcon";
 import { Icon } from "@/design/icons";
-import { launchable, type AppId } from "@/os/apps/registry";
+import { launchable, pinned, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
 import { useSwipe } from "@/shells/shared/useSwipe";
@@ -48,7 +48,8 @@ function NowWidget() {
 export function HomeScreen() {
   const gridKeys = useGridKeys(COLUMNS);
   const dockApps = launchable.filter((a) => DOCK.includes(a.id));
-  const gridApps = launchable.filter((a) => !DOCK.includes(a.id));
+  // The rest of the apps live in the App Library, one swipe away.
+  const gridApps = launchable.filter((a) => pinned.includes(a.id) && !DOCK.includes(a.id));
   const setOverlay = usePhone((s) => s.setOverlay);
   // Swiping left from the home screen opens the App Library, as a second page would.
   const swipe = useSwipe((dir) => dir === "left" && setOverlay("launcher"));

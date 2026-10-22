@@ -3,7 +3,8 @@ import type { IconName } from "@/design/icons";
 
 export type AppId =
   | "about" | "experience" | "projects" | "skills" | "certifications" | "contact"
-  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes" | "guestbook" | "nets";
+  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes" | "guestbook" | "nets"
+  | "files" | "calendar" | "clock" | "calculator" | "editor" | "activity" | "sysinfo";
 
 export interface AppDefinition {
   id: AppId;
@@ -29,8 +30,19 @@ export const apps: AppDefinition[] = [
   { id: "browser", name: "Browser", icon: "browser", load: () => import("./content/Browser") },
   { id: "notes", name: "Notes", icon: "notes", load: () => import("./content/Notes") },
   { id: "guestbook", name: "Guestbook", icon: "guestbook", load: () => import("./content/Guestbook") },
+  { id: "files", name: "Files", icon: "files", load: () => import("./content/Files") },
+  { id: "calendar", name: "Calendar", icon: "calendar", load: () => import("./content/Calendar") },
+  { id: "clock", name: "Clock", icon: "clock", load: () => import("./content/Clock") },
+  { id: "calculator", name: "Calculator", icon: "calculator", load: () => import("./content/Calculator") },
+  { id: "editor", name: "Text Editor", icon: "editor", load: () => import("./content/Editor") },
+  { id: "activity", name: "Activity Monitor", icon: "activity", load: () => import("./content/Activity") },
+  { id: "sysinfo", name: "About folioOS", icon: "info", load: () => import("./content/SysInfo") },
   { id: "nets", name: "Nets", icon: "nets", load: () => import("./content/Nets"), hidden: true },
 ];
+
+// Kept in the dock and on home screens; everything else is in the launcher
+// and joins the dock while it is open.
+export const pinned: AppId[] = ["about", "experience", "projects", "skills", "contact", "resume", "files", "terminal", "settings"];
 
 export const launchable = apps.filter((app) => app.load && !app.hidden);
 
