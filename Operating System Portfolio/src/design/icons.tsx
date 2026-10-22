@@ -15,6 +15,8 @@ const paths = {
   photos: "M4 5h16v14H4zM4 16l5-5l4 4l3-3l4 4M15 9.5h.01",
   browser: "M12 3a9 9 0 1 1 0 18a9 9 0 0 1 0-18zM3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z",
   notes: "M6 4h12v16H6zM9 9h6M9 13h6M9 17h3",
+  guestbook: "M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11M9 8h6",
+  sticky: "M5 5h14v9l-5 5H5zM14 19v-5h5",
   logo: "M5 4v16M5 12l7-8M5 12l7 8M15 7.5a4.5 4.5 0 1 1 0 9a4.5 4.5 0 0 1 0-9z",
 } as const;
 

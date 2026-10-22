@@ -3,7 +3,7 @@ import type { IconName } from "@/design/icons";
 
 export type AppId =
   | "about" | "experience" | "projects" | "skills" | "certifications" | "contact"
-  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes";
+  | "resume" | "terminal" | "settings" | "photos" | "browser" | "notes" | "guestbook";
 
 export interface AppDefinition {
   id: AppId;
@@ -26,6 +26,7 @@ export const apps: AppDefinition[] = [
   { id: "photos", name: "Photos", icon: "photos", load: () => import("./content/Photos") },
   { id: "browser", name: "Browser", icon: "browser", load: () => import("./content/Browser") },
   { id: "notes", name: "Notes", icon: "notes", load: () => import("./content/Notes") },
+  { id: "guestbook", name: "Guestbook", icon: "guestbook", load: () => import("./content/Guestbook") },
 ];
 
 export const launchable = apps.filter((app) => app.load);
