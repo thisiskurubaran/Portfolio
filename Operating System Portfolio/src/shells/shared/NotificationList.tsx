@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import { useNotifications, type Notification } from "@/os/state/notifications";
 import { useHandoff } from "@/os/system/handoff";
+import { haptic } from "@/os/system/haptics";
 import { launch } from "@/os/system/launcher";
+import { useSwipe } from "./useSwipe";
 
 export function runAction(n: Notification) {
   if (!n.action) return;
@@ -12,17 +14,26 @@ export function runAction(n: Notification) {
   else if (n.action.href) window.open(n.action.href, "_blank", "noopener,noreferrer");
 }
 
+// Swipe a card sideways to dismiss it, or use the close button.
 export function NotificationCard({ n, onAction }: { n: Notification; onAction?: () => void }) {
   const remove = useNotifications((s) => s.remove);
+  const swipe = useSwipe((dir) => {
+    if (dir !== "left" && dir !== "right") return;
+    haptic();
+    remove(n.id);
+  });
   return (
-    <div className={`rounded-2xl p-3 ${n.kind === "security" ? "border border-red-400/40 bg-red-500/15" : "bg-glass"}`}>
+    <div
+      {...swipe}
+      className={`touch-pan-y rounded-2xl p-3 ${n.kind === "security" ? "border border-danger/40 bg-danger/15" : "border border-line bg-raised/80"}`}
+    >
       <div className="flex items-start gap-2">
-        <p className="flex-1 text-sm font-medium">{n.title}</p>
-        <button onClick={() => remove(n.id)} aria-label={`Dismiss ${n.title}`} className="-mr-1 -mt-1 rounded px-1.5 opacity-60 hover:opacity-100">
+        <p className="flex-1 text-sm font-semibold">{n.title}</p>
+        <button onClick={() => remove(n.id)} aria-label={`Dismiss ${n.title}`} className="-mr-1 -mt-1 rounded px-1.5 text-muted hover:text-paper">
           ×
         </button>
       </div>
-      {n.body && <p className="mt-0.5 text-sm opacity-80">{n.body}</p>}
+      {n.body && <p className="mt-0.5 text-sm text-muted">{n.body}</p>}
       {n.action && (
         <button
           onClick={() => {
