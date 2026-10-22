@@ -1,20 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Icon } from "@/design/icons";
 import { getApp } from "@/os/apps/registry";
+import { useClock } from "@/os/system/clock";
 import { useWindows } from "@/os/state/windows";
-
-function useClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    const tick = () => setNow(new Date());
-    tick();
-    const id = setInterval(tick, 15_000);
-    return () => clearInterval(id);
-  }, []);
-  return now;
-}
 
 export function MenuBar() {
   const focusedId = useWindows((s) => s.focusedId);
