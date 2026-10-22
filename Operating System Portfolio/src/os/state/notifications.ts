@@ -1,10 +1,13 @@
 import { create } from "zustand";
 import type { AppId } from "@/os/apps/registry";
+import type { Shell } from "@/os/device/resolve";
 
 export interface NotificationAction {
   label: string;
   app?: AppId;
   href?: string;
+  // Relaunch as another shell, through the handoff animation.
+  shell?: Shell;
 }
 
 export interface Notification {

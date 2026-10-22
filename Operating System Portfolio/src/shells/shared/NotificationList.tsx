@@ -2,11 +2,13 @@
 
 import { useEffect } from "react";
 import { useNotifications, type Notification } from "@/os/state/notifications";
+import { useHandoff } from "@/os/system/handoff";
 import { launch } from "@/os/system/launcher";
 
 export function runAction(n: Notification) {
   if (!n.action) return;
-  if (n.action.app) launch(n.action.app);
+  if (n.action.shell) useHandoff.getState().start(n.action.shell);
+  else if (n.action.app) launch(n.action.app);
   else if (n.action.href) window.open(n.action.href, "_blank", "noopener,noreferrer");
 }
 
