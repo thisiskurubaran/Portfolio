@@ -15,6 +15,7 @@ import { Spotlight } from "@/shells/shared/Spotlight";
 import { useSwipe } from "@/shells/shared/useSwipe";
 import { StatusIcons } from "@/shells/shared/widgets";
 import { AppPicker } from "./AppPicker";
+import { DockPeek, DragLayer } from "./dnd";
 import { PadHome } from "./PadHome";
 import { SlideOver } from "./SlideOver";
 import { SplitView } from "./SplitView";
@@ -79,7 +80,9 @@ export default function FolioPad() {
   const wallpaper = useWallpaper();
   const homeBar = useSwipe((dir, _s, distance) => {
     if (dir !== "up") return;
+    // Short swipe: the dock peeks up. Longer: home. Longest: recent apps.
     if (distance > window.innerHeight * 0.25) setOverlay("switcher");
+    else if (distance < 110) usePad.getState().setDockPeek(true);
     else goHome();
   });
 
@@ -117,6 +120,8 @@ export default function FolioPad() {
         </button>
       )}
       {!locked && <SlideOver />}
+      {!locked && primary && <DockPeek />}
+      <DragLayer />
       {overlay === "picker" && <AppPicker />}
       {overlay === "switcher" && <Switcher />}
       {overlay === "search" && <Spotlight onClose={closeOverlay} />}

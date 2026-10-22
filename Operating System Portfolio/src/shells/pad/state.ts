@@ -7,7 +7,14 @@ import { firstVisit } from "@/os/system/session";
 export type PadPane = "primary" | "secondary" | "slide";
 export type PadOverlay = "control" | "shade" | "search" | "switcher" | "picker" | "launcher" | null;
 
+export type DropZone = "open" | "split" | "slide";
+
 interface PadStore {
+  // F34: an app icon being dragged toward a drop zone.
+  drag: { id: AppId; x: number; y: number; zone: DropZone } | null;
+  setDrag: (drag: PadStore["drag"]) => void;
+  dockPeek: boolean;
+  setDockPeek: (peek: boolean) => void;
   locked: boolean;
   setLocked: (locked: boolean) => void;
   primary: AppId | null;
@@ -36,6 +43,10 @@ const remember = (recents: AppId[], id: AppId) => [id, ...recents.filter((r) => 
 export const usePad = create<PadStore>()(
   persist(
     (set) => ({
+      drag: null,
+      setDrag: (drag) => set({ drag }),
+      dockPeek: false,
+      setDockPeek: (dockPeek) => set({ dockPeek }),
       locked: firstVisit,
       setLocked: (locked) => set({ locked, overlay: null }),
       primary: null,
