@@ -1,57 +1,39 @@
 import { create } from "zustand";
-import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { WallpaperId } from "@/design/wallpapers";
+import { safeStorage } from "./storage";
 
-export type ThemeMode = "light" | "dark" | "auto";
+// "system" follows the OS colour scheme; "auto" follows the visitor's local
+// time of day, the same signal as the dynamic wallpaper.
+export type ThemeMode = "system" | "light" | "dark" | "auto";
 
 interface PreferencesStore {
   theme: ThemeMode;
   accent: string;
+  wallpaper: WallpaperId;
   reducedMotion: boolean;
   sound: boolean;
   setTheme: (theme: ThemeMode) => void;
   setAccent: (accent: string) => void;
+  setWallpaper: (wallpaper: WallpaperId) => void;
   setReducedMotion: (value: boolean) => void;
   setSound: (value: boolean) => void;
 }
 
-// localStorage can throw or be missing (private windows, blocked storage).
-// Fall back to defaults in that case.
-const safeStorage: StateStorage = {
-  getItem: (name) => {
-    try {
-      return window.localStorage.getItem(name);
-    } catch {
-      return null;
-    }
-  },
-  setItem: (name, value) => {
-    try {
-      window.localStorage.setItem(name, value);
-    } catch {
-      // ignore
-    }
-  },
-  removeItem: (name) => {
-    try {
-      window.localStorage.removeItem(name);
-    } catch {
-      // ignore
-    }
-  },
-};
-
 export const usePreferences = create<PreferencesStore>()(
   persist(
     (set) => ({
-      theme: "auto",
+      theme: "system",
       accent: "#4cc2a8",
+      wallpaper: "dynamic",
       reducedMotion: false,
       sound: false,
       setTheme: (theme) => set({ theme }),
       setAccent: (accent) => set({ accent }),
+      setWallpaper: (wallpaper) => set({ wallpaper }),
       setReducedMotion: (reducedMotion) => set({ reducedMotion }),
       setSound: (sound) => set({ sound }),
     }),
-    { name: "kbos.preferences", storage: createJSONStorage(() => safeStorage) },
+    { name: "kbos.preferences", version: 1, storage: createJSONStorage(() => safeStorage) },
   ),
 );

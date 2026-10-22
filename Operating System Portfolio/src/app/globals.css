@@ -6,7 +6,11 @@
   --color-ink: #0e1116;
   --color-paper: #f6f4ef;
   --color-glass: rgb(255 255 255 / 0.08);
+  --color-glass-strong: rgb(255 255 255 / 0.14);
+  --color-line: rgb(255 255 255 / 0.12);
   --color-accent: #4cc2a8;
+  --color-accent-fg: var(--color-accent);
+  --color-on-accent: #0e1116;
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "JetBrains Mono", monospace;
   --radius-window: 12px;
@@ -15,7 +19,19 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
+}
+
+/* ink is the surface and paper the text, so the light theme swaps them and
+   every utility follows. Accent text is darkened to keep AA contrast. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #f4f2ed;
+  --color-paper: #15181d;
+  --color-glass: rgb(20 24 29 / 0.06);
+  --color-glass-strong: rgb(20 24 29 / 0.12);
+  --color-line: rgb(20 24 29 / 0.14);
+  --color-accent-fg: color-mix(in oklab, var(--color-accent) 55%, black);
 }
 
 body {
@@ -54,4 +70,18 @@ body {
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
+}
+
+/* Briefly marks the item spotlight or the terminal jumped to. */
+.kb-flash {
+  animation: kb-flash 1.6s ease-out;
+}
+@keyframes kb-flash {
+  0%,
+  40% {
+    box-shadow: 0 0 0 2px var(--color-accent);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
 }

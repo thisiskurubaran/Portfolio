@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { wallpaperBackground } from "@/design/wallpapers";
 import { usePreferences } from "@/os/state/preferences";
+import { useDaypart } from "./daypart";
 
 function mediaStore(query: string) {
   return {
@@ -15,6 +17,7 @@ function mediaStore(query: string) {
 }
 
 const reducedMotionQuery = mediaStore("(prefers-reduced-motion: reduce)");
+const darkQuery = mediaStore("(prefers-color-scheme: dark)");
 
 export function usePrefersReducedMotion() {
   return useSyncExternalStore(reducedMotionQuery.subscribe, reducedMotionQuery.get, () => false);
@@ -27,11 +30,32 @@ export function useReducedMotion() {
   return system || chosen;
 }
 
+export function useResolvedTheme(): "light" | "dark" {
+  const mode = usePreferences((s) => s.theme);
+  const systemDark = useSyncExternalStore(darkQuery.subscribe, darkQuery.get, () => true);
+  const daypart = useDaypart();
+  if (mode === "light" || mode === "dark") return mode;
+  if (mode === "auto") return daypart === "day" ? "light" : "dark";
+  return systemDark ? "dark" : "light";
+}
+
+export function useWallpaper() {
+  const id = usePreferences((s) => s.wallpaper);
+  const theme = useResolvedTheme();
+  const daypart = useDaypart();
+  return wallpaperBackground(id, theme, daypart);
+}
+
 // Mirrors OS state onto <html> so plain CSS can react without every
 // component subscribing to the stores.
 export function useSystemAttributes() {
   const reduced = useReducedMotion();
+  const theme = useResolvedTheme();
+  const accent = usePreferences((s) => s.accent);
   useEffect(() => {
-    document.documentElement.toggleAttribute("data-reduced-motion", reduced);
-  }, [reduced]);
+    const root = document.documentElement;
+    root.toggleAttribute("data-reduced-motion", reduced);
+    root.dataset.theme = theme;
+    root.style.setProperty("--color-accent", accent);
+  }, [reduced, theme, accent]);
 }
