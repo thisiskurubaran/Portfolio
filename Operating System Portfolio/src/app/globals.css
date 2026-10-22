@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Design tokens live in src/design/tokens.ts and are mirrored here so
+   Tailwind utilities and CSS variables agree. */
+@theme {
+  --color-ink: #0e1116;
+  --color-paper: #f6f4ef;
+  --color-glass: rgb(255 255 255 / 0.08);
+  --color-accent: #4cc2a8;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", monospace;
+  --radius-window: 12px;
+  --radius-control: 8px;
+  --blur-glass: 24px;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+}
