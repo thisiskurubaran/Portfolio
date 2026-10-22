@@ -1,13 +1,14 @@
 "use client";
 
 import { Suspense, useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
-import { Icon } from "@/design/icons";
+import { AppIcon } from "@/design/AppIcon";
+import { Icon, type IconName } from "@/design/icons";
 import { appComponents, getApp } from "@/os/apps/registry";
 import { useWindows, type WindowState } from "@/os/state/windows";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 
-const MENU_BAR = 28;
-const DOCK = 84;
+const MENU_BAR = 30;
+const DOCK = 92;
 const SNAP_EDGE = 8;
 
 function useRaf() {
@@ -16,6 +17,23 @@ function useRaf() {
     cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(fn);
   };
+}
+
+// Original window controls: quiet icon buttons on the right, with close
+// turning red only on hover.
+function WindowButton({ label, icon, onClick, danger = false }: { label: string; icon: IconName; onClick: () => void; danger?: boolean }) {
+  return (
+    <button
+      aria-label={label}
+      title={label.split(" ")[0]}
+      onClick={onClick}
+      className={`flex h-7 w-8 items-center justify-center rounded-md text-muted transition-colors hover:text-paper ${
+        danger ? "hover:bg-danger hover:text-white" : "hover:bg-glass-strong"
+      }`}
+    >
+      <Icon name={icon} size={14} weight={1.8} />
+    </button>
+  );
 }
 
 export function DeskWindow({ win, focused }: { win: WindowState; focused: boolean }) {
@@ -112,24 +130,23 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         if (e.key === "Escape") close(win.id);
         else trap(e);
       }}
-      className={`folio-window absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border border-line bg-ink/95 shadow-2xl backdrop-blur-xl outline-none ${focused ? "ring-1 ring-accent/50" : "opacity-95"}`}
+      className={`folio-window absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border bg-surface outline-none transition-shadow ${
+        focused ? "border-line-strong shadow-3" : "border-line shadow-2"
+      }`}
       style={{ ...style, zIndex: win.z }}
     >
       <div
         onPointerDown={startDrag}
         onDoubleClick={() => toggleMaximize(win.id)}
-        className="flex h-9 shrink-0 cursor-default select-none items-center gap-2 border-b border-line px-3"
+        className={`flex h-10 shrink-0 cursor-default select-none items-center gap-2.5 border-b border-line pl-3 pr-1.5 ${focused ? "bg-raised" : "bg-surface"}`}
       >
-        <div className="flex gap-2">
-          <button aria-label={`Close ${app.name}`} onClick={() => close(win.id)} className="h-3 w-3 rounded-full bg-red-400/90 focus-visible:ring-2" />
-          <button aria-label={`Minimise ${app.name}`} onClick={() => minimize(win.id)} className="h-3 w-3 rounded-full bg-yellow-300/90 focus-visible:ring-2" />
-          <button aria-label={win.maximized ? `Restore ${app.name}` : `Maximise ${app.name}`} onClick={() => toggleMaximize(win.id)} className="h-3 w-3 rounded-full bg-green-400/90 focus-visible:ring-2" />
+        <AppIcon id={app.id} icon={app.icon} size={20} />
+        <span className={`truncate text-[13px] font-semibold ${focused ? "" : "text-muted"}`}>{app.name}</span>
+        <div className="ml-auto flex items-center gap-0.5">
+          <WindowButton label={`Minimise ${app.name}`} icon="minimize" onClick={() => minimize(win.id)} />
+          <WindowButton label={win.maximized ? `Restore ${app.name}` : `Maximise ${app.name}`} icon={win.maximized ? "restore" : "maximize"} onClick={() => toggleMaximize(win.id)} />
+          <WindowButton label={`Close ${app.name}`} icon="close" danger onClick={() => close(win.id)} />
         </div>
-        <span className="mx-auto flex items-center gap-1.5 text-sm opacity-80">
-          <Icon name={app.icon} size={14} />
-          {app.name}
-        </span>
-        <span className="w-12" />
       </div>
       <div className="min-h-0 flex-1 overflow-auto">
         <Suspense fallback={<p className="p-6 text-sm opacity-60">Loading</p>}>{Content && <Content />}</Suspense>
