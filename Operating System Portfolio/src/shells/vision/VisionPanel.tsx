@@ -35,11 +35,13 @@ export function VisionPanel({ id, index, center }: { id: AppId; index: number; c
         aria-current={focused || undefined}
         onPointerDown={() => !focused && focus(id)}
         onFocus={() => !focused && focus(id)}
-        className={`flex h-[min(420px,52vh)] w-[min(560px,40vw)] flex-col overflow-hidden rounded-[28px] border border-white/25 bg-[rgb(30_38_50/0.55)] text-[#f6f4ef] shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-opacity duration-300 ${
-          focused ? "opacity-100" : "opacity-60 hover:opacity-80"
+        className={`flex h-[min(440px,54vh)] w-[min(580px,42vw)] flex-col overflow-hidden rounded-[30px] border text-[#f6f4ef] backdrop-blur-2xl transition-[opacity,box-shadow] duration-300 ${
+          focused
+            ? "border-white/35 bg-[rgb(255_255_255/0.14)] opacity-100 shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_50px_120px_-20px_rgba(0,0,0,0.7)]"
+            : "border-white/20 bg-[rgb(255_255_255/0.08)] opacity-70 shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_30px_80px_-20px_rgba(0,0,0,0.5)] hover:opacity-85"
         }`}
       >
-        <header className="flex h-11 shrink-0 items-center justify-center gap-2 border-b border-white/15 text-sm font-medium">
+        <header className="flex h-12 shrink-0 items-center justify-center gap-2 border-b border-white/15 bg-white/5 text-sm font-semibold">
           <AppIcon id={app.id} icon={app.icon} size={22} />
           {app.name}
         </header>

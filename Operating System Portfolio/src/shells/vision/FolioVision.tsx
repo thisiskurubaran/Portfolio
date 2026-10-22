@@ -4,10 +4,12 @@ import { Sparkles } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/design/AppIcon";
-import { launchable } from "@/os/apps/registry";
+import { Icon } from "@/design/icons";
+import { launchable, pinned } from "@/os/apps/registry";
 import { formatTime, useClock } from "@/os/system/clock";
 import { registerLauncher } from "@/os/system/launcher";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
+import { Launchpad } from "@/shells/shared/Launchpad";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { useVision } from "./state";
 import { VisionPanel } from "./VisionPanel";
@@ -59,11 +61,17 @@ function usePanelParallax(reduced: boolean) {
   return ref;
 }
 
-function Ornament({ onSearch }: { onSearch: () => void }) {
+function Ornament({ onSearch, onAll }: { onSearch: () => void; onAll: () => void }) {
   const { open, openApp, focused } = useVision();
+  // Pinned apps, plus any open ones, keep the bar a comfortable width.
+  const shown = launchable.filter((a) => pinned.includes(a.id) || open.includes(a.id));
   return (
-    <nav aria-label="Apps" className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 text-white backdrop-blur-2xl">
-      {launchable.map((app) => (
+    <nav aria-label="Apps" className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-[28px] border border-white/25 bg-white/10 px-3 py-2.5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3)] backdrop-blur-2xl">
+      <button onClick={onAll} aria-label="All apps" title="All apps" className="relative flex flex-col items-center rounded-xl p-0.5 transition-transform hover:-translate-y-1">
+        <AppIcon id="launcher" icon="launcher" size={44} />
+      </button>
+      <span aria-hidden className="mx-0.5 w-px self-stretch bg-white/20" />
+      {shown.map((app) => (
         <button
           key={app.id}
           onClick={() => openApp(app.id)}
@@ -71,15 +79,12 @@ function Ornament({ onSearch }: { onSearch: () => void }) {
           title={app.name}
           className={`relative flex flex-col items-center rounded-xl p-0.5 transition-transform hover:-translate-y-1 ${focused === app.id ? "-translate-y-1" : ""}`}
         >
-          <AppIcon id={app.id} icon={app.icon} size={38} />
+          <AppIcon id={app.id} icon={app.icon} size={44} />
           {open.includes(app.id) && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-white" />}
         </button>
       ))}
-      <button onClick={onSearch} aria-label="Search" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/20">
-        <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-          <circle cx="11" cy="11" r="6.5" />
-          <path d="M16 16l4.5 4.5" strokeLinecap="round" />
-        </svg>
+      <button onClick={onSearch} aria-label="Search" className="flex h-11 w-11 items-center justify-center self-center rounded-full hover:bg-white/20">
+        <Icon name="search" size={20} />
       </button>
     </nav>
   );
@@ -91,6 +96,7 @@ export default function FolioVision() {
   const reduced = useReducedMotion();
   const now = useClock();
   const [search, setSearch] = useState(false);
+  const [all, setAll] = useState(false);
   const open = useVision((s) => s.open);
   const focused = useVision((s) => s.focused);
   const center = focused && open.includes(focused) ? open.indexOf(focused) : (open.length - 1) / 2;
@@ -119,6 +125,15 @@ export default function FolioVision() {
       className="relative h-full w-full overflow-hidden"
       style={{ background: "radial-gradient(ellipse at 50% 30%, #2a3a4a 0%, #141a24 45%, #07090c 100%)" }}
     >
+      {/* A soft floor of light under the panels, for a sense of standing in a room. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%]"
+        style={{
+          background: "radial-gradient(ellipse 60% 70% at 50% 100%, rgb(111 211 186 / 0.22), transparent 70%)",
+          maskImage: "linear-gradient(to top, black, transparent)",
+        }}
+      />
       <Canvas className="!absolute inset-0" camera={{ position: [0, 0, 6], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
         <Room reduced={reduced} />
       </Canvas>
@@ -136,7 +151,8 @@ export default function FolioVision() {
         {now ? formatTime(now) : ""}
       </p>
       <p className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 text-xs text-white/50">Click a panel to bring it forward. Arrow keys move between panels.</p>
-      <Ornament onSearch={() => setSearch(true)} />
+      <Ornament onSearch={() => setSearch(true)} onAll={() => setAll(true)} />
+      {all && <Launchpad onClose={() => setAll(false)} />}
       {search && <Spotlight onClose={() => setSearch(false)} />}
     </main>
   );
