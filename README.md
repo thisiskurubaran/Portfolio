@@ -6,7 +6,7 @@ Three developer portfolios by Kurubaran Anandhan, each one a different way to br
 | --- | --- | --- |
 | [Lighthouse Portfolio](Lighthouse%20Portfolio/) | Keep a lighthouse at night. Sweep the beam across the sea to find projects sailing past as ships. | `v0.7.0` |
 | [Mars Mission Portfolio](Mars%20Mission%20Portfolio/) | Fly a crewed mission from Earth to Mars. Projects, roles and skills sit along the route as stations and landing sites. | `v0.11.0` |
-| [Operating System Portfolio](Operating%20System%20Portfolio/) | folioOS, an invented operating system. The site boots a desktop, phone, tablet or spatial shell to match the device, and the portfolio runs as its apps. | `v0.3.0` |
+| [Operating System Portfolio](Operating%20System%20Portfolio/) | folioOS, an invented operating system. The site boots a desktop, phone, tablet or spatial shell to match the device, and the portfolio runs as its apps. | `v1.0.0` |
 
 Each project has its own README with what it does, how it is built and where it stands.
 
@@ -15,7 +15,7 @@ Each project has its own README with what it does, how it is built and where it 
 ```
 Lighthouse Portfolio/         Next.js + React Three Fiber, GLSL sea and beam
 Mars Mission Portfolio/       Next.js + React Three Fiber, orbital mechanics, Rapier physics
-Operating System Portfolio/   Next.js + Tailwind + Zustand, one kernel with a shell per device
+Operating System Portfolio/   Next.js + Tailwind + Zustand, one kernel with a shell per device, PartyKit and Upstash
 .gitignore                    rules shared by all three projects
 ```
 
@@ -48,7 +48,7 @@ Mars Mission also has `npm test` (Vitest) for its physics and ephemeris checks.
 - Commits follow Conventional Commits, lowercase and imperative, for example `feat: add tide rocks at low water`. Work in the OS portfolio is scoped `folioos`, for example `feat(folioos/f04): add edge snapping`.
 - All work happens on `main`. Each project tags its milestones with semver.
 - No analytics, trackers or cookies in any project. Location is city level at most, taken from the request's geo headers, never from the browser's Geolocation API.
-- Lighthouse and Mars Mission have a `/plain` route with all of their content as fast, accessible HTML, for visitors who cannot or would rather not use the interactive version. The OS portfolio gets one in its `v0.5.0` milestone.
+- Every project has a `/plain` route with all of its content as fast, accessible HTML, for visitors who cannot or would rather not use the interactive version.
 - Security issues: see [SECURITY.md](SECURITY.md).
 
 ## Contact

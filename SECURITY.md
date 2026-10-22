@@ -16,6 +16,6 @@ Out of scope: the third party services the sites read from (Open-Meteo, GDACS, N
 
 - They do not track, fingerprint or identify visitors. There are no analytics cookies or third party trackers.
 - Location is city level at most, from the request's geo headers, rounded and never stored. The browser's Geolocation API is never called.
-- Lighthouse and Mars Mission serve every page with a per-request nonce Content Security Policy, HSTS, `nosniff`, a strict Referrer-Policy, `X-Frame-Options: DENY` and a Permissions-Policy that denies camera, microphone and geolocation. The OS portfolio adds the same headers in its `v0.5.0` milestone.
+- Every page is served with a per-request nonce Content Security Policy, HSTS, `nosniff`, a strict Referrer-Policy, frame protection and a Permissions-Policy that denies camera, microphone and geolocation.
 - External feeds are fetched on the server, validated with zod and cached. A feed that fails or returns something unexpected is dropped, and the site falls back to a quiet default.
-- Any defensive feature (planned for the OS portfolio) only refuses service, rate limits and logs counts. Nothing on these sites scans, probes or reaches back toward a visitor's machine.
+- The defensive features in the OS portfolio (probe blocking, a decoy admin page, a 7 day log of salted IP hashes) only refuse service, rate limit and keep counts. Nothing on these sites scans, probes or reaches back toward a visitor's machine.
