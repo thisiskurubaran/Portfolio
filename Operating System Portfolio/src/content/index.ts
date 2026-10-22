@@ -1,0 +1,10 @@
+export { profile } from "./profile";
+export { experience } from "./experience";
+export type { Role, EmploymentType } from "./experience";
+export { education } from "./education";
+export { projects } from "./projects";
+export type { Project } from "./projects";
+export { skills } from "./skills";
+export { certifications } from "./certifications";
+export type { Certification } from "./certifications";
+export { contact } from "./contact";
