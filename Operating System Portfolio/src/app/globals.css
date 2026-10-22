@@ -97,3 +97,12 @@ body {
     width: 100%;
   }
 }
+
+/* kbVision: panels glide between places on the arc. */
+.kb-vision-stage {
+  transition: transform 0.4s ease-out;
+}
+.kb-vision-panel {
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1);
+}

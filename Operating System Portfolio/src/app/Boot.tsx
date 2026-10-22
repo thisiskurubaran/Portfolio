@@ -1,12 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from "react";
+import { canRunVision } from "@/os/device/capabilities";
 import type { Shell } from "@/os/device/resolve";
 import { builtShells, shells } from "@/os/device/shells";
 import { useDevice } from "@/os/device/useDevice";
 import { firstVisit, markBooted } from "@/os/system/session";
 import { useSystemAttributes } from "@/os/system/useSystemAttributes";
+import { useNotifications } from "@/os/state/notifications";
+import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
 import { BootScreen } from "@/shells/shared/BootScreen";
 import { DeviceFrame } from "@/shells/shared/DeviceFrame";
@@ -19,19 +22,30 @@ const shellComponents: Partial<Record<Shell, ComponentType>> = {
   desk: dynamic(() => import("@/shells/desk/KbDesk"), { ssr: false }),
   phone: dynamic(() => import("@/shells/phone/KbPhone"), { ssr: false }),
   pad: dynamic(() => import("@/shells/pad/KbPad"), { ssr: false }),
+  // Three.js and React Three Fiber only load when kbVision is entered.
+  vision: dynamic(() => import("@/shells/vision/KbVision"), { ssr: false }),
 };
 
 export function Boot() {
-  const { shell } = useDevice();
+  const { shell, setOverride } = useDevice();
   useSystemAttributes();
   const [booting, setBooting] = useState(firstVisit);
   const doneBooting = useCallback(() => {
     markBooted();
     setBooting(false);
   }, []);
-  useWelcome(booting ? null : shell);
-  if (!shell) return null;
-  const active = builtShells.includes(shell) ? shell : "desk";
+  // kbVision falls back to kbDesk when WebGL is missing or the device is weak.
+  const visionCheck = useMemo(() => (shell === "vision" ? canRunVision() : null), [shell]);
+  const active: Shell | null = !shell ? null : visionCheck && !visionCheck.ok ? "desk" : builtShells.includes(shell) ? shell : "desk";
+  useEffect(() => {
+    if (visionCheck && !visionCheck.ok) {
+      setOverride(null);
+      useNotifications.getState().push("kbVision is not available here", { body: visionCheck.reason });
+    }
+  }, [visionCheck, setOverride]);
+  useWelcome(booting ? null : active);
+  useVisionInvite(booting ? null : active);
+  if (!active) return null;
   const Shell = shellComponents[active]!;
   return (
     <>

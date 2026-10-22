@@ -13,7 +13,7 @@ export const shells: ShellInfo[] = [
   { id: "vision", name: "kbVision", device: "Spatial" },
 ];
 
-// Shells that exist in this build. The rest resolve to kbDesk until they land.
-export const builtShells: Shell[] = ["phone", "pad", "desk"];
+// Shells that exist in this build.
+export const builtShells: Shell[] = ["phone", "pad", "desk", "vision"];
 
 export const availableShells = shells.filter((s) => builtShells.includes(s.id));
