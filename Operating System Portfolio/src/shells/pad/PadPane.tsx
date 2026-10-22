@@ -5,6 +5,7 @@ import { AppIcon } from "@/design/AppIcon";
 import { Icon, type IconName } from "@/design/icons";
 import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
+import { shareApp } from "@/os/system/share";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { usePad, type PadPane as Pane } from "./state";
 
@@ -65,6 +66,7 @@ export function PadPane({ id, pane, compact = false }: { id: AppId; pane: Pane; 
                 (pane !== "primary" || secondary) && { label: "Full screen", icon: "maximize", run: () => fullScreen(pane) },
                 pane !== "slide" && !compact && { label: "Split view", icon: "windows", run: () => pick("split") },
                 pane !== "slide" && { label: "Slide-over", icon: "sidebar", run: () => moveToSlide(pane) },
+                { label: "Share", icon: "share", run: () => void shareApp(id) },
                 { label: "Close", icon: "close", run: () => close(pane) },
               ].filter(Boolean) as { label: string; icon: IconName; run: () => void }[]
             ).map((a) => (

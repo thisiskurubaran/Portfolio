@@ -5,6 +5,7 @@ import { Skeleton } from "@/os/apps/ui";
 import { AppIcon } from "@/design/AppIcon";
 import { Icon } from "@/design/icons";
 import { appComponents, getApp, type AppId } from "@/os/apps/registry";
+import { shareApp } from "@/os/system/share";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useSwipe } from "@/shells/shared/useSwipe";
 import { usePhone } from "./state";
@@ -48,6 +49,9 @@ export function AppView({ id }: { id: AppId }) {
           <AppIcon id={app.id} icon={app.icon} size={22} />
           {app.name}
         </h1>
+        <button onClick={() => void shareApp(id)} aria-label={`Share ${app.name}`} className="ml-auto flex h-9 w-9 items-center justify-center rounded-full text-accent-fg hover:bg-glass">
+          <Icon name="share" size={18} />
+        </button>
       </header>
       <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
         <Suspense fallback={<Skeleton />}>{Content && <Content />}</Suspense>
