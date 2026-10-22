@@ -17,3 +17,15 @@ export function useClock(intervalMs = 15_000) {
 
 export const formatTime = (d: Date) => d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 export const formatDate = (d: Date) => d.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+
+// A few zones for the world clock widget: home first, then common
+// recruiter and client time zones.
+export const worldZones = [
+  { city: "Chennai", zone: "Asia/Kolkata" },
+  { city: "London", zone: "Europe/London" },
+  { city: "New York", zone: "America/New_York" },
+  { city: "San Francisco", zone: "America/Los_Angeles" },
+  { city: "Singapore", zone: "Asia/Singapore" },
+] as const;
+
+export const formatInZone = (d: Date, zone: string) => d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZone: zone });

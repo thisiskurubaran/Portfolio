@@ -3,6 +3,7 @@
 import { profile } from "@/content";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useSwipe } from "@/shells/shared/useSwipe";
+import { WeatherText } from "@/shells/shared/widgets";
 import { usePhone } from "./state";
 
 export function LockScreen() {
@@ -18,6 +19,9 @@ export function LockScreen() {
       <p className="text-lg opacity-80" suppressHydrationWarning>{now ? formatDate(now) : ""}</p>
       <p className="mt-1 text-7xl font-light tabular-nums tracking-tight" suppressHydrationWarning>
         {now ? formatTime(now) : ""}
+      </p>
+      <p className="mt-3 text-sm">
+        <WeatherText />
       </p>
       <p className="mt-6 text-sm opacity-70">{profile.name}</p>
       <button

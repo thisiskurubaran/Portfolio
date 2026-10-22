@@ -11,6 +11,7 @@ import { QuickSettings } from "@/shells/shared/QuickSettings";
 import { Sheet } from "@/shells/shared/Sheet";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { useSwipe } from "@/shells/shared/useSwipe";
+import { StatusIcons } from "@/shells/shared/widgets";
 import { AppPicker } from "./AppPicker";
 import { PadHome } from "./PadHome";
 import { SlideOver } from "./SlideOver";
@@ -34,8 +35,9 @@ function StatusBar() {
           <path d="M16 16l4.5 4.5" strokeLinecap="round" />
         </svg>
       </button>
-      <button onClick={() => setOverlay("control")} aria-label="Open control center" className="opacity-80">
-        <span aria-hidden className="block h-2.5 w-4 rounded-sm border border-current" />
+      <button onClick={() => setOverlay("control")} aria-label="Open control center" className="flex items-center gap-1 opacity-90">
+        <StatusIcons />
+        <span aria-hidden className="ml-1 text-base leading-none">⌄</span>
       </button>
     </div>
   );

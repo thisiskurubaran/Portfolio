@@ -4,12 +4,15 @@ import { Icon } from "@/design/icons";
 import { getApp } from "@/os/apps/registry";
 import { useClock } from "@/os/system/clock";
 import { useWindows } from "@/os/state/windows";
+import { useNotifications } from "@/os/state/notifications";
+import { StatusIcons, WeatherText } from "@/shells/shared/widgets";
 import { useDesk } from "./state";
 
 export function MenuBar() {
   const focusedId = useWindows((s) => s.focusedId);
   const appId = useWindows((s) => s.windows.find((w) => w.id === focusedId && !w.minimized)?.appId);
   const toggle = useDesk((s) => s.toggle);
+  const unread = useNotifications((s) => s.items.filter((n) => !n.read).length);
   const now = useClock();
   const label = appId ? getApp(appId)?.name : "Desktop";
   return (
@@ -33,9 +36,19 @@ export function MenuBar() {
           <path d="M16 16l4.5 4.5" strokeLinecap="round" />
         </svg>
       </button>
-      <span className="tabular-nums opacity-80" suppressHydrationWarning>
-        {now?.toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}
+      <span className="opacity-80">
+        <WeatherText compact />
       </span>
+      <StatusIcons />
+      <button
+        onClick={() => toggle("center")}
+        aria-label={`Notification center${unread ? `, ${unread} unread` : ""}`}
+        className="relative tabular-nums opacity-90 hover:opacity-100"
+        suppressHydrationWarning
+      >
+        {now?.toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}
+        {unread > 0 && <span aria-hidden className="absolute -right-2 top-0 h-1.5 w-1.5 rounded-full bg-accent" />}
+      </button>
     </header>
   );
 }

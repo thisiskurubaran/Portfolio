@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type DeskOverlay = "spotlight" | "overview" | null;
+export type DeskOverlay = "spotlight" | "overview" | "center" | null;
 
 interface DeskStore {
   overlay: DeskOverlay;

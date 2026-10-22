@@ -1,10 +1,51 @@
 "use client";
 
-import { useNotifications } from "@/os/state/notifications";
+import { useEffect } from "react";
+import { useNotifications, type Notification } from "@/os/state/notifications";
+import { launch } from "@/os/system/launcher";
 
-export function NotificationList() {
+export function runAction(n: Notification) {
+  if (!n.action) return;
+  if (n.action.app) launch(n.action.app);
+  else if (n.action.href) window.open(n.action.href, "_blank", "noopener,noreferrer");
+}
+
+export function NotificationCard({ n, onAction }: { n: Notification; onAction?: () => void }) {
+  const remove = useNotifications((s) => s.remove);
+  return (
+    <div className={`rounded-2xl p-3 ${n.kind === "security" ? "border border-red-400/40 bg-red-500/15" : "bg-glass"}`}>
+      <div className="flex items-start gap-2">
+        <p className="flex-1 text-sm font-medium">{n.title}</p>
+        <button onClick={() => remove(n.id)} aria-label={`Dismiss ${n.title}`} className="-mr-1 -mt-1 rounded px-1.5 opacity-60 hover:opacity-100">
+          ×
+        </button>
+      </div>
+      {n.body && <p className="mt-0.5 text-sm opacity-80">{n.body}</p>}
+      {n.action && (
+        <button
+          onClick={() => {
+            runAction(n);
+            onAction?.();
+          }}
+          className="mt-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-on-accent"
+        >
+          {n.action.label}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function NotificationList({ onAction }: { onAction?: () => void }) {
   const items = useNotifications((s) => s.items);
   const clear = useNotifications((s) => s.clear);
+  const markAllRead = useNotifications((s) => s.markAllRead);
+
+  // Opening the list counts as reading everything in it.
+  useEffect(() => {
+    markAllRead();
+  }, [items.length, markAllRead]);
+
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
@@ -20,9 +61,8 @@ export function NotificationList() {
       ) : (
         <ul className="space-y-2">
           {items.map((n) => (
-            <li key={n.id} className="rounded-2xl bg-glass p-3">
-              <p className="text-sm font-medium">{n.title}</p>
-              {n.body && <p className="mt-0.5 text-sm opacity-80">{n.body}</p>}
+            <li key={n.id}>
+              <NotificationCard n={n} onAction={onAction} />
             </li>
           ))}
         </ul>

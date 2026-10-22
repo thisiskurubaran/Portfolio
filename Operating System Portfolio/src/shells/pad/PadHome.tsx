@@ -5,6 +5,7 @@ import { Icon } from "@/design/icons";
 import { launchable, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
+import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
 import { usePad } from "./state";
 
 const DOCK: AppId[] = ["about", "experience", "projects", "contact", "terminal", "settings"];
@@ -31,20 +32,22 @@ export function PadHome() {
   const dockApps = DOCK.map((id) => launchable.find((a) => a.id === id)!).filter(Boolean);
   return (
     <div className="flex h-full flex-col px-10 pb-5 pt-4">
-      <section aria-label="Widgets" className="grid grid-cols-3 gap-4">
+      <section aria-label="Widgets" className="grid grid-cols-4 gap-4">
         <div className="rounded-3xl bg-glass p-5 backdrop-blur-xl">
           <p className="text-4xl font-light tabular-nums" suppressHydrationWarning>{now ? formatTime(now) : ""}</p>
           <p className="mt-1 text-sm opacity-70" suppressHydrationWarning>{now ? formatDate(now) : ""}</p>
         </div>
+        <WeatherWidget className="!p-5" />
         <div className="rounded-3xl bg-glass p-5 backdrop-blur-xl">
           <p className="text-xs uppercase tracking-wide text-accent-fg">Now</p>
           <p className="mt-1 text-sm font-medium">{current.title.split(" (")[0]}</p>
           <p className="text-xs opacity-70">{current.company}</p>
         </div>
-        <div className="rounded-3xl bg-glass p-5 backdrop-blur-xl">
+        <WorldClockWidget className="!p-5" zones={3} />
+        <div className="col-span-4 flex items-center gap-4 rounded-3xl bg-glass px-5 py-3 backdrop-blur-xl">
           <p className="text-sm font-medium">{profile.name}</p>
-          <p className="mt-1 text-xs opacity-70">{profile.location}</p>
-          <div className="mt-3 flex gap-2 text-xs">
+          <p className="text-xs opacity-70">{profile.location}</p>
+          <div className="ml-auto flex gap-2 text-xs">
             <button onClick={() => pick("split")} className="rounded-full bg-glass-strong px-3 py-1">
               Split view
             </button>

@@ -5,6 +5,7 @@ import { Icon } from "@/design/icons";
 import { launchable, type AppId } from "@/os/apps/registry";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
+import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
 import { usePhone } from "./state";
 
 const DOCK: AppId[] = ["about", "experience", "projects", "contact"];
@@ -64,6 +65,8 @@ export function HomeScreen() {
       <section aria-label="Widgets" className="grid grid-cols-2 gap-3 pt-2">
         <ClockWidget />
         <NowWidget />
+        <WeatherWidget />
+        <WorldClockWidget zones={3} className="!p-3 text-xs" />
       </section>
       <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-5 grid grid-cols-4 content-start gap-x-2 gap-y-5">
         {gridApps.map((app) => (

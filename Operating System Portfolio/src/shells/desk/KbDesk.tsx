@@ -9,6 +9,7 @@ import { DeskWindow } from "./DeskWindow";
 import { Dock } from "./Dock";
 import { MenuBar } from "./MenuBar";
 import { MissionControl } from "./MissionControl";
+import { NotificationCenter } from "./NotificationCenter";
 import { useDesk } from "./state";
 
 const MENU_BAR = 28;
@@ -65,6 +66,7 @@ export default function KbDesk() {
       <Dock />
       {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "overview" && <MissionControl />}
+      {overlay === "center" && <NotificationCenter />}
     </div>
   );
 }

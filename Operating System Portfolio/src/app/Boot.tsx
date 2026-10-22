@@ -6,7 +6,9 @@ import type { Shell } from "@/os/device/resolve";
 import { builtShells } from "@/os/device/shells";
 import { useDevice } from "@/os/device/useDevice";
 import { useSystemAttributes } from "@/os/system/useSystemAttributes";
+import { useWelcome } from "@/os/system/welcome";
 import { PlainOffer } from "@/shells/shared/PlainOffer";
+import { Toasts } from "@/shells/shared/Toasts";
 
 // Code-split per shell so a device never downloads another shell's code.
 const shellComponents: Partial<Record<Shell, ComponentType>> = {
@@ -18,11 +20,13 @@ const shellComponents: Partial<Record<Shell, ComponentType>> = {
 export function Boot() {
   const { shell } = useDevice();
   useSystemAttributes();
+  useWelcome(shell);
   if (!shell) return null;
   const Shell = shellComponents[builtShells.includes(shell) ? shell : "desk"]!;
   return (
     <>
       <Shell />
+      <Toasts />
       <PlainOffer />
     </>
   );
