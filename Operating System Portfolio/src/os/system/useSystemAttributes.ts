@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { wallpaperBackground } from "@/design/wallpapers";
 import { usePreferences } from "@/os/state/preferences";
 import { useDaypart } from "./daypart";
+import { usePower } from "./power";
 
 function mediaStore(query: string) {
   return {
@@ -52,10 +53,12 @@ export function useSystemAttributes() {
   const reduced = useReducedMotion();
   const theme = useResolvedTheme();
   const accent = usePreferences((s) => s.accent);
+  const lowPower = usePower((s) => s.lowPower);
   useEffect(() => {
     const root = document.documentElement;
+    root.toggleAttribute("data-low-power", lowPower);
     root.toggleAttribute("data-reduced-motion", reduced);
     root.dataset.theme = theme;
     root.style.setProperty("--color-accent", accent);
-  }, [reduced, theme, accent]);
+  }, [reduced, theme, accent, lowPower]);
 }

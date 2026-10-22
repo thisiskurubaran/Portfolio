@@ -106,3 +106,30 @@ body {
   transform-style: preserve-3d;
   transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1);
 }
+
+/* F35: blur is the most expensive effect, so low-power mode drops it along
+   with animation. */
+[data-low-power] *,
+[data-low-power] *::before,
+[data-low-power] *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* F34: the screensaver clock drifts slowly so nothing burns in. */
+.kb-drift {
+  animation: kb-drift 40s ease-in-out infinite alternate;
+}
+@keyframes kb-drift {
+  0% {
+    transform: translate(-70%, -60%);
+  }
+  50% {
+    transform: translate(-30%, -40%);
+  }
+  100% {
+    transform: translate(-55%, -30%);
+  }
+}

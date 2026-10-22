@@ -5,6 +5,7 @@ import { privacy } from "@/content/privacy";
 import { accents, wallpaperBackground, wallpapers } from "@/design/wallpapers";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { useDaypart } from "@/os/system/daypart";
+import { usePower } from "@/os/system/power";
 import { useResolvedTheme } from "@/os/system/useSystemAttributes";
 import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
 import { ThreatPanel } from "./ThreatPanel";
@@ -41,6 +42,7 @@ export default function Settings() {
   const prefs = usePreferences();
   const theme = useResolvedTheme();
   const daypart = useDaypart();
+  const power = usePower();
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-6">
       <Section title="Appearance">
@@ -93,6 +95,8 @@ export default function Settings() {
       <Section title="Accessibility and sound">
         <Switch label="Reduce motion" on={prefs.reducedMotion} onChange={prefs.setReducedMotion} />
         <Switch label="Sound" on={prefs.sound} onChange={prefs.setSound} />
+        <Switch label="Low-power mode" on={power.lowPower} onChange={(v) => power.setLowPower(v, v ? "Turned on in Settings." : null)} />
+        {power.reason && <p className="text-xs opacity-70">{power.reason}</p>}
       </Section>
 
       <Section title="Device">
