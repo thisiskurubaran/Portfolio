@@ -1,0 +1,70 @@
+/* Plain document styling for /plain and /privacy. No OS chrome, readable in
+   both colour schemes, nothing that needs JavaScript. */
+.doc {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  line-height: 1.6;
+  color: #1a1d22;
+  background: #fbfaf7;
+  min-height: 100vh;
+}
+
+.doc a {
+  color: #0b6b57;
+}
+
+.doc h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0 0 0.25rem;
+}
+
+.doc h2 {
+  font-size: 1.35rem;
+  margin: 2.5rem 0 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd8cf;
+}
+
+.doc h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.25rem;
+}
+
+.meta {
+  color: #535a63;
+  font-size: 0.92rem;
+  margin: 0.15rem 0;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags {
+  color: #535a63;
+  font-size: 0.92rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .doc {
+    color: #ecebe6;
+    background: #0e1116;
+  }
+  .doc a {
+    color: #6fd6bd;
+  }
+  .doc h2 {
+    border-top-color: #2a2f37;
+  }
+  .meta,
+  .tags {
+    color: #a7adb5;
+  }
+}
