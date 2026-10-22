@@ -5,6 +5,7 @@ import { useWindows } from "@/os/state/windows";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
 import { Launchpad } from "@/shells/shared/Launchpad";
+import { Menu } from "@/shells/shared/Menu";
 import { Spotlight } from "@/shells/shared/Spotlight";
 import { DeskWindow } from "./DeskWindow";
 import { Dock } from "./Dock";
@@ -15,19 +16,25 @@ import { NotificationCenter } from "./NotificationCenter";
 import { QuickPanel } from "./QuickPanel";
 import { SystemMenu } from "./SystemMenu";
 import { Cursors } from "./Cursors";
+import { DesktopIcons } from "./DesktopIcons";
+import { desktopMenu } from "./menus";
+import { MENU_BAR } from "./snap";
 import { useDesk } from "./state";
 import { StickyComposer, StickyLayer } from "./Stickies";
 
-const MENU_BAR = 30;
-
 // Restored windows may come from a bigger screen; pull them back into view.
+// A hidden tab can report a zero-size viewport, so very small sizes are
+// ignored, and windows never shrink below the usable minimum.
 function clampRestoredWindows() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (vw < 400 || vh < 300) return;
   const { windows, setRect } = useWindows.getState();
   for (const w of windows) {
-    const width = Math.min(w.width, window.innerWidth);
-    const height = Math.min(w.height, window.innerHeight - MENU_BAR - 40);
-    const x = Math.min(Math.max(0, w.x), window.innerWidth - Math.min(width, 120));
-    const y = Math.min(Math.max(MENU_BAR, w.y), window.innerHeight - 80);
+    const width = Math.max(320, Math.min(w.width, vw));
+    const height = Math.max(220, Math.min(w.height, vh - MENU_BAR - 40));
+    const x = Math.min(Math.max(0, w.x), vw - Math.min(width, 120));
+    const y = Math.min(Math.max(MENU_BAR, w.y), vh - 80);
     if (width !== w.width || height !== w.height || x !== w.x || y !== w.y) setRect(w.id, { x, y, width, height });
   }
 }
@@ -37,6 +44,7 @@ export default function FolioDesk() {
   const focusedId = useWindows((s) => s.focusedId);
   const overlay = useDesk((s) => s.overlay);
   const loggedIn = useDesk((s) => s.loggedIn);
+  const menu = useDesk((s) => s.menu);
   const wallpaper = useWallpaper();
 
   useEffect(() => {
@@ -70,8 +78,18 @@ export default function FolioDesk() {
   }, []);
 
   return (
-    <div className="relative h-full w-full overflow-hidden" style={{ background: wallpaper }}>
+    <div
+      className="relative h-full w-full overflow-hidden"
+      style={{ background: wallpaper }}
+      onContextMenu={(e) => {
+        // Only the bare desktop gets the desktop menu; windows and the dock have their own.
+        if (e.target !== e.currentTarget) return;
+        e.preventDefault();
+        useDesk.getState().openMenu({ x: e.clientX, y: e.clientY, label: "Desktop", items: desktopMenu() });
+      }}
+    >
       <StickyLayer />
+      <DesktopIcons />
       <MenuBar />
       {windows.map((win) => (
         <DeskWindow key={win.id} win={win} focused={win.id === focusedId} />
@@ -85,6 +103,7 @@ export default function FolioDesk() {
       {overlay === "sticky" && <StickyComposer />}
       <Cursors />
       {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
+      {menu && <Menu {...menu} onClose={() => useDesk.getState().closeMenu()} />}
       {!loggedIn && <LoginScreen onLogin={() => useDesk.getState().setLoggedIn(true)} />}
     </div>
   );

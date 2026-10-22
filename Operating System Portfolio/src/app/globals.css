@@ -105,7 +105,9 @@ h3 {
   top: 12px;
 }
 
-:focus-visible {
+/* Containers that only take focus from code (windows, menus, dialogs) use
+   tabindex -1 and get no ring; everything a person can tab to does. */
+:focus-visible:not([tabindex="-1"]) {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }

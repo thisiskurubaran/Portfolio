@@ -9,6 +9,7 @@ import { useNotifications } from "@/os/state/notifications";
 import { useWindows } from "@/os/state/windows";
 import { StatusIcons, WeatherText } from "@/shells/shared/widgets";
 import { OnlineCount } from "./Cursors";
+import { menuBarMenus } from "./menus";
 import { useDesk, type DeskOverlay } from "./state";
 
 function BarButton({ label, onClick, active, children }: { label: string; onClick: () => void; active?: boolean; children: ReactNode }) {
@@ -39,6 +40,20 @@ export function MenuBar() {
         <LogoMark variant="mono" size={16} />
       </BarButton>
       <span className="px-1.5 font-semibold">{label}</span>
+      <nav aria-label="Menus" className="flex items-center">
+        {menuBarMenus().map((m) => (
+          <button
+            key={m.label}
+            onClick={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              useDesk.getState().openMenu({ x: r.left, y: r.bottom + 4, label: m.label, items: m.items() });
+            }}
+            className="h-6 rounded-md px-2 text-muted hover:bg-glass-strong hover:text-paper"
+          >
+            {m.label}
+          </button>
+        ))}
+      </nav>
 
       <div className="ml-auto flex items-center gap-0.5">
         <OnlineCount />

@@ -1,5 +1,14 @@
 import { create } from "zustand";
 import { firstVisit } from "@/os/system/session";
+import type { MenuItem } from "@/shells/shared/Menu";
+
+export interface OpenMenu {
+  x: number;
+  y: number;
+  label: string;
+  items: MenuItem[];
+  above?: boolean;
+}
 
 export type DeskOverlay = "spotlight" | "overview" | "center" | "menu" | "sticky" | "control" | "launcher" | null;
 
@@ -12,6 +21,9 @@ interface DeskStore {
   overlay: DeskOverlay;
   setOverlay: (overlay: DeskOverlay) => void;
   toggle: (overlay: Exclude<DeskOverlay, null>) => void;
+  menu: OpenMenu | null;
+  openMenu: (menu: OpenMenu) => void;
+  closeMenu: () => void;
 }
 
 export const useDesk = create<DeskStore>((set) => ({
@@ -22,4 +34,7 @@ export const useDesk = create<DeskStore>((set) => ({
   overlay: null,
   setOverlay: (overlay) => set({ overlay }),
   toggle: (overlay) => set((s) => ({ overlay: s.overlay === overlay ? null : overlay })),
+  menu: null,
+  openMenu: (menu) => set({ menu }),
+  closeMenu: () => set({ menu: null }),
 }));

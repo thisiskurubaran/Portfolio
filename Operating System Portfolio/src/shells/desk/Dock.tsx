@@ -4,6 +4,7 @@ import { AppIcon } from "@/design/AppIcon";
 import { launchable } from "@/os/apps/registry";
 import { useWindows } from "@/os/state/windows";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
+import { dockMenu } from "./menus";
 import { useDesk } from "./state";
 
 export function Dock() {
@@ -35,6 +36,11 @@ export function Dock() {
           <button
             key={app.id}
             onClick={() => open(app.id)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              const r = e.currentTarget.getBoundingClientRect();
+              useDesk.getState().openMenu({ x: r.left, y: r.top - 10, above: true, label: app.name, items: dockMenu(app.id, app.name) });
+            }}
             aria-label={app.name}
             className="group relative flex flex-col items-center rounded-2xl outline-offset-4 transition-transform duration-200 ease-[var(--ease-out-soft)] hover:-translate-y-2 hover:scale-110 focus-visible:-translate-y-2"
           >

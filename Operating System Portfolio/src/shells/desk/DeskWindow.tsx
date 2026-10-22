@@ -6,10 +6,11 @@ import { Icon, type IconName } from "@/design/icons";
 import { appComponents, getApp } from "@/os/apps/registry";
 import { useWindows, type WindowState } from "@/os/state/windows";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
+import { DOCK_SPACE as DOCK, MENU_BAR, snapRect, type SnapKind } from "./snap";
+import { useDesk } from "./state";
 
-const MENU_BAR = 30;
-const DOCK = 92;
 const SNAP_EDGE = 8;
+const CORNER = 60;
 
 function useRaf() {
   const frame = useRef(0);
@@ -73,13 +74,16 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
     const up = (ev: PointerEvent) => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
-      const areaH = window.innerHeight - MENU_BAR - DOCK;
-      if (ev.clientY <= SNAP_EDGE) {
+      // Edges snap to halves, corners to quarters, the top edge maximises.
+      const nearTop = ev.clientY <= MENU_BAR + CORNER;
+      const nearBottom = ev.clientY >= window.innerHeight - DOCK - CORNER;
+      let snap: SnapKind | null = null;
+      if (lastX <= SNAP_EDGE) snap = nearTop ? "top-left" : nearBottom ? "bottom-left" : "left";
+      else if (lastX >= window.innerWidth - SNAP_EDGE) snap = nearTop ? "top-right" : nearBottom ? "bottom-right" : "right";
+      if (snap) {
+        setRect(win.id, snapRect(snap));
+      } else if (ev.clientY <= SNAP_EDGE) {
         toggleMaximize(win.id);
-      } else if (lastX <= SNAP_EDGE) {
-        setRect(win.id, { x: 0, y: MENU_BAR, width: window.innerWidth / 2, height: areaH });
-      } else if (lastX >= window.innerWidth - SNAP_EDGE) {
-        setRect(win.id, { x: window.innerWidth / 2, y: MENU_BAR, width: window.innerWidth / 2, height: areaH });
       } else {
         setRect(win.id, { x, y, width: win.width, height: win.height });
       }
@@ -138,6 +142,25 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
       <div
         onPointerDown={startDrag}
         onDoubleClick={() => toggleMaximize(win.id)}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          focus(win.id);
+          useDesk.getState().openMenu({
+            x: e.clientX,
+            y: e.clientY,
+            label: `${app.name} window`,
+            items: [
+              { label: "Minimise", icon: "minimize", onSelect: () => minimize(win.id) },
+              { label: win.maximized ? "Restore" : "Maximise", icon: win.maximized ? "restore" : "maximize", onSelect: () => toggleMaximize(win.id) },
+              { separator: true },
+              { label: "Snap left", onSelect: () => setRect(win.id, snapRect("left")) },
+              { label: "Snap right", onSelect: () => setRect(win.id, snapRect("right")) },
+              { label: "Centre third", onSelect: () => setRect(win.id, snapRect("center-third")) },
+              { separator: true },
+              { label: "Close", icon: "close", danger: true, onSelect: () => close(win.id) },
+            ],
+          });
+        }}
         className={`flex h-10 shrink-0 cursor-default select-none items-center gap-2.5 border-b border-line pl-3 pr-1.5 ${focused ? "bg-raised" : "bg-surface"}`}
       >
         <AppIcon id={app.id} icon={app.icon} size={20} />

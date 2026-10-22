@@ -6,6 +6,8 @@ import { accents, wallpaperBackground, wallpapers } from "@/design/wallpapers";
 import { usePreferences, type ThemeMode } from "@/os/state/preferences";
 import { useDaypart } from "@/os/system/daypart";
 import { usePower } from "@/os/system/power";
+import { anchorId } from "@/os/system/launcher";
+import { slug } from "@/os/system/search";
 import { useResolvedTheme } from "@/os/system/useSystemAttributes";
 import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
 import { ThreatPanel } from "./ThreatPanel";
@@ -19,7 +21,7 @@ const THEMES: { id: ThemeMode; label: string; hint: string }[] = [
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section aria-label={title} className="space-y-3">
+    <section aria-label={title} id={anchorId(`settings-${slug(title)}`)} className="scroll-mt-4 space-y-3 rounded-card">
       <h2 className="text-xs font-medium uppercase tracking-wide opacity-60">{title}</h2>
       {children}
     </section>
