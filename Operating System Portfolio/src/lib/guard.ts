@@ -10,7 +10,7 @@ const country = (request: Request) => request.headers.get("x-vercel-ip-country")
 export const json = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function readJson(request: Request): Promise<unknown> {
-  // Small bodies only: nothing kbOS accepts is longer than a few KB.
+  // Small bodies only: nothing folioOS accepts is longer than a few KB.
   const text = await request.text();
   if (text.length > 8_000) return null;
   try {
@@ -53,7 +53,7 @@ export async function refuseText(text: string, request: Request): Promise<NextRe
     const visitor = await hashIp(clientIp(request.headers));
     await logThreat({ type: "injection", country: country(request), path: new URL(request.url).pathname, visitor });
     await recordOffence(visitor);
-    return json({ error: "kbOS Firewall blocked this message.", blocked: "injection" }, 400);
+    return json({ error: "folioOS Firewall blocked this message.", blocked: "injection" }, 400);
   }
   if (verdict.reason === "profanity") return json({ error: "Please keep it friendly." }, 400);
   return json({ error: "Write something first." }, 400);

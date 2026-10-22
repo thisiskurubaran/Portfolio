@@ -1,4 +1,4 @@
-const BOOTED_KEY = "kbos.booted";
+const BOOTED_KEY = "folioos.booted";
 
 function readBooted() {
   if (typeof window === "undefined") return true;

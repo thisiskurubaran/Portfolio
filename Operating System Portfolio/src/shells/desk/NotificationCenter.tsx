@@ -7,7 +7,7 @@ import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
 import { useDesk } from "./state";
 
-// F10 on kbDesk: a panel under the menu bar clock with widgets and notifications.
+// F10 on folioDesk: a panel under the menu bar clock with widgets and notifications.
 export function NotificationCenter() {
   const setOverlay = useDesk((s) => s.setOverlay);
   const now = useClock();

@@ -6,7 +6,7 @@ import styles from "../doc.module.css";
 
 export const metadata: Metadata = {
   title: `${profile.name}: plain view`,
-  description: "Everything from kbOS as one simple page: about, experience, projects, skills, certifications, notes and contact.",
+  description: "Everything from folioOS as one simple page: about, experience, projects, skills, certifications, notes and contact.",
 };
 
 const SECTIONS = [
@@ -37,7 +37,7 @@ export default function Plain() {
               </li>
             ))}
             <li>
-              <Link href="/">Open kbOS</Link>
+              <Link href="/">Open folioOS</Link>
             </li>
             <li>
               <Link href="/privacy">Privacy</Link>

@@ -9,11 +9,11 @@ interface Line {
   input?: boolean;
 }
 
-const PROMPT = "guest@kbos ~ %";
+const PROMPT = "guest@folioos ~ %";
 
 // F21: a working shell. Commands route to real apps and real content.
 export default function Terminal() {
-  const [lines, setLines] = useState<Line[]>([{ id: 0, text: 'kbOS terminal. Type "help" to see what it can do.' }]);
+  const [lines, setLines] = useState<Line[]>([{ id: 0, text: 'folioOS terminal. Type "help" to see what it can do.' }]);
   const [value, setValue] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [cursor, setCursor] = useState<number | null>(null);
@@ -80,11 +80,11 @@ export default function Terminal() {
         ))}
       </div>
       <div className="flex gap-2" ref={end}>
-        <label htmlFor="kb-terminal-input" className="shrink-0 text-[#4cc2a8]">
+        <label htmlFor="folio-terminal-input" className="shrink-0 text-[#4cc2a8]">
           {PROMPT}
         </label>
         <input
-          id="kb-terminal-input"
+          id="folio-terminal-input"
           ref={input}
           autoComplete="off"
           autoCapitalize="off"

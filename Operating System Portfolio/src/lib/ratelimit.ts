@@ -19,7 +19,7 @@ export async function rateLimit(name: string, id: string, max: number, windowSec
       limiter = new Ratelimit({
         redis: new Redis({ url: env.redisUrl!, token: env.redisToken! }),
         limiter: Ratelimit.slidingWindow(max, `${windowSeconds} s`),
-        prefix: `kbos:rl:${name}`,
+        prefix: `folioos:rl:${name}`,
       });
       limiters.set(key, limiter);
     }
@@ -28,6 +28,6 @@ export async function rateLimit(name: string, id: string, max: number, windowSec
   }
   const store = getStore();
   if (!store) return { ok: true, retryAfter: 0 };
-  const count = await store.incr(`kbos:rl:${name}:${id}`, windowSeconds);
+  const count = await store.incr(`folioos:rl:${name}:${id}`, windowSeconds);
   return { ok: count <= max, retryAfter: count <= max ? 0 : windowSeconds };
 }

@@ -4,7 +4,7 @@ import { useNotifications } from "@/os/state/notifications";
 
 export type PostResult<T> = { ok: true; data: T } | { ok: false; error: string; status: number };
 
-// Posts JSON to a kbOS route and turns every failure into a message a person
+// Posts JSON to a folioOS route and turns every failure into a message a person
 // can read. A blocked payload also raises the firewall alert (F37).
 export async function postJson<T>(url: string, body: unknown): Promise<PostResult<T>> {
   try {
@@ -12,7 +12,7 @@ export async function postJson<T>(url: string, body: unknown): Promise<PostResul
     const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
     if (res.ok) return { ok: true, data: data as T };
     if (data.blocked) {
-      useNotifications.getState().push("kbOS Firewall blocked a connection", {
+      useNotifications.getState().push("folioOS Firewall blocked a connection", {
         body: "That input looked like an attack on the server, so it was refused. If this was a mistake, rephrase and try again.",
         kind: "security",
       });

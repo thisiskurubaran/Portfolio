@@ -12,7 +12,7 @@ export function useConsoleGreeting() {
     if (greeted) return;
     greeted = true;
     console.log(
-      "%ckbOS ground station%c\nHello, fellow developer. kbOS is an open portfolio: Next.js, React, Zustand and a little Three.js.\nSource: %s\nTry the terminal app, or type help in it.",
+      "%cfolioOS ground station%c\nHello, fellow developer. folioOS is an open portfolio: Next.js, React, Zustand and a little Three.js.\nSource: %s\nTry the terminal app, or type help in it.",
       "font: 600 14px system-ui; color: #4cc2a8",
       "font: 12px system-ui",
       REPO,

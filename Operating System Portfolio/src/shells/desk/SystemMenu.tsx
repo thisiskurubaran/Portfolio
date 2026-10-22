@@ -6,7 +6,7 @@ import { ContinuityStrip } from "@/shells/shared/ContinuityStrip";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useDesk } from "./state";
 
-// The kbOS logo menu: device switcher, settings, plain view and logging out.
+// The folioOS logo menu: device switcher, settings, plain view and logging out.
 export function SystemMenu({ onLogout }: { onLogout: () => void }) {
   const setOverlay = useDesk((s) => s.setOverlay);
   const ref = useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ export function SystemMenu({ onLogout }: { onLogout: () => void }) {
       <div
         ref={ref}
         role="dialog"
-        aria-label="kbOS menu"
+        aria-label="folioOS menu"
         onKeyDown={(e) => (e.key === "Escape" ? setOverlay(null) : trap(e))}
         className="fixed left-2 top-8 z-[14001] w-80 rounded-window border border-line bg-ink/90 p-3 shadow-2xl backdrop-blur-2xl"
       >

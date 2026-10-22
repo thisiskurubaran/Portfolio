@@ -73,10 +73,10 @@ body {
 }
 
 /* Briefly marks the item spotlight or the terminal jumped to. */
-.kb-flash {
-  animation: kb-flash 1.6s ease-out;
+.folio-flash {
+  animation: folio-flash 1.6s ease-out;
 }
-@keyframes kb-flash {
+@keyframes folio-flash {
   0%,
   40% {
     box-shadow: 0 0 0 2px var(--color-accent);
@@ -86,23 +86,23 @@ body {
   }
 }
 
-.kb-boot-bar {
-  animation-name: kb-boot;
+.folio-boot-bar {
+  animation-name: folio-boot;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: forwards;
   width: 0;
 }
-@keyframes kb-boot {
+@keyframes folio-boot {
   to {
     width: 100%;
   }
 }
 
-/* kbVision: panels glide between places on the arc. */
-.kb-vision-stage {
+/* folioVision: panels glide between places on the arc. */
+.folio-vision-stage {
   transition: transform 0.4s ease-out;
 }
-.kb-vision-panel {
+.folio-vision-panel {
   transform-style: preserve-3d;
   transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1);
 }
@@ -119,10 +119,10 @@ body {
 }
 
 /* F34: the screensaver clock drifts slowly so nothing burns in. */
-.kb-drift {
-  animation: kb-drift 40s ease-in-out infinite alternate;
+.folio-drift {
+  animation: folio-drift 40s ease-in-out infinite alternate;
 }
-@keyframes kb-drift {
+@keyframes folio-drift {
   0% {
     transform: translate(-70%, -60%);
   }
@@ -135,28 +135,28 @@ body {
 }
 
 /* Opening animations. Reduced motion and low-power mode cut them to nothing. */
-.kb-window > * {
-  animation: kb-pop 0.18s ease-out;
+.folio-window > * {
+  animation: folio-pop 0.18s ease-out;
 }
-@keyframes kb-pop {
+@keyframes folio-pop {
   from {
     opacity: 0;
     transform: scale(0.97);
   }
 }
-.kb-app-in {
-  animation: kb-rise 0.22s cubic-bezier(0.3, 0.7, 0.2, 1);
+.folio-app-in {
+  animation: folio-rise 0.22s cubic-bezier(0.3, 0.7, 0.2, 1);
 }
-@keyframes kb-rise {
+@keyframes folio-rise {
   from {
     opacity: 0.4;
     transform: translateY(24px) scale(0.98);
   }
 }
-.kb-pulse {
-  animation: kb-pulse 1.2s ease-in-out infinite;
+.folio-pulse {
+  animation: folio-pulse 1.2s ease-in-out infinite;
 }
-@keyframes kb-pulse {
+@keyframes folio-pulse {
   50% {
     opacity: 0.25;
   }

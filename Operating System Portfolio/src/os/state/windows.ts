@@ -104,7 +104,7 @@ export const useWindows = create<WindowsStore>()(
         })),
     }),
     {
-      name: "kbos.windows",
+      name: "folioos.windows",
       version: 1,
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({ windows: s.windows, focusedId: s.focusedId, nextZ: s.nextZ }),

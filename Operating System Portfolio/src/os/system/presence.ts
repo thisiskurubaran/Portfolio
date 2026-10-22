@@ -52,7 +52,7 @@ function handle(raw: string) {
 export function usePresenceConnection(active: boolean) {
   useEffect(() => {
     if (!HOST || !active) return;
-    socket = new PartySocket({ host: HOST, room: "kbos" });
+    socket = new PartySocket({ host: HOST, room: "folioos" });
     socket.addEventListener("open", () => usePresence.setState({ connected: true }));
     socket.addEventListener("close", () => usePresence.setState({ connected: false }));
     socket.addEventListener("message", (e) => typeof e.data === "string" && handle(e.data));

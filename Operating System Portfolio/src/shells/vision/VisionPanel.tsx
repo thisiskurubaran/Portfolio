@@ -26,7 +26,7 @@ export function VisionPanel({ id, index, center }: { id: AppId; index: number; c
 
   return (
     <div
-      className="kb-vision-panel absolute left-1/2 top-1/2"
+      className="folio-vision-panel absolute left-1/2 top-1/2"
       style={{ transform: `translate(-50%, -50%) translate3d(${x}px, 0, ${z}px) rotateY(${-angle}rad)`, zIndex: focused ? 10 : 5 - Math.abs(index - center) }}
     >
       <section

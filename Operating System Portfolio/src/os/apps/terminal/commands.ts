@@ -115,7 +115,7 @@ export const commands: Record<string, Command> = {
   rm: {
     summary: "",
     hidden: true,
-    run: () => ["Nice try. kbOS is read-only for guests."],
+    run: () => ["Nice try. folioOS is read-only for guests."],
   },
   exit: {
     summary: "",
@@ -131,10 +131,10 @@ export const commands: Record<string, Command> = {
     summary: "",
     hidden: true,
     run: () => [
-      "   _    _     guest@kbos",
+      "   _    _     guest@folioos",
       "  | |__| |__  ----------",
-      "  | / /| '_ \\ OS: kbOS (browser)",
-      "  |   < | |_) Shells: kbPhone, kbPad, kbDesk, kbVision",
+      "  | / /| '_ \\ OS: folioOS (browser)",
+      "  |   < | |_) Shells: folioPhone, folioPad, folioDesk, folioVision",
       "  |_|\\_\\_.__/ Kernel: Next.js + React + Zustand",
       `               Owner: ${profile.name}`,
       `               Uptime: ${Math.round(performance.now() / 60000)} min`,

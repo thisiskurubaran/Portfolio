@@ -28,7 +28,7 @@ export default function Privacy() {
       <p>{privacy.contact}</p>
       <ul className={styles.nav}>
         <li>
-          <Link href="/">Back to kbOS</Link>
+          <Link href="/">Back to folioOS</Link>
         </li>
         <li>
           <Link href="/plain">Plain view</Link>

@@ -3,7 +3,7 @@ import { env } from "./env";
 // The only form an IP address is ever kept in: a salted SHA-256, cut short.
 // Without the salt it cannot be matched back to an address by guessing.
 export async function hashIp(ip: string): Promise<string> {
-  const salt = env.ipSalt ?? (env.dev ? "kbos-dev-salt" : "");
+  const salt = env.ipSalt ?? (env.dev ? "folioos-dev-salt" : "");
   const bytes = new TextEncoder().encode(`${salt}:${ip}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(digest).slice(0, 16), (b) => b.toString(16).padStart(2, "0")).join("");

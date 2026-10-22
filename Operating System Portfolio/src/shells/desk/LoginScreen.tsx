@@ -3,7 +3,7 @@
 import { profile } from "@/content";
 import { formatDate, formatTime, useClock } from "@/os/system/clock";
 
-// F03: the guest login on kbDesk. One button, no password: it only frames the OS.
+// F03: the guest login on folioDesk. One button, no password: it only frames the OS.
 export function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const now = useClock();
   return (
@@ -19,7 +19,7 @@ export function LoginScreen({ onLogin }: { onLogin: () => void }) {
       <button autoFocus onClick={onLogin} className="rounded-full bg-accent px-6 py-2 text-sm font-medium text-on-accent">
         Log in as guest
       </button>
-      <p className="mt-8 text-xs opacity-60">{profile.name}&apos;s kbOS</p>
+      <p className="mt-8 text-xs opacity-60">{profile.name}&apos;s folioOS</p>
     </section>
   );
 }

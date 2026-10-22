@@ -2,8 +2,8 @@ import type { z } from "zod";
 import { getStore } from "./store";
 
 export const collections = {
-  guestbook: { key: "kbos:guestbook", max: 200 },
-  stickies: { key: "kbos:stickies", max: 40 },
+  guestbook: { key: "folioos:guestbook", max: 200 },
+  stickies: { key: "folioos:stickies", max: 40 },
 } as const;
 export type CollectionName = keyof typeof collections;
 

@@ -12,7 +12,7 @@ export interface ThreatEvent {
 }
 
 const DAYS = 7;
-const dayKey = (t: number) => `kbos:threats:${new Date(t).toISOString().slice(0, 10)}`;
+const dayKey = (t: number) => `folioos:threats:${new Date(t).toISOString().slice(0, 10)}`;
 
 // F37: one line per blocked attempt, kept for 7 days, with a salted IP hash
 // instead of the address. Logging never blocks or breaks the request.
@@ -35,14 +35,14 @@ const OFFENDER_LIMIT = 10;
 export async function recordOffence(visitor: string): Promise<void> {
   const store = getStore();
   if (!store) return;
-  const count = await store.incr(`kbos:offences:${visitor}`, 3600);
-  if (count > OFFENDER_LIMIT) await store.set(`kbos:blocked:${visitor}`, "1", 3600);
+  const count = await store.incr(`folioos:offences:${visitor}`, 3600);
+  if (count > OFFENDER_LIMIT) await store.set(`folioos:blocked:${visitor}`, "1", 3600);
 }
 
 export async function isBlocked(visitor: string): Promise<boolean> {
   const store = getStore();
   if (!store) return false;
-  return (await store.get(`kbos:blocked:${visitor}`)) === "1";
+  return (await store.get(`folioos:blocked:${visitor}`)) === "1";
 }
 
 export interface ThreatSummary {

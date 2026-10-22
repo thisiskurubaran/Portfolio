@@ -89,9 +89,9 @@ function memoryStore(): Store {
 
 // Kept on globalThis so the proxy and the route handlers share one memory
 // fallback in development, and it survives hot reloads.
-const holder = globalThis as typeof globalThis & { __kbosStore?: Store | null };
+const holder = globalThis as typeof globalThis & { __folioosStore?: Store | null };
 
 export function getStore(): Store | null {
-  if (holder.__kbosStore === undefined) holder.__kbosStore = hasRedis() ? redisStore() : env.dev ? memoryStore() : null;
-  return holder.__kbosStore;
+  if (holder.__folioosStore === undefined) holder.__folioosStore = hasRedis() ? redisStore() : env.dev ? memoryStore() : null;
+  return holder.__folioosStore;
 }

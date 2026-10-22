@@ -10,7 +10,7 @@ function colorFor(id: string) {
   return `hsl(${h} 70% 65%)`;
 }
 
-// F26: other visitors' pointers on kbDesk. Positions are fractions of the
+// F26: other visitors' pointers on folioDesk. Positions are fractions of the
 // screen, so they land in the same place whatever the window size.
 export function Cursors() {
   const cursors = usePresence((s) => s.cursors);

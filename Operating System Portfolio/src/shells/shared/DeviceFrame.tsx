@@ -16,7 +16,7 @@ function subscribe(cb: () => void) {
 const viewportWidth = () => window.innerWidth;
 
 // When a touch shell runs on a screen far bigger than the device (after a
-// handoff from kbDesk), it is shown at device size in a frame. The transform
+// handoff from folioDesk), it is shown at device size in a frame. The transform
 // makes the frame the containing block, so fixed overlays stay inside it.
 export function DeviceFrame({ shell, children }: { shell: Shell; children: ReactNode }) {
   const width = useSyncExternalStore(subscribe, viewportWidth, () => 0);

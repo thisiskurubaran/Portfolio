@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const DISMISS_KEY = "kbos.plain-offer-dismissed";
+const DISMISS_KEY = "folioos.plain-offer-dismissed";
 
 // navigator.deviceMemory is Chromium only and missing from the DOM types.
 function isWeakDevice() {
@@ -43,7 +43,7 @@ export function PlainOffer() {
         Open plain view
       </a>
       <button onClick={dismiss} className="rounded-control px-3 py-1.5">
-        Keep kbOS
+        Keep folioOS
       </button>
     </div>
   );

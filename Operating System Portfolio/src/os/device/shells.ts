@@ -7,10 +7,10 @@ export interface ShellInfo {
 }
 
 export const shells: ShellInfo[] = [
-  { id: "phone", name: "kbPhone", device: "Phone" },
-  { id: "pad", name: "kbPad", device: "Tablet" },
-  { id: "desk", name: "kbDesk", device: "Desktop" },
-  { id: "vision", name: "kbVision", device: "Spatial" },
+  { id: "phone", name: "folioPhone", device: "Phone" },
+  { id: "pad", name: "folioPad", device: "Tablet" },
+  { id: "desk", name: "folioDesk", device: "Desktop" },
+  { id: "vision", name: "folioVision", device: "Spatial" },
 ];
 
 // Shells that exist in this build.

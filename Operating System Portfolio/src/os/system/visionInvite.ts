@@ -5,10 +5,10 @@ import { suitsVision } from "@/os/device/capabilities";
 import type { Shell } from "@/os/device/resolve";
 import { useNotifications } from "@/os/state/notifications";
 
-const INVITED_KEY = "kbos.vision-invite";
+const INVITED_KEY = "folioos.vision-invite";
 const DELAY_MS = 25_000;
 
-// F31: on a capable desktop, suggest kbVision once. Dismissable, never forced.
+// F31: on a capable desktop, suggest folioVision once. Dismissable, never forced.
 export function useVisionInvite(shell: Shell | null) {
   useEffect(() => {
     if (shell !== "desk") return;
@@ -26,9 +26,9 @@ export function useVisionInvite(shell: Shell | null) {
       } catch {
         // ignore
       }
-      useNotifications.getState().push("Try kbVision", {
+      useNotifications.getState().push("Try folioVision", {
         body: "The same portfolio as floating panels in faked 3D depth. A browser homage to spatial computing, not AR.",
-        action: { label: "Open kbVision", shell: "vision" },
+        action: { label: "Open folioVision", shell: "vision" },
       });
     }, DELAY_MS);
     return () => window.clearTimeout(t);

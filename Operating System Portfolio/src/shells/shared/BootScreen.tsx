@@ -31,7 +31,7 @@ export function BootScreen({ shellName, onDone }: { shellName: string; onDone: (
       <Icon name="logo" size={64} />
       <p className="text-sm tracking-[0.3em] opacity-70">{shellName.toUpperCase()}</p>
       <div className="h-1 w-48 overflow-hidden rounded-full bg-white/10">
-        <div className="kb-boot-bar h-full rounded-full bg-[#4cc2a8]" style={{ animationDuration: `${duration}ms` }} />
+        <div className="folio-boot-bar h-full rounded-full bg-[#4cc2a8]" style={{ animationDuration: `${duration}ms` }} />
       </div>
       <button onClick={onDone} className="mt-6 text-xs opacity-60 hover:opacity-100">
         Skip

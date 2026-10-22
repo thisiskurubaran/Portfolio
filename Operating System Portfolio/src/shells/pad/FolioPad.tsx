@@ -72,8 +72,8 @@ function Switcher() {
   );
 }
 
-// kbPad: home screen with a dock, split view and slide-over.
-export default function KbPad() {
+// folioPad: home screen with a dock, split view and slide-over.
+export default function FolioPad() {
   const { primary, overlay, setOverlay, goHome, locked, setLocked } = usePad();
   const wallpaper = useWallpaper();
   const homeBar = useSwipe((dir, _s, distance) => {

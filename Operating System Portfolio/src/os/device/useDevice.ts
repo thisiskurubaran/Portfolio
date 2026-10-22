@@ -3,7 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import { isShell, resolveShell, SHELL_STORAGE_KEY, type Shell } from "./resolve";
 
-const OVERRIDE_EVENT = "kbos:shell-override";
+const OVERRIDE_EVENT = "folioos:shell-override";
 
 function readOverride(): Shell | null {
   try {

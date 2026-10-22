@@ -24,7 +24,7 @@ export function usePrefersReducedMotion() {
   return useSyncExternalStore(reducedMotionQuery.subscribe, reducedMotionQuery.get, () => false);
 }
 
-// True when either the OS asks for less motion or the visitor turned it on in kbOS.
+// True when either the OS asks for less motion or the visitor turned it on in folioOS.
 export function useReducedMotion() {
   const system = usePrefersReducedMotion();
   const chosen = usePreferences((s) => s.reducedMotion);

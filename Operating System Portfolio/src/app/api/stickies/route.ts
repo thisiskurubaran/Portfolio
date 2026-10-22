@@ -4,7 +4,7 @@ import { cleanText } from "@/lib/sanitize";
 import { MAX_NOTE, stickyInput, stickyNote, type StickyNote } from "@/lib/schemas";
 import { getStore } from "@/lib/store";
 
-// F28: sticky notes left on the kbDesk desktop for the next visitor. Same
+// F28: sticky notes left on the folioDesk desktop for the next visitor. Same
 // limits and moderation as the guestbook.
 export async function GET() {
   const store = getStore();

@@ -6,14 +6,14 @@ export interface DeviceSignals {
   userAgent: string;
 }
 
-export const SHELL_STORAGE_KEY = "kbos.shell";
+export const SHELL_STORAGE_KEY = "folioos.shell";
 
 export function isShell(value: unknown): value is Shell {
   return value === "phone" || value === "pad" || value === "desk" || value === "vision";
 }
 
-// Phone width plus touch is kbPhone, tablet width plus touch is kbPad,
-// everything else is kbDesk. kbVision is opt-in, never auto-picked.
+// Phone width plus touch is folioPhone, tablet width plus touch is folioPad,
+// everything else is folioDesk. folioVision is opt-in, never auto-picked.
 export function resolveShell(signals: DeviceSignals, override?: Shell | null): Shell {
   if (override) return override;
   const { width, coarsePointer, userAgent } = signals;

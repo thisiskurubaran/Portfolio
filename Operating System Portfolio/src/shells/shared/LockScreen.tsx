@@ -5,7 +5,7 @@ import { formatDate, formatTime, useClock } from "@/os/system/clock";
 import { useSwipe } from "./useSwipe";
 import { WeatherText } from "./widgets";
 
-// F03: the lock screen for kbPhone and kbPad, with the real time and local weather.
+// F03: the lock screen for folioPhone and folioPad, with the real time and local weather.
 export function LockScreen({ onUnlock: unlock }: { onUnlock: () => void }) {
   const now = useClock();
   const swipe = useSwipe((dir) => dir === "up" && unlock());

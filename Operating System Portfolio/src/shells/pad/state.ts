@@ -103,7 +103,7 @@ export const usePad = create<PadStore>()(
       goHome: () => set({ primary: null, secondary: null, overlay: null }),
     }),
     {
-      name: "kbos.pad",
+      name: "folioos.pad",
       version: 1,
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({ primary: s.primary, secondary: s.secondary, ratio: s.ratio, slide: s.slide, recents: s.recents }),

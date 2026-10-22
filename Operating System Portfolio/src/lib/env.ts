@@ -7,7 +7,7 @@ export const env = {
   adminSecret: process.env.ADMIN_SECRET,
   resendKey: process.env.RESEND_API_KEY,
   contactTo: process.env.CONTACT_TO_EMAIL,
-  contactFrom: process.env.CONTACT_FROM_EMAIL ?? "kbOS contact <onboarding@resend.dev>",
+  contactFrom: process.env.CONTACT_FROM_EMAIL ?? "folioOS contact <onboarding@resend.dev>",
   dev: process.env.NODE_ENV === "development",
 };
 

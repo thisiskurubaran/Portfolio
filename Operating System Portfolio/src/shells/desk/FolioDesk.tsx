@@ -30,7 +30,7 @@ function clampRestoredWindows() {
   }
 }
 
-export default function KbDesk() {
+export default function FolioDesk() {
   const windows = useWindows((s) => s.windows);
   const focusedId = useWindows((s) => s.focusedId);
   const overlay = useDesk((s) => s.overlay);

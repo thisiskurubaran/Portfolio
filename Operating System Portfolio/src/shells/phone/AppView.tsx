@@ -33,7 +33,7 @@ export function AppView({ id }: { id: AppId }) {
       tabIndex={-1}
       aria-label={app.name}
       onKeyDown={(e) => (e.key === "Escape" ? goHome() : trap(e))}
-      className="kb-app-in absolute inset-0 z-10 flex flex-col bg-ink outline-none"
+      className="folio-app-in absolute inset-0 z-10 flex flex-col bg-ink outline-none"
     >
       <div className="h-10 shrink-0" />
       <header className="flex h-11 shrink-0 items-center border-b border-line px-3">

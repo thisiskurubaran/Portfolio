@@ -58,7 +58,7 @@ export function useRecruiterShortcut(active: boolean) {
       return;
     }
     const site = RECRUITER_SITES.find(([re]) => re.test(host))?.[1];
-    if (!site || !once("kbos.recruiter")) return;
+    if (!site || !once("folioos.recruiter")) return;
     const t = window.setTimeout(() => {
       useNotifications.getState().push(`Hello, visitor from ${site}`, {
         body: "Looking for the resume? It is one click away, and so is every role in detail.",
@@ -99,7 +99,7 @@ export function useLanguageHello(active: boolean) {
   useEffect(() => {
     if (!active) return;
     const lang = (navigator.languages?.[0] ?? navigator.language ?? "en").toLowerCase().split("-")[0]!;
-    if (lang === "en" || !once("kbos.hello")) return;
+    if (lang === "en" || !once("folioos.hello")) return;
     let name = lang;
     try {
       name = new Intl.DisplayNames(["en"], { type: "language" }).of(lang) ?? lang;
@@ -111,7 +111,7 @@ export function useLanguageHello(active: boolean) {
       useNotifications.getState().push(`${greeting}!`, {
         body: TRANSLATIONS.includes(lang)
           ? `This site is also available in ${name}.`
-          : `Your browser prefers ${name}. kbOS is only in English for now, but you are very welcome here.`,
+          : `Your browser prefers ${name}. folioOS is only in English for now, but you are very welcome here.`,
       });
     }, 2500);
     return () => window.clearTimeout(t);
@@ -128,7 +128,7 @@ export function useLowPowerProbe(active: boolean) {
     const conn = (navigator as Navigator & { connection?: Connection }).connection;
     const announce = (reason: string) => {
       usePower.getState().setLowPower(true, reason);
-      useNotifications.getState().push("Low-power mode is on", { body: `${reason} Blur and heavy animation are off, and kbVision is skipped.`, toast: false });
+      useNotifications.getState().push("Low-power mode is on", { body: `${reason} Blur and heavy animation are off, and folioVision is skipped.`, toast: false });
     };
     if (conn?.saveData || conn?.effectiveType === "2g" || conn?.effectiveType === "slow-2g") {
       announce("Your connection asked to save data.");

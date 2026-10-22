@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-// Original 24x24 line icons drawn for kbOS. Stroke only, so they inherit
+// Original 24x24 line icons drawn for folioOS. Stroke only, so they inherit
 // currentColor and work in both themes.
 const paths = {
   about: "M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8zM4.5 20c.8-3.6 3.8-5.5 7.5-5.5s6.7 1.9 7.5 5.5",

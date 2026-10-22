@@ -14,7 +14,7 @@ import { StatusBar } from "./StatusBar";
 import { usePhone } from "./state";
 
 // The real mobile shell: full screen apps and gestures, no windows.
-export default function KbPhone() {
+export default function FolioPhone() {
   const { locked, app, overlay } = usePhone();
   const wallpaper = useWallpaper();
 

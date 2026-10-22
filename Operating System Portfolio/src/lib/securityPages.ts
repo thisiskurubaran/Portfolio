@@ -18,10 +18,10 @@ const shell = (title: string, body: string) => `<!doctype html>
 
 export const deniedPage = () =>
   shell(
-    "kbOS Firewall",
-    `<span class="badge">kbOS Firewall</span>
+    "folioOS Firewall",
+    `<span class="badge">folioOS Firewall</span>
 <h1>Access denied</h1>
-<p>kbOS Firewall blocked a connection to this path. Nothing lives here.</p>
+<p>folioOS Firewall blocked a connection to this path. Nothing lives here.</p>
 <p>If you were just exploring, the portfolio is at <a href="/">the home page</a>, and everything is also in the <a href="/plain">plain view</a>.</p>`,
   );
 
@@ -29,8 +29,8 @@ export const deniedPage = () =>
 // never stored; submitting only records that an attempt was made.
 export const honeypotPage = () =>
   shell(
-    "kbOS Admin",
-    `<span class="badge">kbOS Admin</span>
+    "folioOS Admin",
+    `<span class="badge">folioOS Admin</span>
 <h1>Sign in</h1>
 <p>Restricted area.</p>
 <form method="post" action="/api/honeypot">
@@ -42,8 +42,8 @@ export const honeypotPage = () =>
 
 export const tooManyPage = () =>
   shell(
-    "kbOS Firewall",
-    `<span class="badge">kbOS Firewall</span>
+    "folioOS Firewall",
+    `<span class="badge">folioOS Firewall</span>
 <h1>Slow down</h1>
-<p>Too many blocked requests came from this connection, so kbOS is taking a break from it for an hour.</p>`,
+<p>Too many blocked requests came from this connection, so folioOS is taking a break from it for an hour.</p>`,
   );

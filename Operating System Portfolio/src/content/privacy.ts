@@ -12,7 +12,7 @@ export const privacy = {
     {
       what: "An anonymous visitor id",
       where: "Your browser, and the presence server while you are connected",
-      why: "A random id with no link to you, used for the online count and cursors on kbDesk. Only the id and your pointer position are shared, and nothing is kept after you leave.",
+      why: "A random id with no link to you, used for the online count and cursors on folioDesk. Only the id and your pointer position are shared, and nothing is kept after you leave.",
     },
     {
       what: "Guestbook entries and sticky notes",

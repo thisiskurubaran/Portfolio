@@ -100,7 +100,7 @@ export default function Settings() {
       </Section>
 
       <Section title="Device">
-        <p className="text-sm opacity-75">Open the same portfolio as another kbOS device.</p>
+        <p className="text-sm opacity-75">Open the same portfolio as another folioOS device.</p>
         <ContinuityStrip />
       </Section>
 

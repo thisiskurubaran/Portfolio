@@ -34,6 +34,6 @@ export const usePreferences = create<PreferencesStore>()(
       setReducedMotion: (reducedMotion) => set({ reducedMotion }),
       setSound: (sound) => set({ sound }),
     }),
-    { name: "kbos.preferences", version: 1, storage: createJSONStorage(() => safeStorage) },
+    { name: "folioos.preferences", version: 1, storage: createJSONStorage(() => safeStorage) },
   ),
 );

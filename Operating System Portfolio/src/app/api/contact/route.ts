@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         from: env.contactFrom,
         to: [env.contactTo],
         reply_to: parsed.data.email,
-        subject: `kbOS message${name ? ` from ${name}` : ""}`,
+        subject: `folioOS message${name ? ` from ${name}` : ""}`,
         text: `${message}\n\nFrom: ${name || "(no name)"} <${parsed.data.email}>`,
       }),
       signal: AbortSignal.timeout(8000),

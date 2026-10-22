@@ -24,11 +24,11 @@ import { Toasts } from "@/shells/shared/Toasts";
 
 // Code-split per shell so a device never downloads another shell's code.
 const shellComponents: Partial<Record<Shell, ComponentType>> = {
-  desk: dynamic(() => import("@/shells/desk/KbDesk"), { ssr: false, loading: ShellLoader }),
-  phone: dynamic(() => import("@/shells/phone/KbPhone"), { ssr: false, loading: ShellLoader }),
-  pad: dynamic(() => import("@/shells/pad/KbPad"), { ssr: false, loading: ShellLoader }),
-  // Three.js and React Three Fiber only load when kbVision is entered.
-  vision: dynamic(() => import("@/shells/vision/KbVision"), { ssr: false, loading: ShellLoader }),
+  desk: dynamic(() => import("@/shells/desk/FolioDesk"), { ssr: false, loading: ShellLoader }),
+  phone: dynamic(() => import("@/shells/phone/FolioPhone"), { ssr: false, loading: ShellLoader }),
+  pad: dynamic(() => import("@/shells/pad/FolioPad"), { ssr: false, loading: ShellLoader }),
+  // Three.js and React Three Fiber only load when folioVision is entered.
+  vision: dynamic(() => import("@/shells/vision/FolioVision"), { ssr: false, loading: ShellLoader }),
 };
 
 export function Boot() {
@@ -40,13 +40,13 @@ export function Boot() {
     markBooted();
     setBooting(false);
   }, []);
-  // kbVision falls back to kbDesk when WebGL is missing or the device is weak.
+  // folioVision falls back to folioDesk when WebGL is missing or the device is weak.
   const visionCheck = useMemo(() => (shell === "vision" ? canRunVision() : null), [shell]);
   const active: Shell | null = !shell ? null : visionCheck && !visionCheck.ok ? "desk" : builtShells.includes(shell) ? shell : "desk";
   useEffect(() => {
     if (visionCheck && !visionCheck.ok) {
       setOverride(null);
-      useNotifications.getState().push("kbVision is not available here", { body: visionCheck.reason });
+      useNotifications.getState().push("folioVision is not available here", { body: visionCheck.reason });
     }
   }, [visionCheck, setOverride]);
   useWelcome(booting ? null : active);

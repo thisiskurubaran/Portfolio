@@ -85,9 +85,9 @@ function Ornament({ onSearch }: { onSearch: () => void }) {
   );
 }
 
-// kbVision: a browser homage to spatial computing. Floating glass windows in
+// folioVision: a browser homage to spatial computing. Floating glass windows in
 // faked depth, drawn with WebGL and CSS 3D. Not real AR, and it says so.
-export default function KbVision() {
+export default function FolioVision() {
   const reduced = useReducedMotion();
   const now = useClock();
   const [search, setSearch] = useState(false);
@@ -123,14 +123,14 @@ export default function KbVision() {
         <Room reduced={reduced} />
       </Canvas>
       <div className="absolute inset-0" style={{ perspective: "1400px" }}>
-        <div ref={stage} className="kb-vision-stage absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
+        <div ref={stage} className="folio-vision-stage absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {open.map((id, i) => (
             <VisionPanel key={id} id={id} index={i} center={center} />
           ))}
         </div>
       </div>
       <p className="absolute left-4 top-3 z-10 max-w-xs text-xs leading-relaxed text-white/70">
-        kbVision is a browser homage to spatial computing. The depth is faked with WebGL and CSS 3D; this is not AR.
+        folioVision is a browser homage to spatial computing. The depth is faked with WebGL and CSS 3D; this is not AR.
       </p>
       <p className="absolute right-4 top-3 z-10 text-sm tabular-nums text-white/80" suppressHydrationWarning>
         {now ? formatTime(now) : ""}

@@ -18,7 +18,7 @@ export function launch(id: AppId, anchor?: string) {
   if (anchor) reveal(anchor);
 }
 
-export const anchorId = (anchor: string) => `kb-${anchor}`;
+export const anchorId = (anchor: string) => `folio-${anchor}`;
 
 // The app loads lazily, so wait for the element before scrolling to it.
 export function reveal(anchor: string, timeoutMs = 2000) {
@@ -27,8 +27,8 @@ export function reveal(anchor: string, timeoutMs = 2000) {
     const el = document.getElementById(anchorId(anchor));
     if (el) {
       el.scrollIntoView({ block: "center" });
-      el.classList.add("kb-flash");
-      window.setTimeout(() => el.classList.remove("kb-flash"), 1600);
+      el.classList.add("folio-flash");
+      window.setTimeout(() => el.classList.remove("folio-flash"), 1600);
     } else if (performance.now() - started < timeoutMs) {
       requestAnimationFrame(tryReveal);
     }

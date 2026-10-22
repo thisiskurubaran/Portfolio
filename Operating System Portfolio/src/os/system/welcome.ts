@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import type { Shell } from "@/os/device/resolve";
 import { useNotifications } from "@/os/state/notifications";
 
-const WELCOMED_KEY = "kbos.welcomed";
+const WELCOMED_KEY = "folioos.welcomed";
 
 const tips: Record<Shell, string> = {
   desk: "Press Ctrl+Space to search anything. Windows drag, resize and snap to the edges.",
@@ -26,7 +26,7 @@ export function useWelcome(shell: Shell | null) {
     }
     if (seen) return;
     const t = window.setTimeout(() => {
-      useNotifications.getState().push("Welcome to kbOS", { body: tips[shell], action: { label: "Open Settings", app: "settings" } });
+      useNotifications.getState().push("Welcome to folioOS", { body: tips[shell], action: { label: "Open Settings", app: "settings" } });
     }, 1200);
     return () => window.clearTimeout(t);
   }, [shell]);
