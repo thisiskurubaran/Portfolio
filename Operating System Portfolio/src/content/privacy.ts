@@ -26,7 +26,7 @@ export const privacy = {
     },
   ],
   location:
-    "The weather widget uses the city that your connection appears to come from, as reported by the hosting provider. The site never asks for your precise location and never calls the browser's location API.",
+    "The weather widget uses the city that your connection appears to come from, as reported by the hosting provider. The site never asks for your precise location and never calls the browser's location API. Weather data comes from Open-Meteo.com (CC BY 4.0).",
   security:
     "The security features only refuse service, slow down repeated requests and keep counts of blocked attempts. They never scan, probe or reach back toward anyone's device.",
   contact: "Questions about this page can go through any of the contact links on the site.",
