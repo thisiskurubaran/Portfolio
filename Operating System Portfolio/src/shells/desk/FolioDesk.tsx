@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { desktopOf, DESKTOPS, useWindows } from "@/os/state/windows";
+import { announce } from "@/os/system/announce";
 import { registerLauncher } from "@/os/system/launcher";
 import { useWallpaper } from "@/os/system/useSystemAttributes";
 import { Launchpad } from "@/shells/shared/Launchpad";
@@ -43,6 +44,14 @@ export default function FolioDesk() {
   const allWindows = useWindows((s) => s.windows);
   const currentDesktop = useWindows((s) => s.currentDesktop);
   const windows = allWindows.filter((w) => desktopOf(w) === currentDesktop);
+  const firstDesktop = useRef(true);
+  useEffect(() => {
+    if (firstDesktop.current) {
+      firstDesktop.current = false;
+      return;
+    }
+    announce(`Desktop ${currentDesktop}`);
+  }, [currentDesktop]);
   const focusedId = useWindows((s) => s.focusedId);
   const overlay = useDesk((s) => s.overlay);
   const loggedIn = useDesk((s) => s.loggedIn);

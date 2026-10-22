@@ -6,6 +6,9 @@ import { Icon, type IconName } from "@/design/icons";
 import { Skeleton } from "@/os/apps/ui";
 import { appComponents, getApp } from "@/os/apps/registry";
 import { desktopOf, DESKTOPS, useWindows, type WindowState } from "@/os/state/windows";
+import { announce } from "@/os/system/announce";
+import { shareApp } from "@/os/system/share";
+import { play } from "@/os/system/sound";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { DOCK_SPACE as DOCK, MENU_BAR, snapRect, type SnapKind } from "./snap";
@@ -46,7 +49,15 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
   // F12: minimise shrinks toward the dock and close fades, then the store
   // updates. Reduced motion skips straight to the end.
   const [leaving, setLeaving] = useState<"minimize" | "close" | null>(null);
+  useEffect(() => {
+    play("open");
+    if (app) announce(`${app.name} opened`);
+    // Only on mount: this is the window appearing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const leave = (kind: "minimize" | "close", id: string) => {
+    if (kind === "close") play("close");
+    if (app) announce(`${app.name} ${kind === "close" ? "closed" : "minimised"}`);
     if (reduced) return kind === "minimize" ? minimizeNow(id) : closeNow(id);
     setLeaving(kind);
     window.setTimeout(() => {
@@ -189,6 +200,8 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
               ...Array.from({ length: DESKTOPS }, (_, i) => i + 1)
                 .filter((n) => n !== desktopOf(win))
                 .map((n) => ({ label: `Move to desktop ${n}`, onSelect: () => useWindows.getState().moveToDesktop(win.id, n) })),
+              { separator: true },
+              { label: "Copy link to this app", icon: "share", onSelect: () => void shareApp(win.appId) },
               { separator: true },
               { label: "Close", icon: "close", danger: true, onSelect: () => close(win.id) },
             ],

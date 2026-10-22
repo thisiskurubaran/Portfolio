@@ -54,11 +54,15 @@ export function useSystemAttributes() {
   const theme = useResolvedTheme();
   const accent = usePreferences((s) => s.accent);
   const lowPower = usePower((s) => s.lowPower);
+  const { textScale, highContrast, bigPointer } = usePreferences();
   useEffect(() => {
     const root = document.documentElement;
+    root.toggleAttribute("data-high-contrast", highContrast);
+    root.toggleAttribute("data-big-pointer", bigPointer);
+    root.style.fontSize = textScale === 1 ? "" : `${Math.round(textScale * 100)}%`;
     root.toggleAttribute("data-low-power", lowPower);
     root.toggleAttribute("data-reduced-motion", reduced);
     root.dataset.theme = theme;
     root.style.setProperty("--color-accent", accent);
-  }, [reduced, theme, accent, lowPower]);
+  }, [reduced, theme, accent, lowPower, textScale, highContrast, bigPointer]);
 }
