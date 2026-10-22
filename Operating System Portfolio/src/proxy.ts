@@ -1,6 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+// The presence server lives on its own host, so it is the one outside origin
+// the page may open a socket to.
+const partyHost = process.env.NEXT_PUBLIC_PARTYKIT_HOST;
+
 function contentSecurityPolicy(nonce: string, dev: boolean): string {
+  const realtime = partyHost ? ` wss://${partyHost}${dev ? ` ws://${partyHost}` : ""}` : "";
   const directives = [
     "default-src 'self'",
     // Only scripts carrying this request's nonce run, plus whatever they load.
@@ -12,7 +17,7 @@ function contentSecurityPolicy(nonce: string, dev: boolean): string {
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' blob: data:",
     "font-src 'self'",
-    `connect-src 'self'${dev ? " ws:" : ""}`,
+    `connect-src 'self'${realtime}${dev ? " ws:" : ""}`,
     "frame-src 'self'",
     "worker-src 'self' blob:",
     "object-src 'none'",

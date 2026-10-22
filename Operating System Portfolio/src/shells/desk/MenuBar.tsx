@@ -6,6 +6,7 @@ import { useClock } from "@/os/system/clock";
 import { useWindows } from "@/os/state/windows";
 import { useNotifications } from "@/os/state/notifications";
 import { StatusIcons, WeatherText } from "@/shells/shared/widgets";
+import { OnlineCount } from "./Cursors";
 import { useDesk } from "./state";
 
 export function MenuBar() {
@@ -21,7 +22,12 @@ export function MenuBar() {
         <Icon name="logo" size={16} />
       </button>
       <span className="font-medium">{label}</span>
-      <a href="/plain" className="ml-auto opacity-80 hover:opacity-100">
+      <span className="ml-auto" />
+      <OnlineCount />
+      <button onClick={() => toggle("sticky")} title="Leave a sticky note" aria-label="Leave a sticky note" className="opacity-80 hover:opacity-100">
+        <Icon name="sticky" size={16} />
+      </button>
+      <a href="/plain" className="opacity-80 hover:opacity-100">
         Plain view
       </a>
       <button onClick={() => toggle("overview")} aria-label="Show open windows (Ctrl+Up)" title="Open windows (Ctrl+Up)" className="opacity-80 hover:opacity-100">

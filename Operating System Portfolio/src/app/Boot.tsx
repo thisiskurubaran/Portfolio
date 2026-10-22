@@ -9,6 +9,7 @@ import { useDevice } from "@/os/device/useDevice";
 import { firstVisit, markBooted } from "@/os/system/session";
 import { useSystemAttributes } from "@/os/system/useSystemAttributes";
 import { useNotifications } from "@/os/state/notifications";
+import { usePresenceConnection } from "@/os/system/presence";
 import { useVisionInvite } from "@/os/system/visionInvite";
 import { useWelcome } from "@/os/system/welcome";
 import { BootScreen } from "@/shells/shared/BootScreen";
@@ -45,6 +46,7 @@ export function Boot() {
   }, [visionCheck, setOverride]);
   useWelcome(booting ? null : active);
   useVisionInvite(booting ? null : active);
+  usePresenceConnection(!booting && active !== null);
   if (!active) return null;
   const Shell = shellComponents[active]!;
   return (

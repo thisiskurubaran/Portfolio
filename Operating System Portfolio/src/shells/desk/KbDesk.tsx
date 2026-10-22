@@ -12,7 +12,9 @@ import { MissionControl } from "./MissionControl";
 import { LoginScreen } from "./LoginScreen";
 import { NotificationCenter } from "./NotificationCenter";
 import { SystemMenu } from "./SystemMenu";
+import { Cursors } from "./Cursors";
 import { useDesk } from "./state";
+import { StickyComposer, StickyLayer } from "./Stickies";
 
 const MENU_BAR = 28;
 
@@ -64,6 +66,7 @@ export default function KbDesk() {
 
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: wallpaper }}>
+      <StickyLayer />
       <MenuBar />
       {windows.map((win) => (
         <DeskWindow key={win.id} win={win} focused={win.id === focusedId} />
@@ -72,6 +75,8 @@ export default function KbDesk() {
       {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
       {overlay === "overview" && <MissionControl />}
       {overlay === "center" && <NotificationCenter />}
+      {overlay === "sticky" && <StickyComposer />}
+      <Cursors />
       {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
       {!loggedIn && <LoginScreen onLogin={() => useDesk.getState().setLoggedIn(true)} />}
     </div>
