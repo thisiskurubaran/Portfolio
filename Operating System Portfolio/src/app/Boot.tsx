@@ -12,6 +12,7 @@ import { PlainOffer } from "@/shells/shared/PlainOffer";
 const shellComponents: Partial<Record<Shell, ComponentType>> = {
   desk: dynamic(() => import("@/shells/desk/KbDesk"), { ssr: false }),
   phone: dynamic(() => import("@/shells/phone/KbPhone"), { ssr: false }),
+  pad: dynamic(() => import("@/shells/pad/KbPad"), { ssr: false }),
 };
 
 export function Boot() {

@@ -14,6 +14,6 @@ export const shells: ShellInfo[] = [
 ];
 
 // Shells that exist in this build. The rest resolve to kbDesk until they land.
-export const builtShells: Shell[] = ["phone", "desk"];
+export const builtShells: Shell[] = ["phone", "pad", "desk"];
 
 export const availableShells = shells.filter((s) => builtShells.includes(s.id));
