@@ -37,7 +37,7 @@ function NowWidget() {
   const openApp = usePhone((s) => s.openApp);
   return (
     <button onClick={() => openApp("experience")} className="rounded-3xl bg-glass p-4 text-left backdrop-blur-xl focus-visible:ring-2 focus-visible:ring-accent">
-      <p className="text-xs uppercase tracking-wide text-accent">Now</p>
+      <p className="text-xs uppercase tracking-wide text-accent-fg">Now</p>
       <p className="mt-1 line-clamp-2 text-sm font-medium">{current.title.split(" (")[0]}</p>
       <p className="mt-0.5 text-xs opacity-70">{current.company}</p>
     </button>
@@ -48,13 +48,24 @@ export function HomeScreen() {
   const gridKeys = useGridKeys(COLUMNS);
   const dockApps = launchable.filter((a) => DOCK.includes(a.id));
   const gridApps = launchable.filter((a) => !DOCK.includes(a.id));
+  const setOverlay = usePhone((s) => s.setOverlay);
   return (
     <div className="flex min-h-0 flex-1 flex-col px-5 pb-4">
+      <button
+        onClick={() => setOverlay("search")}
+        className="mb-3 flex h-10 items-center gap-2 rounded-2xl bg-glass px-4 text-left text-sm opacity-90 backdrop-blur-xl"
+      >
+        <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="M16 16l4.5 4.5" strokeLinecap="round" />
+        </svg>
+        <span className="opacity-70">Search</span>
+      </button>
       <section aria-label="Widgets" className="grid grid-cols-2 gap-3 pt-2">
         <ClockWidget />
         <NowWidget />
       </section>
-      <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-6 grid grid-cols-4 content-start gap-x-2 gap-y-5">
+      <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-5 grid grid-cols-4 content-start gap-x-2 gap-y-5">
         {gridApps.map((app) => (
           <AppButton key={app.id} id={app.id} label={app.name} icon={app.icon} />
         ))}

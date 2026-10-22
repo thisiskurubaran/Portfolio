@@ -13,7 +13,7 @@ export function NotificationShade() {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-medium opacity-70">Notifications</h2>
         {items.length > 0 && (
-          <button onClick={clear} className="text-xs text-accent">
+          <button onClick={clear} className="text-xs text-accent-fg">
             Clear all
           </button>
         )}

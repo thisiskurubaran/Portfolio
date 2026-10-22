@@ -4,9 +4,9 @@ import { contact } from "@/content";
 export default function Resume() {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-2 text-sm">
+      <div className="flex items-center justify-between border-b border-line px-4 py-2 text-sm">
         <span className="opacity-70">Kurubaran_Anandhan_ATS_Resume.pdf</span>
-        <a href={contact.resume} download="Kurubaran_Anandhan_ATS_Resume.pdf" className="rounded-control bg-accent px-3 py-1 font-medium text-ink">
+        <a href={contact.resume} download="Kurubaran_Anandhan_ATS_Resume.pdf" className="rounded-control bg-accent px-3 py-1 font-medium text-on-accent">
           Download
         </a>
       </div>

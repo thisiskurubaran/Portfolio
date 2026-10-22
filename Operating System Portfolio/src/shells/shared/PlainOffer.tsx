@@ -37,9 +37,9 @@ export function PlainOffer() {
     }
   };
   return (
-    <div role="status" className="fixed inset-x-3 bottom-24 z-[10000] mx-auto flex max-w-md flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-ink/95 p-4 text-sm shadow-2xl">
+    <div role="status" className="fixed inset-x-3 bottom-24 z-[10000] mx-auto flex max-w-md flex-wrap items-center gap-3 rounded-2xl border border-line bg-ink/95 p-4 text-sm shadow-2xl">
       <p className="flex-1">This device may find the full OS heavy. The plain view has everything and loads fast.</p>
-      <a href="/plain" className="rounded-control bg-accent px-3 py-1.5 font-medium text-ink">
+      <a href="/plain" className="rounded-control bg-accent px-3 py-1.5 font-medium text-on-accent">
         Open plain view
       </a>
       <button onClick={dismiss} className="rounded-control px-3 py-1.5">

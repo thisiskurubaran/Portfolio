@@ -14,7 +14,7 @@ export default function Mail() {
           Message
           <textarea disabled rows={5} className="mt-1 w-full rounded-control bg-glass p-2 disabled:opacity-50" />
         </label>
-        <button disabled className="rounded-control bg-accent px-4 py-2 text-sm font-medium text-ink disabled:opacity-40">
+        <button disabled className="rounded-control bg-accent px-4 py-2 text-sm font-medium text-on-accent disabled:opacity-40">
           Send
         </button>
         <p id="mail-note" className="text-sm opacity-70">
@@ -24,7 +24,7 @@ export default function Mail() {
       <ul className="flex flex-wrap gap-3">
         {contact.links.map((link) => (
           <li key={link.id}>
-            <a href={link.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/15 px-3 py-1 text-sm hover:bg-white/10">
+            <a href={link.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line px-3 py-1 text-sm hover:bg-glass-strong">
               {link.label}
             </a>
           </li>

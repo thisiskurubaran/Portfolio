@@ -7,7 +7,7 @@ export default function About() {
       <header>
         <h1 className="text-2xl font-semibold">{profile.name}</h1>
         <p className="mt-1 text-sm opacity-70">{profile.location}</p>
-        <p className="mt-3 inline-block rounded-full bg-accent/15 px-3 py-1 text-sm text-accent">{current}</p>
+        <p className="mt-3 inline-block rounded-full bg-accent/15 px-3 py-1 text-sm text-accent-fg">{current}</p>
       </header>
       <p className="max-w-prose leading-relaxed">{profile.bio}</p>
       <dl className="grid grid-cols-2 gap-3">
@@ -22,7 +22,7 @@ export default function About() {
         <h2 className="mb-2 text-sm font-medium opacity-70">What I work on</h2>
         <ul className="flex flex-wrap gap-2">
           {profile.titles.map((title) => (
-            <li key={title} className="rounded-full border border-white/15 px-3 py-1 text-sm">
+            <li key={title} className="rounded-full border border-line px-3 py-1 text-sm">
               {title}
             </li>
           ))}

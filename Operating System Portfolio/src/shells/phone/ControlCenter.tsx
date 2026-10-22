@@ -7,6 +7,7 @@ import { Sheet } from "./Sheet";
 import { usePhone } from "./state";
 
 const THEMES: { id: ThemeMode; label: string }[] = [
+  { id: "system", label: "System" },
   { id: "light", label: "Light" },
   { id: "dark", label: "Dark" },
   { id: "auto", label: "Auto" },
@@ -18,7 +19,7 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
       role="switch"
       aria-checked={on}
       onClick={() => onChange(!on)}
-      className={`rounded-2xl p-3 text-left text-sm ${on ? "bg-accent text-ink" : "bg-glass"}`}
+      className={`rounded-2xl p-3 text-left text-sm ${on ? "bg-accent text-on-accent" : "bg-glass"}`}
     >
       {label}
       <span className="block text-xs opacity-70">{on ? "On" : "Off"}</span>
@@ -34,14 +35,14 @@ export function ControlCenter() {
   return (
     <Sheet label="Control center" onClose={() => setOverlay(null)}>
       <h2 className="mb-3 text-sm font-medium opacity-70">Control center</h2>
-      <div role="radiogroup" aria-label="Theme" className="grid grid-cols-3 gap-2">
+      <div role="radiogroup" aria-label="Theme" className="grid grid-cols-4 gap-2">
         {THEMES.map((t) => (
           <button
             key={t.id}
             role="radio"
             aria-checked={prefs.theme === t.id}
             onClick={() => prefs.setTheme(t.id)}
-            className={`rounded-2xl p-3 text-sm ${prefs.theme === t.id ? "bg-accent text-ink" : "bg-glass"}`}
+            className={`rounded-2xl px-1 py-3 text-sm ${prefs.theme === t.id ? "bg-accent text-on-accent" : "bg-glass"}`}
           >
             {t.label}
           </button>
@@ -65,7 +66,10 @@ export function ControlCenter() {
           </button>
         ))}
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <button onClick={() => setOverlay("switcher")} className="rounded-2xl bg-glass p-3 text-sm">
+          Recent apps
+        </button>
         <a href="/plain" className="rounded-2xl bg-glass p-3 text-center text-sm">
           Plain view
         </a>

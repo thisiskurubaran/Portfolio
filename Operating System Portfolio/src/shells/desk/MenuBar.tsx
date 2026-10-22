@@ -4,10 +4,12 @@ import { Icon } from "@/design/icons";
 import { getApp } from "@/os/apps/registry";
 import { useClock } from "@/os/system/clock";
 import { useWindows } from "@/os/state/windows";
+import { useDesk } from "./state";
 
 export function MenuBar() {
   const focusedId = useWindows((s) => s.focusedId);
-  const appId = useWindows((s) => s.windows.find((w) => w.id === focusedId)?.appId);
+  const appId = useWindows((s) => s.windows.find((w) => w.id === focusedId && !w.minimized)?.appId);
+  const toggle = useDesk((s) => s.toggle);
   const now = useClock();
   const label = appId ? getApp(appId)?.name : "Desktop";
   return (
@@ -17,6 +19,20 @@ export function MenuBar() {
       <a href="/plain" className="ml-auto opacity-80 hover:opacity-100">
         Plain view
       </a>
+      <button onClick={() => toggle("overview")} aria-label="Show open windows (Ctrl+Up)" title="Open windows (Ctrl+Up)" className="opacity-80 hover:opacity-100">
+        <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <rect x="3" y="5" width="8" height="6" rx="1.5" />
+          <rect x="13" y="5" width="8" height="6" rx="1.5" />
+          <rect x="3" y="13" width="8" height="6" rx="1.5" />
+          <rect x="13" y="13" width="8" height="6" rx="1.5" />
+        </svg>
+      </button>
+      <button onClick={() => toggle("spotlight")} aria-label="Search (Ctrl+Space)" title="Search (Ctrl+Space or Ctrl+K)" className="opacity-80 hover:opacity-100">
+        <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="M16 16l4.5 4.5" strokeLinecap="round" />
+        </svg>
+      </button>
       <span className="tabular-nums opacity-80" suppressHydrationWarning>
         {now?.toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })}
       </span>

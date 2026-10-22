@@ -27,7 +27,8 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
   const trap = useFocusTrap(ref);
 
   useEffect(() => {
-    if (focused) ref.current?.focus({ preventScroll: true });
+    // Content such as the terminal may already have focused its own input.
+    if (focused && !ref.current?.contains(document.activeElement)) ref.current?.focus({ preventScroll: true });
   }, [focused]);
 
   if (!app) return null;
@@ -111,13 +112,13 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
         if (e.key === "Escape") close(win.id);
         else trap(e);
       }}
-      className={`absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border border-white/10 bg-ink/95 shadow-2xl backdrop-blur-xl outline-none ${focused ? "ring-1 ring-accent/50" : "opacity-95"}`}
+      className={`absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border border-line bg-ink/95 shadow-2xl backdrop-blur-xl outline-none ${focused ? "ring-1 ring-accent/50" : "opacity-95"}`}
       style={{ ...style, zIndex: win.z }}
     >
       <div
         onPointerDown={startDrag}
         onDoubleClick={() => toggleMaximize(win.id)}
-        className="flex h-9 shrink-0 cursor-default select-none items-center gap-2 border-b border-white/10 px-3"
+        className="flex h-9 shrink-0 cursor-default select-none items-center gap-2 border-b border-line px-3"
       >
         <div className="flex gap-2">
           <button aria-label={`Close ${app.name}`} onClick={() => close(win.id)} className="h-3 w-3 rounded-full bg-red-400/90 focus-visible:ring-2" />

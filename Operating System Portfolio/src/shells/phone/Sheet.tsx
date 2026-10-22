@@ -24,7 +24,7 @@ export function Sheet({ label, onClose, children }: { label: string; onClose: ()
         aria-modal="true"
         aria-label={label}
         tabIndex={-1}
-        className="absolute inset-x-3 top-3 max-h-[85%] touch-pan-y overflow-auto rounded-3xl border border-white/10 bg-ink/90 p-4 shadow-2xl outline-none backdrop-blur-2xl"
+        className="absolute inset-x-3 top-3 max-h-[85%] touch-pan-y overflow-auto rounded-3xl border border-line bg-ink/90 p-4 shadow-2xl outline-none backdrop-blur-2xl"
       >
         {children}
         <span aria-hidden className="mx-auto mt-4 block h-1.5 w-16 rounded-full bg-paper/40" />

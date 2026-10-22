@@ -10,12 +10,15 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
     return () => {
-      if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+      // Only hand focus back if nothing else has claimed it in the meantime.
+      const lost = !document.activeElement || document.activeElement === document.body;
+      if (lost && opener && document.contains(opener)) opener.focus({ preventScroll: true });
     };
   }, []);
 
   return (e: KeyboardEvent<HTMLElement>) => {
-    if (e.key !== "Tab" || !ref.current) return;
+    // A field that uses Tab itself (terminal completion) has already handled it.
+    if (e.key !== "Tab" || e.defaultPrevented || !ref.current) return;
     const items = Array.from(ref.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => !el.closest("[hidden]"));
     if (items.length === 0) return;
     const first = items[0]!;
