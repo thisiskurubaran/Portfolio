@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { AppIcon } from "@/design/AppIcon";
+import { useNotifications } from "@/os/state/notifications";
 import { launch } from "@/os/system/launcher";
 import { search, type SearchItem } from "@/os/system/search";
 import { useFocusTrap } from "./useFocusTrap";
@@ -19,7 +20,10 @@ export function Spotlight({ onClose, fullScreen = false }: { onClose: () => void
   const choose = (item: SearchItem | undefined) => {
     if (!item) return;
     onClose();
-    if (item.href) window.open(item.href, "_blank", "noopener,noreferrer");
+    if (item.copy) {
+      void navigator.clipboard?.writeText(item.copy).catch(() => undefined);
+      useNotifications.getState().push("Copied", { body: item.copy, toast: true });
+    } else if (item.href) window.open(item.href, "_blank", "noopener,noreferrer");
     else if (item.appId) launch(item.appId, item.anchor);
   };
 

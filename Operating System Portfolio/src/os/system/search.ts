@@ -1,6 +1,7 @@
 import { certifications, contact, education, experience, projects, skills } from "@/content";
 import { launchable, type AppId } from "@/os/apps/registry";
 import type { IconName } from "@/design/icons";
+import { evaluate, formatNumber } from "./calc";
 
 export interface SearchItem {
   id: string;
@@ -10,6 +11,8 @@ export interface SearchItem {
   appId?: AppId;
   anchor?: string;
   href?: string;
+  // A value to copy instead of opening anything (spotlight maths).
+  copy?: string;
   // Extra words that should match but are not shown.
   keywords?: string;
 }
@@ -96,6 +99,12 @@ function score(text: string, query: string): number {
 
 export function search(query: string, limit = 12): SearchItem[] {
   const q = query.trim().toLowerCase();
+  // A sum gets its answer as the top result.
+  const sum = /[\d)]\s*[-+*/x×÷^%]\s*[\d(.]|^(sqrt|sin|cos|tan|ln|log)\(/.test(q) ? evaluate(q.replace(/(\d)\s*x\s*(\d)/g, "$1*$2")) : null;
+  if (sum !== null) {
+    const value = formatNumber(sum);
+    return [{ id: "calc", label: `= ${value}`, detail: "Press Enter to copy", icon: "calculator", appId: "calculator", copy: value }, ...search(query.replace(/[-+*/×÷^%()]/g, " "), limit - 1)];
+  }
   if (!q) return searchIndex.filter((i) => i.id.startsWith("app-") && i.id !== "app-resume-alias");
   return searchIndex
     .map((item) => ({ item, s: Math.max(score(item.label, q) * 2, score(item.detail, q), item.keywords ? score(item.keywords, q) * 0.8 : 0) }))
