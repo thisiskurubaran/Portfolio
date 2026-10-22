@@ -91,7 +91,8 @@ function Ornament({ onSearch, onAll }: { onSearch: () => void; onAll: () => void
 }
 
 // folioVision: a browser homage to spatial computing. Floating glass windows in
-// faked depth, drawn with WebGL and CSS 3D. Not real AR, and it says so.
+// faked depth, drawn with WebGL and CSS 3D. Not real AR; the welcome tip and
+// the invite say so.
 export default function FolioVision() {
   const reduced = useReducedMotion();
   const now = useClock();
@@ -144,13 +145,9 @@ export default function FolioVision() {
           ))}
         </div>
       </div>
-      <p className="absolute left-4 top-3 z-10 max-w-xs text-xs leading-relaxed text-white/70">
-        folioVision is a browser homage to spatial computing. The depth is faked with WebGL and CSS 3D; this is not AR.
-      </p>
       <p className="absolute right-4 top-3 z-10 text-sm tabular-nums text-white/80" suppressHydrationWarning>
         {now ? formatTime(now) : ""}
       </p>
-      <p className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 text-xs text-white/50">Click a panel to bring it forward. Arrow keys move between panels.</p>
       <Ornament onSearch={() => setSearch(true)} onAll={() => setAll(true)} />
       {all && <Launchpad onClose={() => setAll(false)} />}
       {search && <Spotlight onClose={() => setSearch(false)} />}
