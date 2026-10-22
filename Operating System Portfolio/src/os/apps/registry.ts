@@ -15,17 +15,17 @@ export interface AppDefinition {
 
 export const apps: AppDefinition[] = [
   { id: "about", name: "About", icon: "about", load: () => import("./content/About") },
-  { id: "experience", name: "Experience", icon: "experience" },
-  { id: "projects", name: "Projects", icon: "projects" },
-  { id: "skills", name: "Skills", icon: "skills" },
-  { id: "certifications", name: "Certifications", icon: "certifications" },
-  { id: "contact", name: "Mail", icon: "contact" },
-  { id: "resume", name: "Resume", icon: "resume" },
+  { id: "experience", name: "Experience", icon: "experience", load: () => import("./content/Experience") },
+  { id: "projects", name: "Projects", icon: "projects", load: () => import("./content/Projects") },
+  { id: "skills", name: "Skills", icon: "skills", load: () => import("./content/Skills") },
+  { id: "certifications", name: "Certifications", icon: "certifications", load: () => import("./content/Certifications") },
+  { id: "contact", name: "Mail", icon: "contact", load: () => import("./content/Mail") },
+  { id: "resume", name: "Resume", icon: "resume", load: () => import("./content/Resume") },
   { id: "terminal", name: "Terminal", icon: "terminal" },
   { id: "settings", name: "Settings", icon: "settings" },
-  { id: "photos", name: "Photos", icon: "photos" },
-  { id: "browser", name: "Browser", icon: "browser" },
-  { id: "notes", name: "Notes", icon: "notes" },
+  { id: "photos", name: "Photos", icon: "photos", load: () => import("./content/Photos") },
+  { id: "browser", name: "Browser", icon: "browser", load: () => import("./content/Browser") },
+  { id: "notes", name: "Notes", icon: "notes", load: () => import("./content/Notes") },
 ];
 
 // Apps without a component yet (terminal, settings) stay out of the dock.
