@@ -15,7 +15,7 @@ folioOS is an original design. It borrows the grammar of desktop and mobile syst
 
 ## Status
 
-`v1.0.0`: all 14 milestones are done.
+`v1.1.0`: the 14 original milestones, plus a redesign (logo, design system, app layouts) and the everyday capabilities of a desktop OS.
 
 **Before going live, the owner still needs to add:**
 
@@ -30,15 +30,31 @@ folioOS is an original design. It borrows the grammar of desktop and mobile syst
 - Device detection picks the shell from viewport width, pointer type and user agent. A choice made in the switcher is remembered.
 - The device switcher (the "continuity strip" in Settings, the control centers and the folioDesk logo menu) relaunches the portfolio as any shell. The screen shrinks into the new device's outline and grows back as the new shell. On a big screen, folioPhone and folioPad open at device size in a frame.
 - First visits get a short boot (skippable, under two seconds), a guest login on folioDesk and a lock screen on folioPhone and folioPad. Repeat visits go straight in.
-- folioDesk windows drag, resize, minimise, maximise, snap to edges and keep their z-order. Their layout survives a reload.
+- folioDesk windows drag, resize, minimise into the dock, maximise and keep their z-order. Their layout survives a reload.
+- Snap layouts: drag a window to an edge or corner, hover the maximise button for halves, thirds and quarters, or use Ctrl+Alt with the arrow keys.
+- Three virtual desktops: switch from the menu bar, mission control or Alt+1 to Alt+3, and move windows between them.
+- A launcher with every app (F4, or the first dock icon), and an App Library one swipe left on folioPhone.
+- Right-click menus on the desktop, window title bars and the dock; desktop shortcuts; File, View, Window and Help menus in the menu bar.
+- A power menu in every shell: lock, sleep, restart (replays the boot) and shut down.
 - Spotlight (Ctrl+Space or Ctrl+K) searches apps, roles, skills, projects and certifications, and jumps straight to the matching item.
 - Mission control (Ctrl+Up or F3) shows every open window. The phone and tablet have an app switcher.
-- Settings: theme (system, light, dark, or auto by local time), accent colour, wallpaper, reduced motion, sound, low-power mode, the device switcher, the firewall panel and privacy.
-- Notifications reach every shell through one system, as toasts and in a notification center or shade.
+- Settings: theme (system, light, dark, or auto by local time), accent colour, wallpaper, brightness, night light, text size, high contrast, a bigger pointer, reduced motion, sound and volume, focus mode, low-power mode, the device switcher, the firewall panel and privacy.
+- Quick settings in every control center, with brightness and volume sliders and toggles for sound, focus, night light and reduced motion.
+- Notifications reach every shell through one system, as toasts and in a notification center or shade, with a mini calendar. Focus mode keeps them quiet. Cards swipe away on touch.
+- Ctrl+/ shows every keyboard shortcut.
+- Deep links such as `/?app=experience&item=role-santan-lead` open straight to an app and a section, and every app can share its link.
+- Installs as an app (web app manifest), and a service worker keeps it working offline.
 
 **Apps**
 
-About, Experience, Projects, Skills, Certifications, Mail, Resume, Photos, Browser, Notes, Terminal, Settings, Guestbook, and one secret app.
+About, Experience, Projects, Skills, Certifications, Mail, Resume, Photos, Browser, Notes, Terminal, Settings, Guestbook, Files, Calendar, Clock, Calculator, Text Editor, Activity Monitor, About folioOS, and one secret app.
+
+- **Files:** the portfolio as folders and files (documents, roles, projects, certificates, links), with list and grid views, a preview and "Open".
+- **Calendar:** a real month view with career milestones taken from the experience and certification records.
+- **Clock:** world clock, timer, stopwatch and an in-tab alarm.
+- **Calculator:** basic and scientific modes. Spotlight answers sums too.
+- **Text Editor:** a scratchpad that stays in the browser and downloads as .txt.
+- **Activity Monitor:** frame rate, JS memory, network and uptime, as the browser reports them.
 
 - **Terminal:** `help`, `whoami`, `ls`, `cat`, `open <app>`, `resume`, `theme`, `history`, tab completion and command history. A few hidden commands too.
 - **Mail:** posts to a real, rate limited, moderated endpoint. It only says "sent" when the relay accepted the message.
@@ -74,6 +90,7 @@ About, Experience, Projects, Skills, Certifications, Mail, Resume, Photos, Brows
 - `/plain` has the whole portfolio as semantic HTML with no OS chrome. A skip link reaches it first, and it is offered automatically on weak devices.
 - Every app works by keyboard. Windows and dialogs trap and return focus.
 - Reduced motion is respected, from the OS setting or the one in Settings.
+- Text size, high contrast and a bigger pointer in Settings. Screen readers hear when windows open and close and when the desktop changes.
 - `/privacy` explains in plain language what is stored and why.
 
 ## Run it
@@ -133,10 +150,10 @@ Measured on a production build, with each shell's first screen loaded:
 
 | Shell | JavaScript (gzip) |
 | --- | --- |
-| folioPhone | 198 KB |
-| folioPad | 200 KB |
-| folioDesk | 201 KB |
-| folioVision | 435 KB, including Three.js, which loads only when folioVision is entered |
+| folioPhone | 208 KB |
+| folioPad | 209 KB |
+| folioDesk | 218 KB |
+| folioVision | 450 KB, including Three.js, which loads only when folioVision is entered |
 
 Each shell is its own chunk, so a phone never downloads folioDesk or folioVision. App content loads when the app opens.
 
@@ -162,7 +179,7 @@ src/
     pad/          folioPad
     vision/       folioVision (lazy loaded)
     shared/       pieces the shells share: spotlight, sheets, widgets, boot, toasts
-  design/         tokens, wallpapers, the folioOS icon set
+  design/         tokens, wallpapers, the logo, app icon tiles and line icons
   lib/            server side: store, rate limits, hashing, moderation, threat log
 party/            PartyKit presence server
 ```

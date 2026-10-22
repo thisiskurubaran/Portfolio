@@ -6,7 +6,7 @@ Three developer portfolios by Kurubaran Anandhan, each one a different way to br
 | --- | --- | --- |
 | [Lighthouse Portfolio](Lighthouse%20Portfolio/) | Keep a lighthouse at night. Sweep the beam across the sea to find projects sailing past as ships. | `v0.7.0` |
 | [Mars Mission Portfolio](Mars%20Mission%20Portfolio/) | Fly a crewed mission from Earth to Mars. Projects, roles and skills sit along the route as stations and landing sites. | `v0.11.0` |
-| [Operating System Portfolio](Operating%20System%20Portfolio/) | folioOS, an invented operating system. The site boots a desktop, phone, tablet or spatial shell to match the device, and the portfolio runs as its apps. | `v1.0.0` |
+| [Operating System Portfolio](Operating%20System%20Portfolio/) | folioOS, an invented operating system. The site boots a desktop, phone, tablet or spatial shell to match the device, and the portfolio runs as its apps. | `v1.1.0` |
 
 Each project has its own README with what it does, how it is built and where it stands.
 
