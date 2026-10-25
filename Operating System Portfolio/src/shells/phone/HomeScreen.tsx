@@ -1,165 +1,264 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { experience } from "@/content";
+import { experience, profile } from "@/content";
 import { AppIcon } from "@/design/AppIcon";
-import { Icon } from "@/design/icons";
+import { Icon, type IconName } from "@/design/icons";
 import { launchable, pinned, type AppId } from "@/os/apps/registry";
 import { safeStorage } from "@/os/state/storage";
-import { useClock } from "@/os/system/clock";
+import { formatInZone, useClock, worldZones } from "@/os/system/clock";
 import { haptic } from "@/os/system/haptics";
-import { useGridKeys } from "@/shells/shared/useGridKeys";
-import { useSwipe } from "@/shells/shared/useSwipe";
-import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
-import { usePhone } from "./state";
+import { useWeather } from "@/os/system/weather";
+import { describeWeather } from "@/os/system/weatherTypes";
+import { originOf, usePhone } from "./state";
 
 const DOCK: AppId[] = ["about", "experience", "projects", "contact"];
-const COLUMNS = 4;
 
-type WidgetId = "clock" | "now" | "weather" | "world";
+type WidgetId = "clock" | "weather";
 
-// F35: the visitor can reorder home screen widgets; the order is remembered.
-const useWidgetOrder = create<{ order: WidgetId[]; move: (id: WidgetId, by: -1 | 1) => void }>()(
-  persist(
-    (set) => ({
-      order: ["clock", "now", "weather", "world"],
-      move: (id, by) =>
-        set((s) => {
-          const order = [...s.order];
-          const i = order.indexOf(id);
-          const j = i + by;
-          if (j < 0 || j >= order.length) return s;
-          [order[i], order[j]] = [order[j]!, order[i]!];
-          return { order };
-        }),
-    }),
-    { name: "folioos.phone-widgets", storage: createJSONStorage(() => safeStorage) },
-  ),
+// F35: the two small widgets can swap places; the order is remembered.
+const useWidgetOrder = create<{ order: WidgetId[]; swap: () => void }>()(
+  persist((set) => ({ order: ["clock", "weather"], swap: () => set((s) => ({ order: [s.order[1]!, s.order[0]!] })) }), {
+    name: "folioos.phone-widgets-v2",
+    storage: createJSONStorage(() => safeStorage),
+  }),
 );
 
-function AppButton({ id, label, icon }: { id: AppId; label: string; icon: Parameters<typeof Icon>[0]["name"] }) {
+function AppButton({ id, label, icon, showLabel = true }: { id: AppId; label: string; icon: IconName; showLabel?: boolean }) {
   const openApp = usePhone((s) => s.openApp);
   return (
     <button
-      onClick={() => {
+      onClick={(e) => {
         haptic();
-        openApp(id);
+        openApp(id, originOf(e.currentTarget.querySelector("[data-icon]") ?? e.currentTarget));
       }}
-      className="flex flex-col items-center gap-1.5 rounded-xl p-1 transition-transform active:scale-95"
+      aria-label={label}
+      className="flex flex-col items-center gap-1.5 transition-transform active:scale-90"
     >
-      <AppIcon id={id} icon={icon} size={58} />
-      <span className="text-[11px] font-medium [text-shadow:0_1px_2px_rgb(0_0_0/0.35)]">{label}</span>
+      <span data-icon>
+        <AppIcon id={id} icon={icon} size={60} />
+      </span>
+      {showLabel && <span className="home-label max-w-[72px] truncate text-[11px] font-medium">{label}</span>}
     </button>
   );
 }
 
-const tile = "h-full rounded-[22px] border border-line bg-surface/55 p-3.5 shadow-2 backdrop-blur-2xl";
+// Widgets: vivid backgrounds, rounded like the icons, sized to the grid.
+function ProfileWidget() {
+  const current = experience[0]!;
+  const openApp = usePhone((s) => s.openApp);
+  return (
+    <button
+      onClick={(e) => openApp("about", originOf(e.currentTarget))}
+      className="col-span-4 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-left text-white shadow-2"
+      style={{ background: "radial-gradient(circle at 85% 15%, #b38bff 0%, transparent 55%), linear-gradient(140deg, #5a52f5, #8b4fe8 60%, #c2459b)" }}
+    >
+      <span className="flex items-center gap-3">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-lg font-bold ring-2 ring-white/40">KA</span>
+        <span className="min-w-0">
+          <span className="block truncate text-[17px] font-bold">{profile.name}</span>
+          <span className="block truncate text-[13px] text-white/80">{current.title.split(" (")[0]}</span>
+        </span>
+      </span>
+      <span className="flex items-end justify-between">
+        <span className="text-[13px] text-white/85">{current.company}</span>
+        <span className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#4ff28f]" /> Open to work
+        </span>
+      </span>
+    </button>
+  );
+}
 
 function ClockWidget() {
-  const now = useClock();
+  const now = useClock(15_000);
   return (
-    <div className={tile}>
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted" suppressHydrationWarning>
-        {now?.toLocaleDateString([], { weekday: "long" })}
-      </p>
-      <p className="mt-1 font-display text-3xl font-bold tabular-nums" suppressHydrationWarning>
-        {now?.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M/i, "")}
-      </p>
-      <p className="text-xs text-muted" suppressHydrationWarning>
-        {now?.toLocaleDateString([], { month: "long", day: "numeric" })}
-      </p>
+    <div className="mat-regular col-span-2 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-paper">
+      <span className="text-[13px] font-semibold text-sys-red" suppressHydrationWarning>
+        {now?.toLocaleDateString([], { weekday: "long" }).toUpperCase()}
+      </span>
+      <span>
+        <span className="block text-[40px] font-bold leading-none tracking-tight tabular-nums" suppressHydrationWarning>
+          {now?.getDate()}
+        </span>
+        <span className="mt-1 block text-[13px] text-muted" suppressHydrationWarning>
+          {now?.toLocaleDateString([], { month: "long" })} · {now?.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+        </span>
+      </span>
     </div>
   );
 }
 
-function NowWidget() {
-  const current = experience[0]!;
+function WeatherTile() {
+  const { status, weather } = useWeather();
+  return (
+    <div className="col-span-2 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-white shadow-2" style={{ background: "linear-gradient(170deg, #3d8bff, #6cb6ff 70%, #9fd0ff)" }}>
+      <span className="truncate text-[13px] font-semibold">{weather?.city ?? "Weather"}</span>
+      {status !== "done" ? (
+        <span className="text-sm text-white/85">Checking</span>
+      ) : weather ? (
+        <span>
+          <span className="block text-[40px] font-semibold leading-none tracking-tight">{weather.temperature}°</span>
+          <span className="mt-1 block text-[13px] text-white/90">{describeWeather(weather.code)}</span>
+        </span>
+      ) : (
+        <span className="text-[13px] leading-snug text-white/90">Weather is not available for this connection.</span>
+      )}
+    </div>
+  );
+}
+
+function WorldWidget() {
+  const now = useClock(30_000);
+  return (
+    <div className="mat-regular col-span-4 grid h-[110px] grid-cols-4 items-center rounded-[26px] px-3 text-paper">
+      {worldZones.slice(0, 4).map((z) => (
+        <div key={z.zone} className="text-center">
+          <p className="truncate text-[11px] font-semibold text-muted">{z.city}</p>
+          <p className="mt-1 text-[15px] font-semibold tabular-nums" suppressHydrationWarning>
+            {now ? formatInZone(now, z.zone).replace(/\s?[AP]M/i, "") : ""}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const smallWidgets: Record<WidgetId, () => ReactNode> = { clock: () => <ClockWidget />, weather: () => <WeatherTile /> };
+
+// The last page: every app A to Z, with a filter.
+function AppLibrary() {
+  const [q, setQ] = useState("");
+  const apps = useMemo(
+    () => [...launchable].sort((a, b) => a.name.localeCompare(b.name)).filter((a) => a.name.toLowerCase().includes(q.trim().toLowerCase())),
+    [q],
+  );
+  return (
+    <div className="flex h-full flex-col">
+      <label className="mat-regular mb-4 flex h-10 items-center gap-2 rounded-xl px-3 text-paper">
+        <Icon name="search" size={16} className="text-muted" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="App Library" aria-label="Search apps" className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted" />
+      </label>
+      <ul className="mat-regular min-h-0 flex-1 divide-y divide-line overflow-auto rounded-[22px] text-paper">
+        {apps.map((a) => (
+          <li key={a.id}>
+            <AppRow id={a.id} name={a.name} icon={a.icon} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function AppRow({ id, name, icon }: { id: AppId; name: string; icon: IconName }) {
   const openApp = usePhone((s) => s.openApp);
   return (
-    <button onClick={() => openApp("experience")} className={`${tile} w-full text-left`}>
-      <span className="flex items-center gap-2">
-        <AppIcon id="experience" icon="experience" size={22} />
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-accent-fg">Now</span>
+    <button onClick={(e) => openApp(id, originOf(e.currentTarget.querySelector("[data-icon]") ?? e.currentTarget))} className="flex w-full items-center gap-3 px-3 py-2 text-left active:bg-glass">
+      <span data-icon>
+        <AppIcon id={id} icon={icon} size={36} />
       </span>
-      <p className="mt-2 line-clamp-2 text-sm font-semibold leading-snug">{current.title.split(" (")[0]}</p>
-      <p className="mt-0.5 truncate text-xs text-muted">{current.company}</p>
+      <span className="flex-1 text-[15px]">{name}</span>
+      <Icon name="chevron" size={14} className="text-subtle" />
     </button>
   );
 }
 
-const widgetSkin = "!h-full !rounded-[22px] !border !border-line !bg-surface/55 !p-3.5 !shadow-2";
-
-const widgets: Record<WidgetId, { label: string; render: () => ReactNode }> = {
-  clock: { label: "Clock", render: () => <ClockWidget /> },
-  now: { label: "Now", render: () => <NowWidget /> },
-  weather: { label: "Weather", render: () => <WeatherWidget className={widgetSkin} /> },
-  world: { label: "World clock", render: () => <WorldClockWidget zones={2} className={`${widgetSkin} text-xs`} /> },
-};
-
 export function HomeScreen() {
-  const gridKeys = useGridKeys(COLUMNS);
-  const dockApps = launchable.filter((a) => DOCK.includes(a.id));
-  // The rest of the apps live in the App Library, one swipe away.
-  const gridApps = launchable.filter((a) => pinned.includes(a.id) && !DOCK.includes(a.id));
   const setOverlay = usePhone((s) => s.setOverlay);
-  const { order, move } = useWidgetOrder();
+  const { order, swap } = useWidgetOrder();
   const [editing, setEditing] = useState(false);
-  // Swiping left from the home screen opens the App Library, as a second page would.
-  const swipe = useSwipe((dir) => {
-    if (dir !== "left") return;
-    haptic();
-    setOverlay("launcher");
-  });
+  const [page, setPage] = useState(0);
+  const pager = useRef<HTMLDivElement>(null);
+  const pressTimer = useRef(0);
+
+  const dockApps = launchable.filter((a) => DOCK.includes(a.id));
+  const firstPage = launchable.filter((a) => pinned.includes(a.id) && !DOCK.includes(a.id));
+  const secondPage = launchable.filter((a) => !pinned.includes(a.id) && !DOCK.includes(a.id));
+  const PAGES = 3;
+
+  // Long press on a widget enters edit mode, as on a real phone.
+  const pressStart = () => {
+    pressTimer.current = window.setTimeout(() => {
+      haptic(20);
+      setEditing(true);
+    }, 550);
+  };
+  const pressEnd = () => window.clearTimeout(pressTimer.current);
+
+  const goTo = (i: number) => pager.current?.scrollTo({ left: i * pager.current.clientWidth, behavior: "smooth" });
+
   return (
-    <div {...swipe} className="flex min-h-0 flex-1 touch-pan-y flex-col overflow-y-auto px-5 pb-4">
-      <button
-        onClick={() => setOverlay("search")}
-        className="mb-3 flex h-10 shrink-0 items-center gap-2 rounded-2xl border border-line bg-surface/55 px-4 text-left text-sm shadow-1 backdrop-blur-xl"
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div
+        ref={pager}
+        onScroll={(e) => setPage(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
+        className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <Icon name="search" size={16} className="text-muted" />
-        <span className="text-muted">Search</span>
-      </button>
-
-      <section aria-label="Widgets" className="grid shrink-0 auto-rows-[112px] grid-cols-2 gap-3">
-        {order.map((id, i) => (
-          <div key={id} className={`relative ${editing ? "folio-wiggle" : ""}`}>
-            {widgets[id].render()}
-            {editing && (
-              <div className="absolute inset-x-2 bottom-2 flex justify-between">
-                <button aria-label={`Move ${widgets[id].label} earlier`} disabled={i === 0} onClick={() => move(id, -1)} className="rounded-full bg-ink/80 p-1.5 text-paper disabled:opacity-30">
-                  <Icon name="chevron" size={14} className="rotate-180" />
-                </button>
-                <button
-                  aria-label={`Move ${widgets[id].label} later`}
-                  disabled={i === order.length - 1}
-                  onClick={() => move(id, 1)}
-                  className="rounded-full bg-ink/80 p-1.5 text-paper disabled:opacity-30"
-                >
-                  <Icon name="chevron" size={14} />
-                </button>
+        <section aria-label="Home page 1" className="w-full shrink-0 snap-start overflow-y-auto px-5 pt-2">
+          <div className="grid grid-cols-4 gap-x-3 gap-y-4" onPointerDown={pressStart} onPointerUp={pressEnd} onPointerLeave={pressEnd} onPointerCancel={pressEnd}>
+            <ProfileWidget />
+            {order.map((id) => (
+              <div key={id} className={`col-span-2 ${editing ? "folio-wiggle" : ""}`}>
+                <div className="grid grid-cols-2">{smallWidgets[id]()}</div>
               </div>
-            )}
+            ))}
           </div>
-        ))}
-      </section>
-      <button onClick={() => setEditing((e) => !e)} className="mt-2 self-end rounded-full bg-glass px-3 py-1 text-xs font-medium backdrop-blur-xl">
-        {editing ? "Done" : "Edit widgets"}
-      </button>
+          {editing && (
+            <div className="mt-3 flex justify-center gap-2">
+              <button onClick={swap} className="mat-regular rounded-full px-4 py-1.5 text-[13px] font-semibold text-paper">
+                Swap widgets
+              </button>
+              <button onClick={() => setEditing(false)} className="rounded-full bg-paper px-4 py-1.5 text-[13px] font-semibold text-ink">
+                Done
+              </button>
+            </div>
+          )}
+          <nav aria-label="Apps" className="mt-5 grid grid-cols-4 gap-x-3 gap-y-5">
+            {firstPage.map((a) => (
+              <AppButton key={a.id} id={a.id} label={a.name} icon={a.icon} />
+            ))}
+          </nav>
+        </section>
 
-      <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-3 grid shrink-0 grid-cols-4 content-start gap-x-2 gap-y-4">
-        {gridApps.map((app) => (
-          <AppButton key={app.id} id={app.id} label={app.name} icon={app.icon} />
-        ))}
-        <button onClick={() => setOverlay("launcher")} className="flex flex-col items-center gap-1.5 rounded-xl p-1 transition-transform active:scale-95">
-          <AppIcon id="launcher" icon="launcher" size={58} />
-          <span className="text-[11px] font-medium [text-shadow:0_1px_2px_rgb(0_0_0/0.35)]">All apps</span>
+        <section aria-label="Home page 2" className="w-full shrink-0 snap-start overflow-y-auto px-5 pt-2">
+          <div className="grid grid-cols-4 gap-x-3">
+            <WorldWidget />
+          </div>
+          <nav aria-label="More apps" className="mt-5 grid grid-cols-4 gap-x-3 gap-y-5">
+            {secondPage.map((a) => (
+              <AppButton key={a.id} id={a.id} label={a.name} icon={a.icon} />
+            ))}
+          </nav>
+        </section>
+
+        <section aria-label="App Library" className="w-full shrink-0 snap-start px-5 pb-3 pt-2">
+          <AppLibrary />
+        </section>
+      </div>
+
+      <div className="flex shrink-0 flex-col items-center gap-2 py-2">
+        <div role="tablist" aria-label="Pages" className="flex items-center gap-2">
+          {Array.from({ length: PAGES }, (_, i) => (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={page === i}
+              aria-label={i === PAGES - 1 ? "App Library" : `Page ${i + 1}`}
+              onClick={() => goTo(i)}
+              className={`h-[7px] w-[7px] rounded-full transition-colors ${page === i ? "home-dot-on" : "home-dot-off"}`}
+            />
+          ))}
+        </div>
+        <button onClick={() => setOverlay("search")} className="mat-thin flex h-8 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-medium text-paper">
+          <Icon name="search" size={13} /> Search
         </button>
-      </nav>
-      <nav aria-label="Dock" onKeyDown={gridKeys} className="mt-auto grid shrink-0 grid-cols-4 gap-2 rounded-[28px] border border-line bg-surface/50 p-3 pt-4 shadow-3 backdrop-blur-2xl">
-        {dockApps.map((app) => (
-          <AppButton key={app.id} id={app.id} label={app.name} icon={app.icon} />
+      </div>
+
+      <nav aria-label="Dock" className="mat-thin mx-3 mb-4 grid shrink-0 grid-cols-4 justify-items-center rounded-[34px] px-3 py-3">
+        {dockApps.map((a) => (
+          <AppButton key={a.id} id={a.id} label={a.name} icon={a.icon} showLabel={false} />
         ))}
       </nav>
     </div>

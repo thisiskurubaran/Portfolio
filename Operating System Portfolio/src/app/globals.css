@@ -408,3 +408,30 @@ h3 {
       4 2,
     auto !important;
 }
+
+/* Home screen labels sit on the wallpaper: white with a soft shadow in dark,
+   ink in light, where the wallpapers are pastel. */
+.home-label {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+:root[data-theme="light"] .home-label {
+  color: var(--color-paper);
+  text-shadow: none;
+}
+.home-dot-on {
+  background: #ffffff;
+}
+.home-dot-off {
+  background: rgb(255 255 255 / 0.45);
+}
+:root[data-theme="light"] .home-dot-on {
+  background: var(--color-paper);
+}
+:root[data-theme="light"] .home-dot-off {
+  background: rgb(17 17 20 / 0.25);
+}
+
+.phone-app [data-app-title] h2 {
+  display: none;
+}
