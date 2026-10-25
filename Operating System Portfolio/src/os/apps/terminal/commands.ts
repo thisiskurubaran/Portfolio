@@ -65,7 +65,7 @@ export const commands: Record<string, Command> = {
     run: ({ args }) => {
       const name = args[0];
       if (!name) return ["usage: cat <file>"];
-      const key = files[name] ? name : Object.keys(files).find((f) => f.split(".")[0] === name);
+      const key = Object.hasOwn(files, name) ? name : Object.keys(files).find((f) => f.split(".")[0] === name);
       return key ? files[key]!() : [`cat: ${name}: no such file`];
     },
   },
@@ -160,7 +160,8 @@ export const commands: Record<string, Command> = {
 export function runCommand(input: string, ctx: Omit<CommandContext, "args">): string[] {
   const [name, ...args] = input.trim().split(/\s+/);
   if (!name) return [];
-  const command = commands[name.toLowerCase()];
+  // Own keys only, so "constructor" or "toString" is just an unknown command.
+  const command = Object.hasOwn(commands, name.toLowerCase()) ? commands[name.toLowerCase()] : undefined;
   if (!command) return [`${name}: command not found. Type "help".`];
   return command.run({ ...ctx, args });
 }
