@@ -7,9 +7,11 @@ export function Page({ children, wide = false }: { children: ReactNode; wide?: b
   return <div className={`mx-auto space-y-7 p-6 ${wide ? "max-w-4xl" : "max-w-3xl"}`}>{children}</div>;
 }
 
-export function SectionHeader({ title, detail, action }: { title: string; detail?: string; action?: ReactNode }) {
+// "primary" marks the heading that repeats the app's name; the phone hides it
+// there, because its large title already says it.
+export function SectionHeader({ title, detail, action, primary = false }: { title: string; detail?: string; action?: ReactNode; primary?: boolean }) {
   return (
-    <div className="mb-3 flex items-end gap-3">
+    <div className="mb-3 flex items-end gap-3" data-app-title={primary || undefined}>
       <div className="min-w-0 flex-1">
         <h2 className="text-[15px] font-semibold">{title}</h2>
         {detail && <p className="text-xs text-muted">{detail}</p>}

@@ -41,6 +41,7 @@ export default function Skills() {
   return (
     <Page wide>
       <SectionHeader
+        primary
         title="Skills"
         detail={`${total} skills in ${Object.keys(skills).length} groups`}
         action={

@@ -7,7 +7,7 @@ import { slug } from "@/os/system/search";
 export default function Certifications() {
   return (
     <Page>
-      <SectionHeader title="Certifications" detail={`${certifications.length} verified credentials`} />
+      <SectionHeader primary title="Certifications" detail={`${certifications.length} verified credentials`} />
       <ul className="grid gap-3 sm:grid-cols-2">
         {certifications.map((cert) => (
           <li key={cert.name} id={anchorId(`cert-${slug(cert.name)}`)} className="flex flex-col rounded-card border border-line bg-raised p-4 shadow-1">

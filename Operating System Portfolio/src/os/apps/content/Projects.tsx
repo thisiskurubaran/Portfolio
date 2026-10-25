@@ -6,7 +6,7 @@ import { anchorId } from "@/os/system/launcher";
 export default function Projects() {
   return (
     <Page>
-      <SectionHeader title="Projects" detail={projects.length === 1 ? "One featured project" : `${projects.length} projects`} />
+      <SectionHeader primary title="Projects" detail={projects.length === 1 ? "One featured project" : `${projects.length} projects`} />
       <ul className="space-y-5">
         {projects.map((project) => (
           <li key={project.id} id={anchorId(`project-${project.id}`)} className="overflow-hidden rounded-card border border-line bg-raised shadow-2">

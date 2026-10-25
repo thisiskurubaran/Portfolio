@@ -7,7 +7,7 @@ export default function Notes() {
   }
   return (
     <Page>
-      <SectionHeader title="Notes" detail={`${notes.length} published`} />
+      <SectionHeader primary title="Notes" detail={`${notes.length} published`} />
       <ul className="space-y-3">
         {notes.map((note) => (
           <Card as="li" key={note.slug}>

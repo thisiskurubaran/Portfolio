@@ -17,7 +17,7 @@ export default function Experience() {
   const groups = groupByCompany(experience);
   return (
     <Page>
-      <SectionHeader title="Experience" detail={`${experience.length} roles, newest first`} />
+      <SectionHeader primary title="Experience" detail={`${experience.length} roles, newest first`} />
       <ol className="relative space-y-6 border-l border-line pl-6">
         {groups.map((group) => (
           <li key={group.company + group.roles[0]!.id} className="relative">
