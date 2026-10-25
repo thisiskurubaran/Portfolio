@@ -67,7 +67,7 @@ export function DragTile({ id, icon, label, size = 60 }: { id: AppId; icon: Icon
       className="flex touch-none select-none flex-col items-center gap-1.5 rounded-xl p-1 transition-transform active:scale-95"
     >
       <AppIcon id={id} icon={icon} size={size} />
-      {label && <span className="text-xs font-medium [text-shadow:0_1px_2px_rgb(0_0_0/0.3)]">{label}</span>}
+      {label && <span className="home-label max-w-[84px] truncate text-[12px] font-medium">{label}</span>}
     </button>
   );
 }

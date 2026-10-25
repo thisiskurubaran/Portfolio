@@ -1,72 +1,76 @@
 "use client";
 
-import { experience, profile } from "@/content";
+import { useEffect, useState } from "react";
 import { AppIcon } from "@/design/AppIcon";
-import { Icon } from "@/design/icons";
-import { launchable, type AppId } from "@/os/apps/registry";
-import { formatDate, formatTime, useClock } from "@/os/system/clock";
+import { getApp, launchable, type AppDefinition, type AppId } from "@/os/apps/registry";
+import { ClockWidget, ProfileWidget, WeatherTile, WorldWidget } from "@/shells/shared/HomeWidgets";
 import { useGridKeys } from "@/shells/shared/useGridKeys";
-import { WeatherWidget, WorldClockWidget } from "@/shells/shared/widgets";
 import { DragTile } from "./dnd";
 import { usePad } from "./state";
 
-const DOCK: AppId[] = ["about", "experience", "projects", "contact", "terminal", "settings"];
-const COLUMNS = 6;
+const DOCK: AppId[] = ["about", "experience", "projects", "contact", "files", "terminal", "settings"];
 
-function AppTile({ id, label, icon, size = 60 }: { id: AppId; label?: string; icon: Parameters<typeof Icon>[0]["name"]; size?: number }) {
-  return <DragTile id={id} icon={icon} label={label} size={size} />;
+// Landscape gets one row of widgets and a wider grid, like a real tablet.
+function useWide() {
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(min-aspect-ratio: 5/4)");
+    const update = () => setWide(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return wide;
 }
 
+// folioPad's home: widgets across the top, a grid of apps, and a
+// large frosted dock with pinned apps, then recent ones after a divider.
 export function PadHome() {
-  const now = useClock();
-  const gridKeys = useGridKeys(COLUMNS);
-  const current = experience[0];
-  const pick = usePad((s) => s.pick);
+  const wide = useWide();
+  const columns = wide ? 8 : 6;
+  const gridKeys = useGridKeys(columns);
+  const dockKeys = useGridKeys(99);
+  const recents = usePad((s) => s.recents);
+  const setOverlay = usePad((s) => s.setOverlay);
   const gridApps = launchable.filter((a) => !DOCK.includes(a.id));
-  const dockApps = DOCK.map((id) => launchable.find((a) => a.id === id)!).filter(Boolean);
+  const dockApps = DOCK.map(getApp).filter((a): a is AppDefinition => !!a);
+  const recentApps = recents
+    .filter((id) => !DOCK.includes(id))
+    .slice(0, 3)
+    .map(getApp)
+    .filter((a): a is AppDefinition => !!a);
+
   return (
-    <div className="flex h-full flex-col px-10 pb-5 pt-4">
-      <section aria-label="Widgets" className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <div className="rounded-[22px] border border-line bg-surface/55 p-5 shadow-2 backdrop-blur-2xl">
-          <p className="font-display text-4xl font-bold tabular-nums" suppressHydrationWarning>
-            {now ? formatTime(now).replace(/\s?([AP]M)$/i, "") : ""}
-            <span className="ml-1 text-base font-semibold text-muted">{now ? (formatTime(now).match(/[AP]M$/i)?.[0] ?? "") : ""}</span>
-          </p>
-          <p className="mt-1 text-sm text-muted" suppressHydrationWarning>{now ? formatDate(now) : ""}</p>
-        </div>
-        <WeatherWidget className="!rounded-[22px] !border !border-line !bg-surface/55 !p-5 !shadow-2" />
-        <div className="rounded-[22px] border border-line bg-surface/55 p-5 shadow-2 backdrop-blur-2xl">
-          <p className="text-xs uppercase tracking-wide text-accent-fg">Now</p>
-          <p className="mt-1 text-sm font-medium">{current.title.split(" (")[0]}</p>
-          <p className="text-xs text-muted">{current.company}</p>
-        </div>
-        <WorldClockWidget className="!rounded-[22px] !border !border-line !bg-surface/55 !p-5 !shadow-2" zones={3} />
-        <div className="col-span-full flex items-center gap-4 rounded-3xl bg-glass px-5 py-3 backdrop-blur-xl">
-          <p className="text-sm font-medium">{profile.name}</p>
-          <p className="text-xs text-muted">{profile.location}</p>
-          <div className="ml-auto flex gap-2 text-xs">
-            <button onClick={() => pick("split")} className="rounded-full bg-glass-strong px-3 py-1">
-              Split view
-            </button>
-            <button onClick={() => pick("slide")} className="rounded-full bg-glass-strong px-3 py-1">
-              Slide-over
-            </button>
-          </div>
-        </div>
+    <div className="flex h-full flex-col px-10 pb-4 pt-3">
+      <section aria-label="Widgets" className={`grid shrink-0 gap-4 ${wide ? "grid-cols-12" : "grid-cols-6"}`}>
+        <ProfileWidget className={wide ? "col-span-5" : "col-span-4"} />
+        <ClockWidget className="col-span-2" />
+        <WeatherTile className="col-span-2" />
+        <WorldWidget className={wide ? "col-span-3 !h-[152px] !grid-cols-2 gap-y-1 py-3" : "col-span-4 !h-[152px]"} />
       </section>
-      <nav aria-label="Apps" onKeyDown={gridKeys} className="mt-8 grid grid-cols-6 content-start gap-x-4 gap-y-6">
-        {gridApps.map((app) => (
-          <AppTile key={app.id} id={app.id} label={app.name} icon={app.icon} />
+
+      <nav
+        aria-label="Apps"
+        onKeyDown={gridKeys}
+        className="mt-7 grid min-h-0 flex-1 content-start gap-x-4 gap-y-6 overflow-y-auto pb-4"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {gridApps.map((a) => (
+          <DragTile key={a.id} id={a.id} icon={a.icon} label={a.name} size={68} />
         ))}
       </nav>
-      <nav aria-label="Dock" onKeyDown={useGridKeys(99)} className="mx-auto mt-auto flex gap-3 rounded-[28px] border border-line bg-surface/50 p-3 shadow-3 backdrop-blur-2xl">
-        <button onClick={() => usePad.getState().setOverlay("launcher")} aria-label="All apps" className="flex flex-col items-center gap-1.5 rounded-xl p-1">
-          <AppIcon id="launcher" icon="launcher" size={52} />
-          <span className="text-xs">All apps</span>
-        </button>
-        {dockApps.map((app) => (
-          <AppTile key={app.id} id={app.id} icon={app.icon} label={app.name} size={52} />
+
+      <nav aria-label="Dock" onKeyDown={dockKeys} className="mat-thin mx-auto mt-2 flex shrink-0 items-center gap-3 rounded-[30px] px-4 py-3 shadow-3">
+        {dockApps.map((a) => (
+          <DragTile key={a.id} id={a.id} icon={a.icon} size={58} />
         ))}
+        <span aria-hidden className="mx-1 h-12 w-px bg-line-strong" />
+        {recentApps.map((a) => (
+          <DragTile key={a.id} id={a.id} icon={a.icon} size={58} />
+        ))}
+        <button onClick={() => setOverlay("launcher")} aria-label="All apps" className="rounded-xl transition-transform active:scale-95">
+          <AppIcon id="launcher" icon="launcher" size={58} />
+        </button>
       </nav>
     </div>
   );
