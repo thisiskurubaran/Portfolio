@@ -3,15 +3,12 @@
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { experience, profile } from "@/content";
 import { AppIcon } from "@/design/AppIcon";
 import { Icon, type IconName } from "@/design/icons";
 import { launchable, pinned, type AppId } from "@/os/apps/registry";
 import { safeStorage } from "@/os/state/storage";
-import { formatInZone, useClock, worldZones } from "@/os/system/clock";
 import { haptic } from "@/os/system/haptics";
-import { useWeather } from "@/os/system/weather";
-import { describeWeather } from "@/os/system/weatherTypes";
+import { ClockWidget, ProfileWidget, WeatherTile, WorldWidget } from "@/shells/shared/HomeWidgets";
 import { originOf, usePhone } from "./state";
 
 const DOCK: AppId[] = ["about", "experience", "projects", "contact"];
@@ -42,87 +39,6 @@ function AppButton({ id, label, icon, showLabel = true }: { id: AppId; label: st
       </span>
       {showLabel && <span className="home-label max-w-[72px] truncate text-[11px] font-medium">{label}</span>}
     </button>
-  );
-}
-
-// Widgets: vivid backgrounds, rounded like the icons, sized to the grid.
-function ProfileWidget() {
-  const current = experience[0]!;
-  const openApp = usePhone((s) => s.openApp);
-  return (
-    <button
-      onClick={(e) => openApp("about", originOf(e.currentTarget))}
-      className="col-span-4 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-left text-white shadow-2"
-      style={{ background: "radial-gradient(circle at 85% 15%, #b38bff 0%, transparent 55%), linear-gradient(140deg, #5a52f5, #8b4fe8 60%, #c2459b)" }}
-    >
-      <span className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-lg font-bold ring-2 ring-white/40">KA</span>
-        <span className="min-w-0">
-          <span className="block truncate text-[17px] font-bold">{profile.name}</span>
-          <span className="block truncate text-[13px] text-white/80">{current.title.split(" (")[0]}</span>
-        </span>
-      </span>
-      <span className="flex items-end justify-between">
-        <span className="text-[13px] text-white/85">{current.company}</span>
-        <span className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#4ff28f]" /> Open to work
-        </span>
-      </span>
-    </button>
-  );
-}
-
-function ClockWidget() {
-  const now = useClock(15_000);
-  return (
-    <div className="mat-regular col-span-2 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-paper">
-      <span className="text-[13px] font-semibold text-sys-red" suppressHydrationWarning>
-        {now?.toLocaleDateString([], { weekday: "long" }).toUpperCase()}
-      </span>
-      <span>
-        <span className="block text-[40px] font-bold leading-none tracking-tight tabular-nums" suppressHydrationWarning>
-          {now?.getDate()}
-        </span>
-        <span className="mt-1 block text-[13px] text-muted" suppressHydrationWarning>
-          {now?.toLocaleDateString([], { month: "long" })} · {now?.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
-        </span>
-      </span>
-    </div>
-  );
-}
-
-function WeatherTile() {
-  const { status, weather } = useWeather();
-  return (
-    <div className="col-span-2 flex h-[152px] flex-col justify-between rounded-[26px] p-4 text-white shadow-2" style={{ background: "linear-gradient(170deg, #3d8bff, #6cb6ff 70%, #9fd0ff)" }}>
-      <span className="truncate text-[13px] font-semibold">{weather?.city ?? "Weather"}</span>
-      {status !== "done" ? (
-        <span className="text-sm text-white/85">Checking</span>
-      ) : weather ? (
-        <span>
-          <span className="block text-[40px] font-semibold leading-none tracking-tight">{weather.temperature}°</span>
-          <span className="mt-1 block text-[13px] text-white/90">{describeWeather(weather.code)}</span>
-        </span>
-      ) : (
-        <span className="text-[13px] leading-snug text-white/90">Weather is not available for this connection.</span>
-      )}
-    </div>
-  );
-}
-
-function WorldWidget() {
-  const now = useClock(30_000);
-  return (
-    <div className="mat-regular col-span-4 grid h-[110px] grid-cols-4 items-center rounded-[26px] px-3 text-paper">
-      {worldZones.slice(0, 4).map((z) => (
-        <div key={z.zone} className="text-center">
-          <p className="truncate text-[11px] font-semibold text-muted">{z.city}</p>
-          <p className="mt-1 text-[15px] font-semibold tabular-nums" suppressHydrationWarning>
-            {now ? formatInZone(now, z.zone).replace(/\s?[AP]M/i, "") : ""}
-          </p>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -198,7 +114,7 @@ export function HomeScreen() {
       >
         <section aria-label="Home page 1" className="w-full shrink-0 snap-start overflow-y-auto px-5 pt-2">
           <div className="grid grid-cols-4 gap-x-3 gap-y-4" onPointerDown={pressStart} onPointerUp={pressEnd} onPointerLeave={pressEnd} onPointerCancel={pressEnd}>
-            <ProfileWidget />
+            <ProfileWidget onOpen={(e) => usePhone.getState().openApp("about", originOf(e.currentTarget))} />
             {order.map((id) => (
               <div key={id} className={`col-span-2 ${editing ? "folio-wiggle" : ""}`}>
                 <div className="grid grid-cols-2">{smallWidgets[id]()}</div>
