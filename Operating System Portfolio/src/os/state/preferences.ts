@@ -37,8 +37,8 @@ export const usePreferences = create<PreferencesStore>()(
   persist(
     (set) => ({
       theme: "system",
-      accent: "#4cc2a8",
-      wallpaper: "dynamic",
+      accent: "#3d8bff",
+      wallpaper: "horizon",
       reducedMotion: false,
       sound: false,
       volume: 0.6,
@@ -55,6 +55,21 @@ export const usePreferences = create<PreferencesStore>()(
       setReducedMotion: (reducedMotion) => set({ reducedMotion }),
       setSound: (sound) => set({ sound }),
     }),
-    { name: "folioos.preferences", version: 1, storage: createJSONStorage(() => safeStorage) },
+    {
+      name: "folioos.preferences",
+      version: 2,
+      storage: createJSONStorage(() => safeStorage),
+      // v2 changed the defaults to the blue accent and the Horizon wallpaper.
+      // Visitors still on the old defaults move to the new ones; choices they
+      // made themselves are kept.
+      migrate: (state, version) => {
+        const s = (state ?? {}) as Partial<PreferencesStore>;
+        if (version < 2) {
+          if (s.accent === "#4cc2a8") s.accent = "#3d8bff";
+          if (s.wallpaper === "dynamic") s.wallpaper = "horizon";
+        }
+        return s as PreferencesStore;
+      },
+    },
   ),
 );
