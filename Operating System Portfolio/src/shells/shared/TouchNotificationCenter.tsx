@@ -39,7 +39,7 @@ function Card({ n, onAction }: { n: Notification; onAction: () => void }) {
             runAction(n);
             onAction();
           }}
-          className="mt-2 rounded-full bg-accent px-3 py-1 text-[13px] font-semibold text-on-accent"
+          className="mt-2 rounded-full bg-accent-fill px-3 py-1 text-[13px] font-semibold text-on-accent"
         >
           {n.action.label}
         </button>

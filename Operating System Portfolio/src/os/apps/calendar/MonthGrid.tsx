@@ -24,7 +24,7 @@ export function MonthGrid({ year, month, today, marked = false, compact = false 
             key={d}
             role="gridcell"
             aria-current={isToday(d) ? "date" : undefined}
-            className={`relative flex items-center justify-center rounded-full tabular-nums ${compact ? "h-6" : "h-9"} ${isToday(d) ? "bg-accent font-semibold text-on-accent" : ""}`}
+            className={`relative flex items-center justify-center rounded-full tabular-nums ${compact ? "h-6" : "h-9"} ${isToday(d) ? "bg-accent-fill font-semibold text-on-accent" : ""}`}
           >
             {d}
             {marked && d === 1 && !isToday(d) && <span aria-hidden className="absolute bottom-0.5 h-1 w-1 rounded-full bg-accent" />}

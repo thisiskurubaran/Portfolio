@@ -16,7 +16,7 @@ export function LoginScreen({ onLogin }: { onLogin: () => void }) {
       </p>
       <div className="mt-10 flex h-20 w-20 items-center justify-center rounded-full bg-glass-strong text-2xl font-light">G</div>
       <p className="font-medium">Guest</p>
-      <button autoFocus onClick={onLogin} className="rounded-full bg-accent px-6 py-2 text-sm font-medium text-on-accent">
+      <button autoFocus onClick={onLogin} className="rounded-full bg-accent-fill px-6 py-2 text-sm font-medium text-on-accent">
         Log in as guest
       </button>
       <p className="mt-8 text-xs opacity-60">{profile.name}&apos;s folioOS</p>

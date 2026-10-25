@@ -63,7 +63,7 @@ export default function Mail() {
           </label>
           {/* Hidden from people and screen readers; bots tend to fill it. */}
           <input tabIndex={-1} aria-hidden autoComplete="off" value={form.website} onChange={set("website")} className="hidden" name="website" />
-          <button disabled={disabled} className="rounded-control bg-accent px-4 py-2 text-sm font-medium text-on-accent disabled:opacity-40">
+          <button disabled={disabled} className="rounded-control bg-accent-fill px-4 py-2 text-sm font-medium text-on-accent disabled:opacity-40">
             {state === "sending" ? "Sending" : "Send"}
           </button>
           {error && (

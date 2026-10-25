@@ -66,7 +66,7 @@ export function MenuBar() {
               aria-label={`Desktop ${n} (Alt+${n})`}
               aria-pressed={currentDesktop === n}
               title={`Desktop ${n} (Alt+${n})`}
-              className={`h-5 min-w-5 rounded px-1 text-[11px] font-semibold tabular-nums ${currentDesktop === n ? "bg-accent text-on-accent" : "text-muted hover:text-paper"}`}
+              className={`h-5 min-w-5 rounded px-1 text-[11px] font-semibold tabular-nums ${currentDesktop === n ? "bg-accent-fill text-on-accent" : "text-muted hover:text-paper"}`}
             >
               {n}
             </button>

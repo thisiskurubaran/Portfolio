@@ -70,7 +70,7 @@ export default function Calculator() {
             onClick={() => press(k)}
             aria-label={k === "⌫" ? "Delete" : k === "C" ? "Clear" : k}
             className={`min-h-12 rounded-control text-lg font-medium transition-colors ${
-              k === "=" ? "bg-accent text-on-accent hover:brightness-110" : "+-×÷".includes(k) ? "bg-accent/15 text-accent-fg hover:bg-accent/25" : "bg-raised ring-1 ring-line hover:bg-glass-strong"
+              k === "=" ? "bg-accent-fill text-on-accent hover:brightness-110" : "+-×÷".includes(k) ? "bg-accent/15 text-accent-fg hover:bg-accent/25" : "bg-raised ring-1 ring-line hover:bg-glass-strong"
             }`}
           >
             {k}

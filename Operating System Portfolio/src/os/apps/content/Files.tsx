@@ -126,7 +126,7 @@ export default function Files() {
               <pre className="mt-3 min-h-0 flex-1 overflow-auto whitespace-pre-wrap rounded-lg bg-glass p-2.5 font-sans text-xs leading-relaxed text-muted">
                 {file.preview}
               </pre>
-              <button onClick={() => openFile(file)} className="mt-3 rounded-control bg-accent px-3 py-1.5 text-sm font-medium text-on-accent">
+              <button onClick={() => openFile(file)} className="mt-3 rounded-control bg-accent-fill px-3 py-1.5 text-sm font-medium text-on-accent">
                 {"href" in file.open ? "Open link" : "Open"}
               </button>
             </aside>

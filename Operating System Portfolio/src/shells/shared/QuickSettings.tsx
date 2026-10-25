@@ -19,7 +19,7 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
       role="switch"
       aria-checked={on}
       onClick={() => onChange(!on)}
-      className={`rounded-2xl p-3 text-left text-sm ${on ? "bg-accent text-on-accent" : "bg-glass"}`}
+      className={`rounded-2xl p-3 text-left text-sm ${on ? "bg-accent-fill text-on-accent" : "bg-glass"}`}
     >
       {label}
       <span className="block text-xs opacity-70">{on ? "On" : "Off"}</span>
@@ -61,7 +61,7 @@ export function QuickSettings({ actions, onLock, onDone }: { actions?: ReactNode
             role="radio"
             aria-checked={prefs.theme === t.id}
             onClick={() => prefs.setTheme(t.id)}
-            className={`rounded-2xl px-1 py-3 text-sm ${prefs.theme === t.id ? "bg-accent text-on-accent" : "bg-glass"}`}
+            className={`rounded-2xl px-1 py-3 text-sm ${prefs.theme === t.id ? "bg-accent-fill text-on-accent" : "bg-glass"}`}
           >
             {t.label}
           </button>

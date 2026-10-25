@@ -38,7 +38,7 @@ export default function About() {
       <p className="max-w-prose text-[15px] leading-relaxed">{profile.bio}</p>
 
       <div className="flex flex-wrap gap-2">
-        <button onClick={() => launch("resume")} className="inline-flex items-center gap-1.5 rounded-control bg-accent px-3.5 py-2 text-sm font-medium text-on-accent hover:brightness-110">
+        <button onClick={() => launch("resume")} className="inline-flex items-center gap-1.5 rounded-control bg-accent-fill px-3.5 py-2 text-sm font-medium text-on-accent hover:brightness-110">
           <Icon name="resume" size={16} /> Resume
         </button>
         <button onClick={() => launch("experience")} className="inline-flex items-center gap-1.5 rounded-control border border-line bg-glass px-3.5 py-2 text-sm font-medium hover:bg-glass-strong">

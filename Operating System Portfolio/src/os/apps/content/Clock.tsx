@@ -14,7 +14,7 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const btn = "rounded-control px-4 py-2 text-sm font-medium";
-const primary = `${btn} bg-accent text-on-accent hover:brightness-110`;
+const primary = `${btn} bg-accent-fill text-on-accent hover:brightness-110`;
 const secondary = `${btn} border border-line bg-glass hover:bg-glass-strong`;
 
 function useNow(ms: number) {
@@ -61,7 +61,7 @@ function Timer() {
       {!running && timerPausedLeft === null && (
         <div className="flex flex-wrap justify-center gap-2">
           {[1, 5, 10, 25].map((m) => (
-            <button key={m} onClick={() => setMinutes(m)} className={`rounded-full px-3 py-1 text-sm ${minutes === m ? "bg-accent text-on-accent" : "bg-glass ring-1 ring-line"}`}>
+            <button key={m} onClick={() => setMinutes(m)} className={`rounded-full px-3 py-1 text-sm ${minutes === m ? "bg-accent-fill text-on-accent" : "bg-glass ring-1 ring-line"}`}>
               {m} min
             </button>
           ))}

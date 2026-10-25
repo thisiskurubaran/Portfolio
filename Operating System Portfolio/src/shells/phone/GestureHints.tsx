@@ -44,7 +44,7 @@ export function GestureHints() {
           </li>
         ))}
       </ul>
-      <button onClick={done} className="mt-4 w-full rounded-control bg-accent py-2 text-sm font-medium text-on-accent">
+      <button onClick={done} className="mt-4 w-full rounded-control bg-accent-fill py-2 text-sm font-medium text-on-accent">
         Got it
       </button>
     </div>

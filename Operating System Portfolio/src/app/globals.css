@@ -29,7 +29,7 @@
   --color-raised: #2a2a30;
   --color-paper: #f5f5f7;
   --color-muted: #a6a6b0;
-  --color-subtle: #75757f;
+  --color-subtle: #92929c;
   --color-faint: #4a4a52;
   --color-glass: rgb(255 255 255 / 0.08);
   --color-glass-strong: rgb(255 255 255 / 0.14);
@@ -37,6 +37,8 @@
   --color-line-strong: rgb(255 255 255 / 0.18);
 
   --color-accent: #3d8bff;
+  /* The accent deepened just enough for white labels to pass AA. */
+  --color-accent-fill: #0a6dff;
   --color-accent-fg: var(--color-accent);
   /* Set from the accent's brightness by useSystemAttributes. */
   --color-on-accent: #ffffff;
@@ -58,6 +60,8 @@
   --shadow-3: 0 32px 80px -18px rgb(0 0 0 / 0.7), 0 10px 24px rgb(0 0 0 / 0.3);
 
   --ease-out-soft: cubic-bezier(0.3, 0.7, 0.2, 1);
+  /* A light spring for CSS transitions; framer-motion uses design/motion.ts. */
+  --spring: linear(0, 0.18 7%, 0.6 18%, 0.92 30%, 1.03 40%, 1.04 48%, 1.01 62%, 1);
   --blur-glass: 24px;
 }
 
@@ -77,7 +81,7 @@
   --color-raised: rgb(255 255 255 / 0.07);
   --color-paper: #f5f5f7;
   --color-muted: #b8b8c2;
-  --color-subtle: #8a8a94;
+  --color-subtle: #96969f;
   --color-faint: #5a5a62;
   --color-glass: rgb(255 255 255 / 0.1);
   --color-glass-strong: rgb(255 255 255 / 0.16);
@@ -101,7 +105,7 @@
   --color-raised: #f2f2f6;
   --color-paper: #111114;
   --color-muted: #63636c;
-  --color-subtle: #8c8c95;
+  --color-subtle: #6a6a73;
   --color-faint: #c4c4cb;
   --color-glass: rgb(17 17 20 / 0.05);
   --color-glass-strong: rgb(17 17 20 / 0.1);
@@ -235,15 +239,15 @@ h3 {
 
 /* folioVision: panels glide between places on the arc. */
 .folio-vision-stage {
-  transition: transform 0.4s ease-out;
+  transition: transform 0.4s var(--ease-out-soft);
 }
 .folio-vision-panel {
   transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1);
+  transition: transform 0.6s var(--spring);
 }
 .folio-vision-lift {
   transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1);
+  transition: transform 0.4s var(--spring);
 }
 .folio-vision-liftable:hover {
   transform: translateZ(40px);
@@ -295,7 +299,7 @@ h3 {
 
 /* Opening animations. Reduced motion and low-power mode cut them to nothing. */
 .folio-window > * {
-  animation: folio-pop 0.18s ease-out;
+  animation: folio-pop 0.24s var(--spring);
 }
 @keyframes folio-pop {
   from {

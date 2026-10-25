@@ -91,7 +91,7 @@ export function Spotlight({ onClose, fullScreen = false }: { onClose: () => void
               aria-selected={i === current}
               onPointerMove={() => setActive(i)}
               onClick={() => choose(item)}
-              className={`flex cursor-default items-center gap-3 rounded-control px-3 py-2 ${i === current ? "bg-accent text-on-accent" : ""}`}
+              className={`flex cursor-default items-center gap-3 rounded-control px-3 py-2 ${i === current ? "bg-accent-fill text-on-accent" : ""}`}
             >
               <AppIcon id={item.appId ?? "browser"} icon={item.icon} size={26} />
               <span className="truncate font-medium">{item.label}</span>

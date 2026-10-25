@@ -47,7 +47,7 @@ export function DesktopIcons() {
           className={`flex w-[84px] flex-col items-center gap-1 rounded-lg p-1.5 text-center ${selected === s.id ? "bg-glass-strong" : ""}`}
         >
           <AppIcon id={s.tile} icon={s.icon} size={44} />
-          <span className={`rounded px-1 text-[11px] font-medium leading-tight [text-shadow:0_1px_2px_rgb(0_0_0/0.35)] ${selected === s.id ? "bg-accent text-on-accent [text-shadow:none]" : ""}`}>
+          <span className={`rounded px-1 text-[11px] font-medium leading-tight [text-shadow:0_1px_2px_rgb(0_0_0/0.35)] ${selected === s.id ? "bg-accent-fill text-on-accent [text-shadow:none]" : ""}`}>
             {s.label}
           </span>
         </button>

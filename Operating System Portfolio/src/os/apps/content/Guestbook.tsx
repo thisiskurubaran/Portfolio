@@ -49,7 +49,7 @@ export default function Guestbook() {
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} maxLength={MAX_NOTE} rows={3} required className="mt-1 w-full rounded-control bg-glass p-2" />
           </label>
           <div className="flex items-center gap-3 text-sm">
-            <button disabled={sending || !message.trim()} className="rounded-control bg-accent px-4 py-1.5 font-medium text-on-accent disabled:opacity-40">
+            <button disabled={sending || !message.trim()} className="rounded-control bg-accent-fill px-4 py-1.5 font-medium text-on-accent disabled:opacity-40">
               {sending ? "Signing" : "Sign"}
             </button>
             <span className="tabular-nums text-muted">{MAX_NOTE - message.length} left</span>

@@ -42,7 +42,7 @@ export function NotificationCard({ n, onAction }: { n: Notification; onAction?: 
             runAction(n);
             onAction?.();
           }}
-          className="mt-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-on-accent"
+          className="mt-2 rounded-full bg-accent-fill px-3 py-1 text-xs font-medium text-on-accent"
         >
           {n.action.label}
         </button>

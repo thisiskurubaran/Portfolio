@@ -80,7 +80,7 @@ export function Menu({ items, x, y, onClose, label, above = false }: { items: Me
             onPointerEnter={() => setActive(i)}
             onClick={() => pick(i)}
             className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left disabled:opacity-40 ${
-              i === active ? (item.danger ? "bg-danger text-white" : "bg-accent text-on-accent") : item.danger ? "text-danger" : ""
+              i === active ? (item.danger ? "bg-danger text-white" : "bg-accent-fill text-on-accent") : item.danger ? "text-danger" : ""
             }`}
           >
             <span className="w-4 shrink-0">{item.icon && <Icon name={item.icon} size={15} />}</span>

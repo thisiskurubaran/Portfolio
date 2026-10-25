@@ -118,7 +118,7 @@ export default function Settings() {
               role="radio"
               aria-checked={prefs.theme === t.id}
               onClick={() => prefs.setTheme(t.id)}
-              className={`rounded-control p-3 text-left text-sm ${prefs.theme === t.id ? "bg-accent text-on-accent" : "bg-glass"}`}
+              className={`rounded-control p-3 text-left text-sm ${prefs.theme === t.id ? "bg-accent-fill text-on-accent" : "bg-glass"}`}
             >
               {t.label}
               <span className={`block text-xs ${prefs.theme === t.id ? "text-on-accent/75" : "text-muted"}`}>{t.hint}</span>

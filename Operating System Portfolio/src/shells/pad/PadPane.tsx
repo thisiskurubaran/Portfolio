@@ -50,7 +50,7 @@ export function PadPane({ id, pane, compact = false }: { id: AppId; pane: Pane; 
           aria-expanded={menu}
           aria-haspopup="menu"
           aria-label={`${app.name} multitasking options`}
-          className={`flex h-6 items-center gap-[5px] rounded-full px-3 transition-colors ${menu ? "bg-accent text-on-accent" : "text-subtle hover:bg-glass-strong hover:text-paper"}`}
+          className={`flex h-6 items-center gap-[5px] rounded-full px-3 transition-colors ${menu ? "bg-accent-fill text-on-accent" : "text-subtle hover:bg-glass-strong hover:text-paper"}`}
         >
           <span aria-hidden className="h-[5px] w-[5px] rounded-full bg-current" />
           <span aria-hidden className="h-[5px] w-[5px] rounded-full bg-current" />

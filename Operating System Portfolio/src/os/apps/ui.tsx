@@ -85,7 +85,7 @@ export function ButtonLink({ href, children, primary = false, download }: { href
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={`inline-flex items-center gap-1.5 rounded-control px-3.5 py-2 text-sm font-medium ${
-        primary ? "bg-accent text-on-accent hover:brightness-110" : "border border-line bg-glass hover:bg-glass-strong"
+        primary ? "bg-accent-fill text-on-accent hover:brightness-110" : "border border-line bg-glass hover:bg-glass-strong"
       }`}
     >
       {children}
