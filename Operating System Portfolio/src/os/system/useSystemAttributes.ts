@@ -47,6 +47,18 @@ export function useWallpaper() {
   return wallpaperBackground(id, theme, daypart);
 }
 
+// Dark text on light accents (yellow, mint), white on the rest, using the
+// WCAG relative luminance of the accent.
+function textOn(hex: string) {
+  const c = hex.replace("#", "").match(/../g)?.map((h) => {
+    const v = parseInt(h, 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  if (!c || c.length < 3) return "#ffffff";
+  const lum = 0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!;
+  return lum > 0.32 ? "#111114" : "#ffffff";
+}
+
 // Mirrors OS state onto <html> so plain CSS can react without every
 // component subscribing to the stores.
 export function useSystemAttributes() {
@@ -64,5 +76,6 @@ export function useSystemAttributes() {
     root.toggleAttribute("data-reduced-motion", reduced);
     root.dataset.theme = theme;
     root.style.setProperty("--color-accent", accent);
+    root.style.setProperty("--color-on-accent", textOn(accent));
   }, [reduced, theme, accent, lowPower, textScale, highContrast, bigPointer]);
 }

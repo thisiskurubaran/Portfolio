@@ -1,52 +1,61 @@
 @import "tailwindcss";
 
 /* Design tokens. src/design/tokens.ts mirrors the scales for TypeScript.
-   Components use the semantic names (surface, raised, paper, muted, line);
-   the light theme only redefines those, so every utility follows. */
-@theme {
-  --color-brand-50: #e8f8f3;
-  --color-brand-100: #c5eee2;
-  --color-brand-200: #9be2cf;
-  --color-brand-300: #6fd3ba;
-  --color-brand-400: #4cc2a8;
-  --color-brand-500: #2fa88e;
-  --color-brand-600: #1f8a74;
-  --color-brand-700: #186e5d;
-  --color-brand-800: #12554a;
-  --color-brand-900: #0b3b33;
+   Components use the semantic names; the light theme only redefines those,
+   so every utility follows.
 
-  /* Surfaces, from the desktop up: ink is the base, surface a window body,
-     raised a card inside it. */
-  --color-ink: #0b0e12;
-  --color-surface: #12161c;
-  --color-raised: #1a2028;
-  --color-paper: #eef1f4;
-  --color-muted: #a3acb7;
-  --color-subtle: #737d89;
-  --color-glass: rgb(255 255 255 / 0.07);
-  --color-glass-strong: rgb(255 255 255 / 0.13);
+   Text levels: paper (primary), muted (secondary), subtle (tertiary),
+   faint (quaternary). Surfaces: ink (the base behind everything), surface
+   (a window or sheet), raised (a grouped row or card inside it). */
+@theme {
+  /* System colours, tuned for folioOS. Vivid in dark, a touch deeper in light. */
+  --color-sys-red: #ff5a52;
+  --color-sys-orange: #ff9230;
+  --color-sys-yellow: #ffd23f;
+  --color-sys-green: #34d27b;
+  --color-sys-mint: #4ed8c4;
+  --color-sys-teal: #4cc2a8;
+  --color-sys-cyan: #52c6f5;
+  --color-sys-blue: #3d8bff;
+  --color-sys-indigo: #6f6cff;
+  --color-sys-purple: #b26bff;
+  --color-sys-pink: #ff5fa2;
+
+  --color-brand-400: #4cc2a8;
+  --color-brand-600: #1f8a74;
+
+  --color-ink: #050507;
+  --color-surface: #1c1c20;
+  --color-raised: #2a2a30;
+  --color-paper: #f5f5f7;
+  --color-muted: #a6a6b0;
+  --color-subtle: #75757f;
+  --color-faint: #4a4a52;
+  --color-glass: rgb(255 255 255 / 0.08);
+  --color-glass-strong: rgb(255 255 255 / 0.14);
   --color-line: rgb(255 255 255 / 0.1);
   --color-line-strong: rgb(255 255 255 / 0.18);
 
-  --color-accent: #4cc2a8;
+  --color-accent: #3d8bff;
   --color-accent-fg: var(--color-accent);
-  --color-on-accent: #0b0e12;
-  --color-danger: #f0716a;
-  --color-warning: #f0b34a;
-  --color-success: #52c98e;
+  /* Set from the accent's brightness by useSystemAttributes. */
+  --color-on-accent: #ffffff;
+  --color-danger: var(--color-sys-red);
+  --color-warning: var(--color-sys-orange);
+  --color-success: var(--color-sys-green);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", Menlo, monospace;
 
   --radius-control: 10px;
   --radius-card: 14px;
   --radius-window: 14px;
-  --radius-sheet: 22px;
+  --radius-sheet: 24px;
 
-  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 1px rgb(0 0 0 / 0.2);
-  --shadow-2: 0 10px 28px -8px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.25);
-  --shadow-3: 0 30px 70px -16px rgb(0 0 0 / 0.65), 0 10px 24px rgb(0 0 0 / 0.3);
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.35), 0 1px 1px rgb(0 0 0 / 0.2);
+  --shadow-2: 0 12px 30px -8px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.25);
+  --shadow-3: 0 32px 80px -18px rgb(0 0 0 / 0.7), 0 10px 24px rgb(0 0 0 / 0.3);
 
   --ease-out-soft: cubic-bezier(0.3, 0.7, 0.2, 1);
   --blur-glass: 24px;
@@ -54,42 +63,100 @@
 
 :root {
   color-scheme: dark;
+  /* Material tint: the colour frosted layers are mixed from. */
+  --mat-tint: 32 32 38;
+  --mat-edge: 255 255 255;
 }
 
 /* folioVision always sits on dark glass, so it keeps the dark tokens in
    either theme. */
 .folio-dark {
   color-scheme: dark;
-  --color-ink: #0b0e12;
-  --color-surface: #12161c;
-  --color-raised: rgb(255 255 255 / 0.06);
-  --color-paper: #eef1f4;
-  --color-muted: #b4bcc6;
-  --color-subtle: #8a94a0;
-  --color-glass: rgb(255 255 255 / 0.08);
-  --color-glass-strong: rgb(255 255 255 / 0.14);
-  --color-line: rgb(255 255 255 / 0.14);
-  --color-line-strong: rgb(255 255 255 / 0.22);
+  --color-ink: #050507;
+  --color-surface: #1c1c20;
+  --color-raised: rgb(255 255 255 / 0.07);
+  --color-paper: #f5f5f7;
+  --color-muted: #b8b8c2;
+  --color-subtle: #8a8a94;
+  --color-faint: #5a5a62;
+  --color-glass: rgb(255 255 255 / 0.1);
+  --color-glass-strong: rgb(255 255 255 / 0.16);
+  --color-line: rgb(255 255 255 / 0.16);
+  --color-line-strong: rgb(255 255 255 / 0.26);
   --color-accent-fg: var(--color-accent);
+  --mat-tint: 40 40 48;
+  --mat-edge: 255 255 255;
   color: var(--color-paper);
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --color-ink: #eceef1;
+  --color-sys-red: #f0433a;
+  --color-sys-orange: #f5851c;
+  --color-sys-yellow: #f2b90f;
+  --color-sys-green: #26b864;
+  --color-sys-blue: #2f7bf5;
+  --color-ink: #f2f2f6;
   --color-surface: #ffffff;
-  --color-raised: #f4f6f8;
-  --color-paper: #12161c;
-  --color-muted: #545e6a;
-  --color-subtle: #7a8490;
-  --color-glass: rgb(18 22 28 / 0.05);
-  --color-glass-strong: rgb(18 22 28 / 0.1);
-  --color-line: rgb(18 22 28 / 0.1);
-  --color-line-strong: rgb(18 22 28 / 0.2);
-  --color-accent-fg: color-mix(in oklab, var(--color-accent) 55%, black);
+  --color-raised: #f2f2f6;
+  --color-paper: #111114;
+  --color-muted: #63636c;
+  --color-subtle: #8c8c95;
+  --color-faint: #c4c4cb;
+  --color-glass: rgb(17 17 20 / 0.05);
+  --color-glass-strong: rgb(17 17 20 / 0.1);
+  --color-line: rgb(17 17 20 / 0.1);
+  --color-line-strong: rgb(17 17 20 / 0.2);
+  --color-accent-fg: color-mix(in oklab, var(--color-accent) 72%, black);
   --shadow-1: 0 1px 2px rgb(16 24 40 / 0.08), 0 1px 1px rgb(16 24 40 / 0.05);
-  --shadow-2: 0 10px 28px -8px rgb(16 24 40 / 0.18), 0 2px 6px rgb(16 24 40 / 0.08);
-  --shadow-3: 0 30px 70px -16px rgb(16 24 40 / 0.3), 0 10px 24px rgb(16 24 40 / 0.1);
+  --shadow-2: 0 12px 30px -8px rgb(16 24 40 / 0.18), 0 2px 6px rgb(16 24 40 / 0.08);
+  --shadow-3: 0 32px 80px -18px rgb(16 24 40 / 0.3), 0 10px 24px rgb(16 24 40 / 0.1);
+  --mat-tint: 248 248 251;
+  --mat-edge: 255 255 255;
+}
+
+/* Materials: frosted layers like a real OS. Blur plus saturation lets the
+   wallpaper's colour show through; a light top edge gives the glass depth. */
+.mat-thin,
+.mat-regular,
+.mat-thick,
+.mat-chrome {
+  -webkit-backdrop-filter: blur(var(--mat-blur)) saturate(180%);
+  backdrop-filter: blur(var(--mat-blur)) saturate(180%);
+  background: rgb(var(--mat-tint) / var(--mat-alpha));
+  box-shadow:
+    inset 0 1px 0 rgb(var(--mat-edge) / 0.14),
+    inset 0 0 0 0.5px rgb(var(--mat-edge) / 0.08);
+}
+.mat-thin {
+  --mat-blur: 20px;
+  --mat-alpha: 0.42;
+}
+.mat-regular {
+  --mat-blur: 30px;
+  --mat-alpha: 0.6;
+}
+.mat-thick {
+  --mat-blur: 40px;
+  --mat-alpha: 0.78;
+}
+.mat-chrome {
+  --mat-blur: 50px;
+  --mat-alpha: 0.88;
+}
+:root[data-theme="light"] .mat-thin {
+  --mat-alpha: 0.5;
+}
+:root[data-theme="light"] .mat-regular {
+  --mat-alpha: 0.68;
+}
+
+/* Large titles, as in a system app: big, bold and tightly set. */
+.large-title {
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 body {
@@ -104,7 +171,7 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 /* Hidden until focused, so keyboard and screen reader users meet it first. */
