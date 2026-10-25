@@ -1,5 +1,6 @@
 "use client";
 
+import { springs } from "@/design/motion";
 import { motion, useAnimate } from "framer-motion";
 import { Suspense, useEffect, useState, type RefObject } from "react";
 import { Icon } from "@/design/icons";
@@ -12,7 +13,6 @@ import { useFocusTrap } from "@/shells/shared/useFocusTrap";
 import { useSwipe } from "@/shells/shared/useSwipe";
 import { usePhone } from "./state";
 
-const SPRING = { type: "spring", stiffness: 380, damping: 34, mass: 0.9 } as const;
 
 // Apps open out of their icon and shrink back into it. The bar at the bottom
 // is the home gesture: swipe it up, tap it, or press Escape.
@@ -35,7 +35,7 @@ export function AppView({ id }: { id: AppId }) {
 
   const close = async () => {
     haptic();
-    if (!reduced && scope.current) await animate(scope.current, { ...from, opacity: origin ? 0.3 : 0 }, { type: "spring", stiffness: 420, damping: 38 });
+    if (!reduced && scope.current) await animate(scope.current, { ...from, opacity: origin ? 0.3 : 0 }, springs.close);
     goHome();
   };
 
@@ -59,7 +59,7 @@ export function AppView({ id }: { id: AppId }) {
       onKeyDown={(e) => (e.key === "Escape" ? void close() : trap(e))}
       initial={reduced ? to : from}
       animate={to}
-      transition={SPRING}
+      transition={springs.open}
       className="absolute z-10 flex flex-col overflow-hidden bg-ink outline-none"
     >
       <div className={`h-12 shrink-0 transition-colors ${compact ? "mat-chrome" : "bg-ink"}`} />

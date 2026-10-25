@@ -1,5 +1,6 @@
 "use client";
 
+import { easeOutSoft } from "@/design/motion";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { LogoMark } from "@/design/Logo";
@@ -70,7 +71,7 @@ export function HandoffOverlay() {
                 ? { width: frames[target].w, height: frames[target].h, borderRadius: frames[target].r }
                 : { width: "100vw", height: "100vh", borderRadius: 0, opacity: 0 }
             }
-            transition={{ duration: phase === "in" ? 0.55 : 0.5, ease: [0.3, 0.7, 0.2, 1] }}
+            transition={{ duration: phase === "in" ? 0.55 : 0.5, ease: easeOutSoft }}
           >
             <LogoMark variant="tile" size={52} />
             <p className="text-sm tracking-[0.25em]">{info?.name.toUpperCase()}</p>
