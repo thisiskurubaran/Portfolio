@@ -2,15 +2,49 @@
 
 import { useEffect, useRef } from "react";
 import { AppIcon } from "@/design/AppIcon";
-import { getApp } from "@/os/apps/registry";
+import { getApp, type AppId } from "@/os/apps/registry";
+import { haptic } from "@/os/system/haptics";
 import { useFocusTrap } from "@/shells/shared/useFocusTrap";
+import { useSwipe } from "@/shells/shared/useSwipe";
 import { usePhone } from "./state";
 
-// F07 on the phone: recent apps as cards. Tap one to return to it, or close it.
-export function AppSwitcher() {
-  const recents = usePhone((s) => s.recents);
+function SwitcherCard({ id }: { id: AppId }) {
+  const app = getApp(id);
   const openApp = usePhone((s) => s.openApp);
   const closeRecent = usePhone((s) => s.closeRecent);
+  // Flick a card up to close the app.
+  const swipe = useSwipe((dir) => {
+    if (dir !== "up") return;
+    haptic();
+    closeRecent(id);
+  });
+  if (!app) return null;
+  return (
+    <li className="relative w-[72%] shrink-0 snap-center">
+      <p className="mb-2 flex items-center gap-2 px-1 text-[13px] font-semibold text-white">
+        <AppIcon id={app.id} icon={app.icon} size={24} />
+        {app.name}
+      </p>
+      <button
+        {...swipe}
+        onClick={() => openApp(id)}
+        aria-label={`Open ${app.name}. Swipe up to close.`}
+        className="flex h-[58vh] max-h-[520px] w-full touch-pan-x flex-col items-center justify-center gap-4 overflow-hidden rounded-[32px] bg-ink shadow-3 ring-1 ring-white/10"
+      >
+        <AppIcon id={app.id} icon={app.icon} size={84} />
+        <span className="text-[15px] font-semibold text-paper">{app.name}</span>
+      </button>
+      <button onClick={() => closeRecent(id)} className="mt-3 w-full text-center text-[13px] text-white/70">
+        Close
+      </button>
+    </li>
+  );
+}
+
+// F07 on the phone: recent apps as large cards. Swipe sideways to browse,
+// tap to return, flick up to close.
+export function AppSwitcher() {
+  const recents = usePhone((s) => s.recents);
   const goHome = usePhone((s) => s.goHome);
   const ref = useRef<HTMLDivElement>(null);
   const trap = useFocusTrap(ref);
@@ -26,37 +60,18 @@ export function AppSwitcher() {
       aria-modal="true"
       aria-label="Recent apps"
       onKeyDown={(e) => (e.key === "Escape" ? goHome() : trap(e))}
-      className="absolute inset-0 z-40 flex flex-col bg-ink/70 px-5 pb-6 pt-14 backdrop-blur-2xl"
+      onClick={(e) => e.target === e.currentTarget && goHome()}
+      className="folio-fade-in absolute inset-0 z-40 flex flex-col justify-center bg-black/40 pb-10 pt-14 backdrop-blur-2xl"
     >
-      <h2 className="mb-4 text-sm opacity-70">{recents.length ? "Recent apps" : "No recent apps"}</h2>
-      <ul className="flex min-h-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
-        {recents.map((id) => {
-          const app = getApp(id);
-          if (!app) return null;
-          return (
-            <li key={id} className="relative w-[70%] shrink-0 snap-center">
-              <button
-                onClick={() => openApp(id)}
-                className="flex h-full max-h-[60vh] w-full flex-col overflow-hidden rounded-3xl border border-line bg-ink text-left shadow-2xl"
-              >
-                <span className="flex items-center gap-2 border-b border-line p-3 text-sm">
-                  <AppIcon id={app.id} icon={app.icon} size={20} />
-                  {app.name}
-                </span>
-                <span className="flex flex-1 items-center justify-center">
-                  <AppIcon id={app.id} icon={app.icon} size={72} />
-                </span>
-              </button>
-              <button onClick={() => closeRecent(id)} className="mt-2 w-full text-center text-xs opacity-70">
-                Close {app.name}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      <button onClick={goHome} className="mx-auto mt-2 rounded-full bg-glass px-5 py-2 text-sm">
-        Home
-      </button>
+      {recents.length === 0 ? (
+        <p className="text-center text-[15px] text-white/80">No recent apps</p>
+      ) : (
+        <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-[14%] pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {recents.map((id) => (
+            <SwitcherCard key={id} id={id} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

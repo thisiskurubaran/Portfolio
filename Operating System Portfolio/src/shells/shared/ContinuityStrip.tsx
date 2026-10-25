@@ -42,15 +42,15 @@ export function ContinuityStrip({ compact = false }: { compact?: boolean }) {
             key={s.id}
             onClick={() => s.id !== shell && start(s.id)}
             aria-pressed={shell === s.id}
-            className={`flex flex-col items-center gap-1 rounded-2xl bg-glass p-3 text-xs ${shell === s.id ? "ring-2 ring-accent" : "hover:bg-glass-strong"}`}
+            className={`flex flex-col items-center gap-0.5 rounded-2xl bg-glass ${compact ? "px-1 py-1.5 text-[10px]" : "p-3 text-xs"} ${shell === s.id ? "ring-2 ring-accent" : "hover:bg-glass-strong"}`}
           >
             <Silhouette shell={s.id} />
             <span className="font-medium">{s.name}</span>
-            {!compact && <span className="opacity-60">{s.device}</span>}
+            {!compact && <span className="text-muted">{s.device}</span>}
           </button>
         ))}
       </div>
-      {override && (
+      {override && !compact && (
         <button onClick={() => setOverride(null)} className="mt-2 text-xs text-accent-fg underline">
           Pick automatically for this device
         </button>
