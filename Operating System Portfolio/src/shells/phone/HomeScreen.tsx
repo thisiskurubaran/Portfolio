@@ -12,6 +12,7 @@ import { ClockWidget, ProfileWidget, WeatherTile, WorldWidget } from "@/shells/s
 import { originOf, usePhone } from "./state";
 
 const DOCK: AppId[] = ["about", "experience", "projects", "contact"];
+const FIRST_PAGE = 8;
 
 type WidgetId = "clock" | "weather";
 
@@ -90,8 +91,10 @@ export function HomeScreen() {
   const pressTimer = useRef(0);
 
   const dockApps = launchable.filter((a) => DOCK.includes(a.id));
-  const firstPage = launchable.filter((a) => pinned.includes(a.id) && !DOCK.includes(a.id));
-  const secondPage = launchable.filter((a) => !pinned.includes(a.id) && !DOCK.includes(a.id));
+  // Pinned apps lead, and the first page fills two full rows under the widgets.
+  const ordered = [...launchable.filter((a) => pinned.includes(a.id)), ...launchable.filter((a) => !pinned.includes(a.id))].filter((a) => !DOCK.includes(a.id));
+  const firstPage = ordered.slice(0, FIRST_PAGE);
+  const secondPage = ordered.slice(FIRST_PAGE);
   const PAGES = 3;
 
   // Long press on a widget enters edit mode, as on a real phone.
