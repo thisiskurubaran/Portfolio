@@ -6,6 +6,11 @@ const MAX_PANELS = 5;
 interface VisionStore {
   open: AppId[];
   focused: AppId | null;
+  // Where a visitor dragged each panel, relative to its place on the arc.
+  offsets: Partial<Record<AppId, { x: number; y: number }>>;
+  home: boolean;
+  setHome: (home: boolean) => void;
+  move: (id: AppId, x: number, y: number) => void;
   openApp: (id: AppId) => void;
   close: (id: AppId) => void;
   focus: (id: AppId | null) => void;
@@ -15,17 +20,22 @@ interface VisionStore {
 export const useVision = create<VisionStore>((set, get) => ({
   open: ["experience", "about", "projects"],
   focused: "about",
+  offsets: {},
+  home: false,
+  setHome: (home) => set({ home }),
+  move: (id, x, y) => set((s) => ({ offsets: { ...s.offsets, [id]: { x, y } } })),
   openApp: (id) =>
     set((s) => {
-      if (s.open.includes(id)) return { focused: id };
+      if (s.open.includes(id)) return { focused: id, home: false };
       const open = [...s.open, id];
       // Too many floating panels stop being readable; the oldest one leaves.
-      return { open: open.length > MAX_PANELS ? open.slice(1) : open, focused: id };
+      return { open: open.length > MAX_PANELS ? open.slice(1) : open, focused: id, home: false };
     }),
   close: (id) =>
     set((s) => {
       const open = s.open.filter((o) => o !== id);
-      return { open, focused: s.focused === id ? (open[Math.floor(open.length / 2)] ?? null) : s.focused };
+      const { [id]: _dropped, ...offsets } = s.offsets;
+      return { open, offsets, focused: s.focused === id ? (open[Math.floor(open.length / 2)] ?? null) : s.focused };
     }),
   focus: (focused) => set({ focused }),
   step: (dir) => {

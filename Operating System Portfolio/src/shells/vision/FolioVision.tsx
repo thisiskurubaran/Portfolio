@@ -9,9 +9,10 @@ import { launchable, pinned } from "@/os/apps/registry";
 import { formatTime, useClock } from "@/os/system/clock";
 import { registerLauncher } from "@/os/system/launcher";
 import { useReducedMotion } from "@/os/system/useSystemAttributes";
-import { Launchpad } from "@/shells/shared/Launchpad";
 import { Spotlight } from "@/shells/shared/Spotlight";
+import { Environment } from "./Environment";
 import { useVision } from "./state";
+import { VisionHome } from "./VisionHome";
 import { VisionPanel } from "./VisionPanel";
 
 // The camera leans a little toward the pointer: the parallax that sells depth.
@@ -27,13 +28,13 @@ function Parallax({ reduced }: { reduced: boolean }) {
   return null;
 }
 
-// The room: soft drifting motes at different depths behind the panels.
+// Dust in the evening light, drifting at different depths behind the panels.
 function Room({ reduced }: { reduced: boolean }) {
   return (
     <>
       <Parallax reduced={reduced} />
-      <Sparkles count={140} scale={[18, 10, 12]} position={[0, 0, -4]} size={3} speed={reduced ? 0 : 0.25} opacity={0.5} color="#bfe9df" />
-      <Sparkles count={60} scale={[22, 12, 6]} position={[0, 0, -9]} size={6} speed={reduced ? 0 : 0.15} opacity={0.25} color="#a99cf5" />
+      <Sparkles count={90} scale={[18, 10, 12]} position={[0, 0, -4]} size={2.5} speed={reduced ? 0 : 0.2} opacity={0.55} color="#fff4dc" />
+      <Sparkles count={40} scale={[22, 12, 6]} position={[0, 0, -9]} size={5} speed={reduced ? 0 : 0.12} opacity={0.3} color="#ffe2b8" />
     </>
   );
 }
@@ -61,14 +62,14 @@ function usePanelParallax(reduced: boolean) {
   return ref;
 }
 
-function Ornament({ onSearch, onAll }: { onSearch: () => void; onAll: () => void }) {
+function Ornament({ onSearch, onHome }: { onSearch: () => void; onHome: () => void }) {
   const { open, openApp, focused } = useVision();
   // Pinned apps, plus any open ones, keep the bar a comfortable width.
   const shown = launchable.filter((a) => pinned.includes(a.id) || open.includes(a.id));
   return (
-    <nav aria-label="Apps" className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-[28px] border border-white/25 bg-white/10 px-3 py-2.5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3)] backdrop-blur-2xl">
-      <button onClick={onAll} aria-label="All apps" title="All apps" className="relative flex flex-col items-center rounded-xl p-0.5 transition-transform hover:-translate-y-1">
-        <AppIcon id="launcher" icon="launcher" size={44} />
+    <nav aria-label="Apps" className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full bg-[rgb(40_40_48/0.45)] px-2.5 py-2 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_20px_50px_-20px_rgb(10_10_30/0.6)] backdrop-blur-2xl">
+      <button onClick={onHome} aria-label="Home" title="Home" className="relative flex flex-col items-center rounded-full p-0.5 transition-transform hover:-translate-y-1">
+        <AppIcon id="launcher" icon="launcher" size={44} round />
       </button>
       <span aria-hidden className="mx-0.5 w-px self-stretch bg-white/20" />
       {shown.map((app) => (
@@ -77,10 +78,10 @@ function Ornament({ onSearch, onAll }: { onSearch: () => void; onAll: () => void
           onClick={() => openApp(app.id)}
           aria-label={app.name}
           title={app.name}
-          className={`relative flex flex-col items-center rounded-xl p-0.5 transition-transform hover:-translate-y-1 ${focused === app.id ? "-translate-y-1" : ""}`}
+          className={`relative flex flex-col items-center rounded-full p-0.5 transition-transform hover:-translate-y-1 ${focused === app.id ? "-translate-y-1" : ""}`}
         >
-          <AppIcon id={app.id} icon={app.icon} size={44} />
-          {open.includes(app.id) && <span className="absolute bottom-0.5 h-1 w-1 rounded-full bg-white" />}
+          <AppIcon id={app.id} icon={app.icon} size={44} round />
+          {open.includes(app.id) && <span className="absolute -bottom-1 h-1 w-1 rounded-full bg-white" />}
         </button>
       ))}
       <button onClick={onSearch} aria-label="Search" className="flex h-11 w-11 items-center justify-center self-center rounded-full hover:bg-white/20">
@@ -97,8 +98,8 @@ export default function FolioVision() {
   const reduced = useReducedMotion();
   const now = useClock();
   const [search, setSearch] = useState(false);
-  const [all, setAll] = useState(false);
   const open = useVision((s) => s.open);
+  const home = useVision((s) => s.home || s.open.length === 0);
   const focused = useVision((s) => s.focused);
   const center = focused && open.includes(focused) ? open.indexOf(focused) : (open.length - 1) / 2;
   const stage = usePanelParallax(reduced);
@@ -113,7 +114,7 @@ export default function FolioVision() {
         return;
       }
       const typing = (e.target as HTMLElement).closest("input, textarea");
-      if (typing) return;
+      if (typing || useVision.getState().home) return;
       if (e.key === "ArrowRight") useVision.getState().step(1);
       else if (e.key === "ArrowLeft") useVision.getState().step(-1);
     };
@@ -122,34 +123,26 @@ export default function FolioVision() {
   }, []);
 
   return (
-    <main
-      className="folio-dark relative h-full w-full overflow-hidden"
-      style={{ background: "radial-gradient(ellipse at 50% 30%, #2a3a4a 0%, #141a24 45%, #07090c 100%)" }}
-    >
-      {/* A soft floor of light under the panels, for a sense of standing in a room. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%]"
-        style={{
-          background: "radial-gradient(ellipse 60% 70% at 50% 100%, rgb(111 211 186 / 0.22), transparent 70%)",
-          maskImage: "linear-gradient(to top, black, transparent)",
-        }}
-      />
+    <main className="folio-dark relative h-full w-full overflow-hidden bg-[#2d3550]">
+      <Environment reduced={reduced} />
       <Canvas className="!absolute inset-0" camera={{ position: [0, 0, 6], fov: 50 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
         <Room reduced={reduced} />
       </Canvas>
-      <div className="absolute inset-0" style={{ perspective: "1400px" }}>
+      <div className={`absolute inset-0 transition-[filter,opacity] duration-300 ${home ? "pointer-events-none opacity-40 blur-sm" : ""}`} style={{ perspective: "1400px" }} aria-hidden={home || undefined}>
         <div ref={stage} className="folio-vision-stage absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {open.map((id, i) => (
             <VisionPanel key={id} id={id} index={i} center={center} />
           ))}
         </div>
       </div>
-      <p className="absolute right-4 top-3 z-10 text-sm tabular-nums text-white/80" suppressHydrationWarning>
+      <p
+        className="absolute right-4 top-3 z-30 rounded-full bg-[rgb(40_40_48/0.4)] px-3 py-1 text-[13px] font-semibold tabular-nums text-white backdrop-blur-2xl"
+        suppressHydrationWarning
+      >
         {now ? formatTime(now) : ""}
       </p>
-      <Ornament onSearch={() => setSearch(true)} onAll={() => setAll(true)} />
-      {all && <Launchpad onClose={() => setAll(false)} />}
+      {home && <VisionHome onClose={() => open.length > 0 && useVision.getState().setHome(false)} />}
+      <Ornament onSearch={() => setSearch(true)} onHome={() => useVision.getState().setHome(!useVision.getState().home)} />
       {search && <Spotlight onClose={() => setSearch(false)} />}
     </main>
   );

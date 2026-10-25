@@ -31,7 +31,7 @@ const fallback = { from: "#8a94a3", to: "#4f5864" };
 
 // An app tile: rounded square, a vivid vertical gradient, a soft sheen across
 // the top and a light edge for depth, with a heavier glyph than chrome icons.
-export function AppIcon({ id, icon, size = 48, className = "" }: { id: string; icon: IconName; size?: number; className?: string }) {
+export function AppIcon({ id, icon, size = 48, className = "", round = false }: { id: string; icon: IconName; size?: number; className?: string; round?: boolean }) {
   const tile = appTiles[id] ?? fallback;
   return (
     <span
@@ -40,7 +40,7 @@ export function AppIcon({ id, icon, size = 48, className = "" }: { id: string; i
       style={{
         width: size,
         height: size,
-        borderRadius: size * 0.27,
+        borderRadius: round ? "50%" : size * 0.27,
         background: `linear-gradient(175deg, ${tile.from}, ${tile.to})`,
         boxShadow: `inset 0 1px 0 rgb(255 255 255 / 0.4), inset 0 -1px 1px rgb(0 0 0 / 0.12), 0 ${size * 0.05}px ${size * 0.16}px rgb(0 0 0 / 0.28)`,
         color: tile.glyph ?? "#ffffff",
