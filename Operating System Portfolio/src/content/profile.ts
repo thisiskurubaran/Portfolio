@@ -1,7 +1,7 @@
 export const profile = {
   name: "Kurubaran Anandhan",
   location: "Chennai, Tamil Nadu, India",
-  status: "Open to work. Technical Team Lead at Santan Infotech Pvt. Ltd.",
+  status: "Technical Team Lead at Santan Infotech Pvt. Ltd.",
   titles: [
     "Senior Full-Stack Engineer",
     "iOS & Flutter Engineer",

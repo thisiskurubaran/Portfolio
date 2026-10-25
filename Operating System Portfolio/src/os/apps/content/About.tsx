@@ -12,14 +12,13 @@ const initials = profile.name
 
 export default function About() {
   const current = experience[0]!;
-  const [status] = profile.status.split(".");
   return (
     <Page>
       <header className="flex flex-wrap items-center gap-5">
         <div
           aria-hidden
           className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[26px] font-display text-2xl font-bold text-white shadow-2"
-          style={{ background: "linear-gradient(150deg, #6fd3ba, #1f8a74 55%, #12554a)" }}
+          style={{ background: "radial-gradient(circle at 80% 15%, #b38bff 0%, transparent 55%), linear-gradient(140deg, #5a52f5, #8b4fe8 60%, #c2459b)" }}
         >
           {initials}
         </div>
@@ -27,10 +26,6 @@ export default function About() {
           <h1 className="text-2xl font-bold tracking-tight">{profile.name}</h1>
           <p className="mt-0.5 text-sm text-muted">
             {current.title.split(" (")[0]} at {current.company} · {profile.location}
-          </p>
-          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2.5 py-0.5 text-xs font-medium text-success ring-1 ring-success/30">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />
-            {status}
           </p>
         </div>
       </header>

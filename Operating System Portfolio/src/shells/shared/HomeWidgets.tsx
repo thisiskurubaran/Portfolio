@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from "react";
 import { experience, profile } from "@/content";
+import { Icon } from "@/design/icons";
 import { formatInZone, useClock, worldZones } from "@/os/system/clock";
 import { launch } from "@/os/system/launcher";
 import { useWeather } from "@/os/system/weather";
@@ -27,11 +28,9 @@ export function ProfileWidget({ onOpen, className = "col-span-4" }: { onOpen?: O
           <span className="block truncate text-[13px] text-white/80">{current.title.split(" (")[0]}</span>
         </span>
       </span>
-      <span className="flex items-end justify-between">
-        <span className="text-[13px] text-white/85">{current.company}</span>
-        <span className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#4ff28f]" /> Open to work
-        </span>
+      <span className="flex items-end justify-between gap-2">
+        <span className="truncate text-[13px] text-white/85">{current.company}</span>
+        <span className="shrink-0 text-[12px] text-white/70">{profile.location.split(",")[0]}</span>
       </span>
     </button>
   );
@@ -69,7 +68,10 @@ export function WeatherTile({ className = "col-span-2" }: { className?: string }
           <span className="mt-1 block text-[13px] text-white/90">{describeWeather(weather.code)}</span>
         </span>
       ) : (
-        <span className="text-[13px] leading-snug text-white/90">Weather is not available for this connection.</span>
+        <span>
+          <Icon name="sun" size={30} className="text-white/90" />
+          <span className="mt-1.5 block text-[13px] leading-snug text-white/85">No forecast for this connection</span>
+        </span>
       )}
     </div>
   );
