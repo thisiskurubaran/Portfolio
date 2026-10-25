@@ -15,7 +15,7 @@ folioOS is an original design. It borrows the grammar of desktop and mobile syst
 
 ## Status
 
-`v1.1.0`: the 14 original milestones, plus a redesign (logo, design system, app layouts) and the everyday capabilities of a desktop OS.
+`v1.2.0`: the 14 original milestones, the everyday capabilities of a desktop OS, and a visual redesign of every shell (colour, frosted materials, motion and the touch and spatial shells).
 
 **Before going live, the owner still needs to add:**
 
@@ -25,6 +25,15 @@ folioOS is an original design. It borrows the grammar of desktop and mobile syst
 - The service keys in [Configuration](#configuration). Each feature that needs one says "not connected" until it has it.
 
 ## What it does
+
+**Look and feel**
+- One palette of system colours, a vivid blue accent (any of nine in Settings) and four text levels that meet WCAG AA in both themes. Filled buttons use a deeper version of the accent so white labels stay readable.
+- Frosted materials (thin, regular, thick and chrome) for menus, sheets, the dock and overlays, dropped in low-power mode.
+- folioPhone: a lock screen with a large clock and shortcuts, a paged home with widgets you can reorder, an App Library, apps that zoom open from their icon with large titles, a tile control center and a notification center.
+- folioPad: the same widgets in a row, a wider app grid, a dock with pinned and recent apps, and app panes with a centred multitasking menu, split view and slide-over.
+- folioVision: grey glass panels with a light that follows the pointer, floating in a drawn lakeside room. Each panel has a bar to move it (pointer or arrow keys) and a round-icon home. The depth is faked in the browser; it is not AR.
+- One spring and easing spec in `src/design/motion.ts`, mirrored by CSS tokens.
+
 
 **System**
 - Device detection picks the shell from viewport width, pointer type and user agent. A choice made in the switcher is remembered.

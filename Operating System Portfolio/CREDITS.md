@@ -4,7 +4,7 @@
 The folioOS logo (three stacked windows), the app icon tiles in `src/design/AppIcon.tsx`, the line icons in `src/design/icons.tsx` and the device outlines in the continuity strip are original drawings made for folioOS. No third party icon set is used, and nothing is copied from Apple or Microsoft.
 
 ## Wallpapers and sounds
-The wallpapers (Horizon, Ocean, Sunset, Aurora, Graphite) are original CSS colour fields with generated grain. The UI sounds are synthesised in the browser; there are no recordings.
+The wallpapers (Horizon, Ocean, Sunset, Aurora, Graphite) are original CSS colour fields with generated grain. The folioVision lakeside room is an original inline SVG. The UI sounds are synthesised in the browser; there are no recordings.
 
 ## Fonts
 Inter by Rasmus Andersson, under the SIL Open Font License 1.1, for all text, set tighter for large titles. It is downloaded at build time through `next/font` and served from the site's own origin. https://rsms.me/inter/
@@ -20,7 +20,7 @@ All under the MIT license unless noted.
 | Next.js, React | app framework |
 | Tailwind CSS | design system utilities |
 | Zustand | window manager and OS state |
-| Framer Motion | the device handoff animation |
+| Framer Motion | the device handoff and folioPhone app animations |
 | three, React Three Fiber, drei | the folioVision depth field |
 | zod | validating every API and realtime payload |
 | Upstash Redis and Ratelimit | guestbook, sticky notes, rate limits, threat log |
