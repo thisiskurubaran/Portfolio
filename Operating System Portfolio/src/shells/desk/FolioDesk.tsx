@@ -40,6 +40,21 @@ function clampRestoredWindows() {
   }
 }
 
+// F6 moves between the desk's regions, the usual desktop way out of a window,
+// since a focused window keeps Tab inside itself.
+function cycleRegion(dir: 1 | -1) {
+  const { focusedId } = useWindows.getState();
+  const win = focusedId ? document.querySelector<HTMLElement>(`[data-window="${focusedId}"]:not([hidden])`) : null;
+  const regions = [document.querySelector<HTMLElement>('nav[aria-label="Menus"]'), win, document.querySelector<HTMLElement>('nav[aria-label="Dock"]')].filter(
+    (r): r is HTMLElement => !!r,
+  );
+  if (regions.length === 0) return;
+  const current = regions.findIndex((r) => r.contains(document.activeElement));
+  const next = regions[(current + dir + regions.length) % regions.length]!;
+  if (next === win) next.focus();
+  else next.querySelector<HTMLElement>("button, a[href]")?.focus();
+}
+
 export default function FolioDesk() {
   const allWindows = useWindows((s) => s.windows);
   const currentDesktop = useWindows((s) => s.currentDesktop);
@@ -72,7 +87,14 @@ export default function FolioDesk() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // The login screen is the only thing that answers keys until it is passed.
+      if (!useDesk.getState().loggedIn) return;
       const mod = e.metaKey || e.ctrlKey;
+      if (e.key === "F6") {
+        e.preventDefault();
+        cycleRegion(e.shiftKey ? -1 : 1);
+        return;
+      }
       if (mod && (e.code === "Space" || e.key.toLowerCase() === "k")) {
         e.preventDefault();
         useDesk.getState().toggle("spotlight");
@@ -117,22 +139,25 @@ export default function FolioDesk() {
         useDesk.getState().openMenu({ x: e.clientX, y: e.clientY, label: "Desktop", items: desktopMenu() });
       }}
     >
-      <StickyLayer />
-      <DesktopIcons />
-      <MenuBar />
-      {windows.map((win) => (
-        <DeskWindow key={win.id} win={win} focused={win.id === focusedId} />
-      ))}
-      <Dock />
-      {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
-      {overlay === "overview" && <MissionControl />}
-      {overlay === "launcher" && <Launchpad onClose={() => useDesk.getState().setOverlay(null)} />}
-      {overlay === "center" && <NotificationCenter />}
-      {overlay === "control" && <QuickPanel />}
-      {overlay === "sticky" && <StickyComposer />}
-      <Cursors />
-      {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
-      {menu && <Menu {...menu} onClose={() => useDesk.getState().closeMenu()} />}
+      {/* inert while logged out, so Tab, clicks and screen readers stay on the login screen. */}
+      <div className="contents" inert={!loggedIn}>
+        <StickyLayer />
+        <DesktopIcons />
+        <MenuBar />
+        {windows.map((win) => (
+          <DeskWindow key={win.id} win={win} focused={win.id === focusedId} />
+        ))}
+        <Dock />
+        {overlay === "spotlight" && <Spotlight onClose={() => useDesk.getState().setOverlay(null)} />}
+        {overlay === "overview" && <MissionControl />}
+        {overlay === "launcher" && <Launchpad onClose={() => useDesk.getState().setOverlay(null)} />}
+        {overlay === "center" && <NotificationCenter />}
+        {overlay === "control" && <QuickPanel />}
+        {overlay === "sticky" && <StickyComposer />}
+        <Cursors />
+        {overlay === "menu" && <SystemMenu onLogout={() => useDesk.getState().setLoggedIn(false)} />}
+        {menu && <Menu {...menu} onClose={() => useDesk.getState().closeMenu()} />}
+      </div>
       {!loggedIn && <LoginScreen onLogin={() => useDesk.getState().setLoggedIn(true)} />}
     </div>
   );

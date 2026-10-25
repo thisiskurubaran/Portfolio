@@ -85,10 +85,12 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
     snapTimer.current = window.setTimeout(() => setSnapOpen(false), 200);
   };
 
+  const loggedIn = useDesk((s) => s.loggedIn);
   useEffect(() => {
     // Content such as the terminal may already have focused its own input.
-    if (focused && !ref.current?.contains(document.activeElement)) ref.current?.focus({ preventScroll: true });
-  }, [focused]);
+    // Behind the login screen nothing takes focus; logging in hands it over.
+    if (loggedIn && focused && !ref.current?.contains(document.activeElement)) ref.current?.focus({ preventScroll: true });
+  }, [focused, loggedIn]);
 
   if (!app) return null;
 
@@ -166,12 +168,16 @@ export function DeskWindow({ win, focused }: { win: WindowState; focused: boolea
     <div
       ref={ref}
       role="dialog"
+      data-window={win.id}
       aria-label={app.name}
       tabIndex={-1}
       hidden={win.minimized}
       onPointerDown={() => !focused && focus(win.id)}
       onKeyDown={(e) => {
-        if (e.key === "Escape") close(win.id);
+        // An app that used Escape itself (Calculator clears, a field resets) keeps
+        // its window; so does a text field, where Escape means "stop editing".
+        const editing = (e.target as HTMLElement).closest("input, textarea, select, [contenteditable]");
+        if (e.key === "Escape" && !e.defaultPrevented && !editing) close(win.id);
         else trap(e);
       }}
       className={`folio-window ${leaving === "minimize" ? "folio-minimizing" : leaving === "close" ? "folio-closing" : ""} absolute left-0 top-0 flex flex-col overflow-hidden rounded-window border bg-surface outline-none transition-shadow ${

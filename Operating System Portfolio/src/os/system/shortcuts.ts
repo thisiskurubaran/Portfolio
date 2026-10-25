@@ -14,6 +14,7 @@ export const shortcutGroups: { title: string; items: [string, string][] }[] = [
   {
     title: "folioDesk",
     items: [
+      ["F6 or Shift F6", "Move between the menu bar, the window and the dock"],
       ["F4", "All apps"],
       ["F3 or Ctrl Up", "Open windows"],
       ["Alt 1, 2, 3", "Switch desktop"],

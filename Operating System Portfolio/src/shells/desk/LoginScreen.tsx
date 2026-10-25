@@ -7,7 +7,7 @@ import { formatDate, formatTime, useClock } from "@/os/system/clock";
 export function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const now = useClock();
   return (
-    <section aria-label="Log in" className="absolute inset-0 z-[20000] flex flex-col items-center justify-center gap-4 bg-ink/40 backdrop-blur-2xl">
+    <section role="dialog" aria-modal="true" aria-label="Log in" className="absolute inset-0 z-[20000] flex flex-col items-center justify-center gap-4 bg-ink/40 backdrop-blur-2xl">
       <p className="text-6xl font-light tabular-nums" suppressHydrationWarning>
         {now ? formatTime(now) : ""}
       </p>
