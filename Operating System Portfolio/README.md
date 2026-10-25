@@ -15,7 +15,7 @@ folioOS is an original design. It borrows the grammar of desktop and mobile syst
 
 ## Status
 
-`v1.2.0`: the 14 original milestones, the everyday capabilities of a desktop OS, and a visual redesign of every shell (colour, frosted materials, motion and the touch and spatial shells).
+`v1.2.1`: the 14 original milestones, the everyday capabilities of a desktop OS, and a visual redesign of every shell (colour, frosted materials, motion and the touch and spatial shells).
 
 **Before going live, the owner still needs to add:**
 
