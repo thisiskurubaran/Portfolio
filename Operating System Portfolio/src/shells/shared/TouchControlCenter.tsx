@@ -43,7 +43,10 @@ function TallSlider({ label, icon, value, min, onChange }: { label: string; icon
     const v = 1 - (clientY - r.top) / r.height;
     onChange(Math.min(1, Math.max(min, Math.round(v * 20) / 20)));
   };
+  // A drag on the slider is not a swipe: keep it from reaching the control
+  // center's swipe-up-to-close.
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
     set(e.clientY);
   };
@@ -65,6 +68,7 @@ function TallSlider({ label, icon, value, min, onChange }: { label: string; icon
       aria-valuenow={Math.round(value * 100)}
       onPointerDown={onPointerDown}
       onPointerMove={(e) => e.buttons === 1 && set(e.clientY)}
+      onPointerUp={(e) => e.stopPropagation()}
       onKeyDown={onKeyDown}
       className="relative row-span-2 h-full touch-none overflow-hidden rounded-[26px] bg-white/[0.16]"
     >
