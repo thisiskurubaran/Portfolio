@@ -17,7 +17,7 @@ const layouts: { label: string; zones: [SnapKind, number, number, number, number
 // F18: snap layouts. Hover the maximise button, pick a zone.
 export function SnapPicker({ onPick }: { onPick: (kind: SnapKind) => void }) {
   return (
-    <div role="menu" aria-label="Snap layouts" className="grid w-max grid-cols-3 gap-2 rounded-xl border border-line bg-surface/95 p-2.5 shadow-3 backdrop-blur-2xl">
+    <div role="menu" aria-label="Snap layouts" className="grid w-max grid-cols-3 gap-2 mat-chrome rounded-xl p-2.5 shadow-3">
       {layouts.map((l) => (
         <div key={l.label} className="relative h-11 w-[72px] rounded-md bg-glass ring-1 ring-line" aria-label={l.label} role="group">
           {l.zones.map(([kind, x, y, w, h]) => (

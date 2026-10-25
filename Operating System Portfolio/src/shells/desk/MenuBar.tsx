@@ -37,7 +37,7 @@ export function MenuBar() {
   const label = appId ? getApp(appId)?.name : "Desktop";
   const is = (o: DeskOverlay) => overlay === o;
   return (
-    <header className="absolute inset-x-0 top-0 z-[9999] flex h-[30px] items-center gap-1 border-b border-line bg-surface/55 px-2 text-[13px] backdrop-blur-xl">
+    <header className="absolute inset-x-0 top-0 z-[9999] flex h-[30px] items-center gap-1 mat-thin px-2 text-[13px]">
       <BarButton label="folioOS menu" onClick={() => toggle("menu")} active={is("menu")}>
         <LogoMark variant="mono" size={16} />
       </BarButton>

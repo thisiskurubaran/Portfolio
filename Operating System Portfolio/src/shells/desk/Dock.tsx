@@ -42,7 +42,7 @@ export function Dock() {
     <nav
       aria-label="Dock"
       onKeyDown={keys}
-      className="absolute bottom-3 left-1/2 z-[9999] flex -translate-x-1/2 items-end gap-1.5 rounded-[24px] border border-line bg-surface/60 px-2.5 pb-2 pt-2.5 shadow-3 backdrop-blur-2xl"
+      className="absolute bottom-3 left-1/2 z-[9999] flex -translate-x-1/2 items-end gap-1.5 rounded-[24px] mat-regular px-2.5 pb-2 pt-2.5 shadow-3"
     >
       <button
         onClick={() => useDesk.getState().toggle("launcher")}

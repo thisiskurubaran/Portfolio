@@ -22,7 +22,7 @@ export function QuickPanel() {
         role="dialog"
         aria-label="Quick settings"
         onKeyDown={(e) => (e.key === "Escape" ? setOverlay(null) : trap(e))}
-        className="fixed right-2 top-9 z-[14001] w-[340px] rounded-sheet border border-line bg-surface/90 p-4 shadow-3 outline-none backdrop-blur-2xl"
+        className="fixed right-2 top-9 z-[14001] w-[340px] mat-thick rounded-sheet p-4 shadow-3 outline-none"
       >
         <QuickSettings onLock={() => useDesk.getState().setLoggedIn(false)} onDone={() => setOverlay(null)} />
       </div>

@@ -66,7 +66,7 @@ export function Menu({ items, x, y, onClose, label, above = false }: { items: Me
       tabIndex={-1}
       onKeyDown={onKeyDown}
       onContextMenu={(e) => e.preventDefault()}
-      className="fixed z-[60000] min-w-52 rounded-xl border border-line bg-surface/95 p-1 text-[13px] shadow-3 outline-none backdrop-blur-2xl"
+      className="fixed z-[60000] min-w-52 mat-chrome rounded-xl p-1 text-[13px] shadow-3 outline-none"
       style={{ left: pos.x, top: pos.y }}
     >
       {items.map((item, i) =>

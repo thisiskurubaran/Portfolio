@@ -24,7 +24,7 @@ export function SystemMenu({ onLogout }: { onLogout: () => void }) {
         role="dialog"
         aria-label="folioOS menu"
         onKeyDown={(e) => (e.key === "Escape" ? setOverlay(null) : trap(e))}
-        className="fixed left-2 top-8 z-[14001] w-80 rounded-window border border-line bg-ink/90 p-3 shadow-2xl backdrop-blur-2xl"
+        className="fixed left-2 top-8 z-[14001] w-80 mat-chrome rounded-window p-3 shadow-3"
       >
         <p className="mb-2 text-xs uppercase tracking-wide opacity-60">Open as</p>
         <ContinuityStrip compact />

@@ -15,7 +15,7 @@ function Toast({ id }: { id: number }) {
   }, [id, dismiss]);
   if (!n) return null;
   return (
-    <div className="pointer-events-auto rounded-2xl border border-line bg-ink/90 shadow-2xl backdrop-blur-2xl">
+    <div className="pointer-events-auto mat-chrome rounded-2xl shadow-3">
       <NotificationCard n={n} onAction={() => dismiss(id)} />
     </div>
   );

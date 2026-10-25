@@ -51,8 +51,8 @@ export function Spotlight({ onClose, fullScreen = false }: { onClose: () => void
         aria-label="Search"
         className={
           fullScreen
-            ? "absolute inset-0 flex flex-col bg-ink/95 p-4 pt-12 backdrop-blur-2xl"
-            : "absolute left-1/2 top-[18vh] flex max-h-[60vh] w-[min(640px,92vw)] -translate-x-1/2 flex-col overflow-hidden rounded-window border border-line bg-ink/90 shadow-2xl backdrop-blur-2xl"
+            ? "mat-thick absolute inset-0 flex flex-col p-4 pt-12"
+            : "absolute left-1/2 top-[18vh] flex max-h-[60vh] w-[min(640px,92vw)] -translate-x-1/2 flex-col overflow-hidden rounded-window mat-chrome shadow-3"
         }
       >
         <div className="flex items-center gap-3 border-b border-line px-4">

@@ -28,7 +28,7 @@ export function NotificationCenter() {
         role="dialog"
         aria-label="Notification center"
         onKeyDown={(e) => (e.key === "Escape" ? setOverlay(null) : trap(e))}
-        className="fixed bottom-24 right-2 top-9 z-[14001] flex w-80 flex-col gap-3 overflow-auto rounded-window border border-line bg-ink/85 p-3 shadow-2xl outline-none backdrop-blur-2xl"
+        className="fixed bottom-24 right-2 top-9 z-[14001] flex w-80 flex-col gap-3 overflow-auto mat-thick rounded-window p-3 shadow-3 outline-none backdrop-blur-2xl"
       >
         <div className="rounded-2xl bg-glass p-3">
           <p className="mb-1 px-1 text-sm font-semibold" suppressHydrationWarning>
